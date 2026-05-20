@@ -437,7 +437,7 @@ function PlanModal({ plan, onClose }: { plan: any; onClose: () => void }) {
         </div>
 
         {/* Content */}
-        <div className="p-6 overflow-y-auto overflow-x-hidden flex-1 min-h-0">
+        <div className="p-6 overflow-y-auto flex-1 min-h-0">
           <AnimatePresence mode="wait">
             {step === "details" && (
               <motion.div
@@ -506,7 +506,7 @@ function PlanModal({ plan, onClose }: { plan: any; onClose: () => void }) {
                     type="date"
                     value={startDate}
                     onChange={(e) => setStartDate(e.target.value)}
-                    className="w-full max-w-full min-w-0 px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-orange-200 dark:focus:ring-emerald-800"
+                    className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-orange-200 dark:focus:ring-emerald-800 [appearance:textfield]"
                   />
                 </div>
                 <div>
