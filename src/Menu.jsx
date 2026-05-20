@@ -2,39 +2,9 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link, useLocation } from "react-router-dom";
 import { ArrowLeft, ChevronDown } from "lucide-react";
-import { AnimatedThemeToggler } from "./components/ui/animated-theme-toggler";
-import Logo from "./components/shared/Logo";
+import Navbar from "./components/shared/Navbar";
 import Reveal from "./components/shared/Reveal";
 import CompactFooter from "./components/shared/CompactFooter";
-
-function MenuNavbar() {
-  const { pathname } = useLocation();
-  return (
-    <motion.nav initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}
-      className="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[95%] max-w-5xl">
-      <div className="bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl border border-white/40 dark:border-slate-700/40 shadow-lg rounded-2xl px-6 py-3.5 flex items-center justify-between">
-        <Link to="/" className="flex items-center gap-2.5">
-          <Logo className="w-8 h-8" />
-          <span className="text-[15px] font-bold tracking-tight text-slate-900 dark:text-white">Kitchens by K</span>
-        </Link>
-        <div className="hidden md:flex items-center gap-7 text-[13px] text-slate-500 dark:text-slate-400 font-medium">
-          <Link to="/" className={`hover:text-slate-900 dark:hover:text-white transition-colors ${pathname === "/" ? "text-slate-900 dark:text-white font-semibold" : ""}`}>Home</Link>
-          <Link to="/menu" className={`hover:text-slate-900 dark:hover:text-white transition-colors ${pathname === "/menu" ? "text-slate-900 dark:text-white font-semibold" : ""}`}>Menu</Link>
-          <Link to="/about" className={`hover:text-slate-900 dark:hover:text-white transition-colors ${pathname === "/about" ? "text-slate-900 dark:text-white font-semibold" : ""}`}>About</Link>
-        </div>
-        <div className="flex items-center gap-3">
-          <AnimatedThemeToggler />
-          <Link to="/#pricing">
-            <motion.span whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.96 }}
-              className="bg-slate-900 hover:bg-slate-800 text-white text-[13px] font-semibold px-5 py-2.5 rounded-xl transition-colors dark:bg-white dark:text-slate-900 cursor-pointer block">
-              Get Started
-            </motion.span>
-          </Link>
-        </div>
-      </div>
-    </motion.nav>
-  );
-}
 
 const TAGS = {
   veg: { label: "Veg", color: "text-emerald-600 bg-emerald-50 dark:bg-emerald-900/20 dark:text-emerald-400" },
@@ -238,7 +208,7 @@ export default function MenuPage() {
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 overflow-x-hidden antialiased transition-colors duration-300">
-      <MenuNavbar />
+      <Navbar />
 
       {/* Hero */}
       <section className="relative pt-32 pb-16 md:pt-40 md:pb-20 px-6 overflow-hidden">

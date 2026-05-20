@@ -1,138 +1,17 @@
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link, useNavigate, Navigate } from "react-router-dom";
-import { ArrowLeft, User, Mail, Phone, Lock, Check, ChevronDown, Sparkles, Shield, MapPin, Plus, Trash2, Star, Camera, ArrowRight, Menu, X, Eye, EyeOff } from "lucide-react";
-import { AnimatedThemeToggler } from "./components/ui/animated-theme-toggler";
-import Logo from "./components/shared/Logo";
+import { ArrowLeft, User, Mail, Phone, Lock, Check, Sparkles, Shield, MapPin, Plus, Trash2, Star, Camera, ArrowRight, Eye, EyeOff } from "lucide-react";
+import Navbar from "./components/shared/Navbar";
 import Reveal, { scaleIn } from "./components/shared/Reveal";
 import CompactFooter from "./components/shared/CompactFooter";
-
-function ProfileNavbar() {
-  const navigate = useNavigate();
-  const [showMenu, setShowMenu] = useState(false);
-  const [showMobile, setShowMobile] = useState(false);
-  const menuRef = useRef(null);
-  const mobileRef = useRef(null);
-  const mobileToggleRef = useRef(null);
-  const [auth, setAuth] = useState(() => {
-    const stored = localStorage.getItem("kbk_auth");
-    return stored ? JSON.parse(stored) : null;
-  });
-
-  // Close dropdown on outside click
-  useEffect(() => {
-    if (!showMenu) return;
-    const handler = (e) => {
-      if (menuRef.current && !menuRef.current.contains(e.target)) setShowMenu(false);
-    };
-    document.addEventListener("mousedown", handler);
-    return () => document.removeEventListener("mousedown", handler);
-  }, [showMenu]);
-
-  // Close mobile menu on outside click
-  useEffect(() => {
-    if (!showMobile) return;
-    const handler = (e) => {
-      if (
-        mobileRef.current && !mobileRef.current.contains(e.target) &&
-        mobileToggleRef.current && !mobileToggleRef.current.contains(e.target)
-      ) setShowMobile(false);
-    };
-    document.addEventListener("mousedown", handler);
-    return () => document.removeEventListener("mousedown", handler);
-  }, [showMobile]);
-
-  const handleSignOut = () => {
-    localStorage.removeItem("kbk_auth");
-    setAuth(null);
-    navigate("/");
-  };
-
-  return (
-    <motion.nav initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}
-      className="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[95%] max-w-5xl">
-      <div className="bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl border border-white/40 dark:border-slate-700/40 shadow-lg shadow-slate-200/30 dark:shadow-black/20 rounded-2xl px-6 py-3.5 flex items-center justify-between">
-        <Link to="/" className="flex items-center gap-2.5">
-          <Logo className="w-8 h-8" />
-          <span className="text-[15px] font-bold tracking-tight text-slate-900 dark:text-white">Kitchens by K</span>
-        </Link>
-        <div className="hidden md:flex items-center gap-7 text-[13px] text-slate-500 dark:text-slate-400 font-medium">
-          <Link to="/" className="hover:text-slate-900 dark:hover:text-white transition-colors">Home</Link>
-          <Link to="/about" className="hover:text-slate-900 dark:hover:text-white transition-colors">About</Link>
-          <Link to="/profile" className="text-slate-900 dark:text-white font-semibold">Profile</Link>
-        </div>
-        <div className="flex items-center gap-3">
-          <AnimatedThemeToggler />
-          {/* Mobile hamburger */}
-          <button ref={mobileToggleRef} onClick={() => setShowMobile(!showMobile)} className="md:hidden flex items-center justify-center w-8 h-8 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
-            {showMobile ? <X size={18} className="text-slate-700 dark:text-white" /> : <Menu size={18} className="text-slate-700 dark:text-white" />}
-          </button>
-          {auth && (
-            <div className="relative" ref={menuRef}>
-              <button onClick={() => setShowMenu(!showMenu)} className="flex items-center gap-1 hover:opacity-80 transition-opacity">
-                <div className="w-8 h-8 rounded-full overflow-hidden bg-orange-100 dark:bg-emerald-900/40 flex items-center justify-center">
-                  {(() => {
-                    const user = localStorage.getItem("kbk_user");
-                    const avatar = user ? JSON.parse(user).avatar : null;
-                    return avatar ? (
-                      avatar.startsWith("data:") ? (
-                        <img src={avatar} alt="avatar" className="w-full h-full object-cover" />
-                      ) : (
-                        <span className="text-lg">{avatar}</span>
-                      )
-                    ) : (
-                      <span className="text-[11px] font-bold text-orange-700 dark:text-emerald-400">
-                        {auth.name.split(" ").map((n) => n[0]).join("").slice(0, 2).toUpperCase()}
-                      </span>
-                    );
-                  })()}
-                </div>
-                <ChevronDown size={14} className={`text-slate-400 transition-transform ${showMenu ? "rotate-180" : ""}`} />
-              </button>
-              {showMenu && (
-                <div className="absolute right-0 top-12 w-48 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-xl overflow-hidden">
-                  <div className="px-4 py-3 border-b border-slate-100 dark:border-slate-700">
-                    <p className="text-[13px] font-semibold text-slate-900 dark:text-white truncate">{auth.name}</p>
-                    <p className="text-[11px] text-slate-400 truncate">{auth.email}</p>
-                  </div>
-                  <button onClick={handleSignOut} className="w-full text-left px-4 py-3 text-[13px] text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors">
-                    Sign Out
-                  </button>
-                </div>
-              )}
-            </div>
-          )}
-        </div>
-      </div>
-      {/* Mobile menu */}
-      <AnimatePresence>
-        {showMobile && (
-          <motion.div
-            ref={mobileRef}
-            initial={{ opacity: 0, y: -8 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.2 }}
-            className="md:hidden mt-2 bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border border-white/40 dark:border-slate-700/40 rounded-2xl shadow-lg overflow-hidden"
-          >
-            <div className="flex flex-col p-3 gap-1 text-[14px] font-medium">
-              <Link to="/" onClick={() => setShowMobile(false)} className="px-4 py-3 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">Home</Link>
-              <Link to="/about" onClick={() => setShowMobile(false)} className="px-4 py-3 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">About</Link>
-              <Link to="/menu" onClick={() => setShowMobile(false)} className="px-4 py-3 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">Menu</Link>
-              <div className="border-t border-slate-100 dark:border-slate-800 my-1" />
-              <button onClick={() => { handleSignOut(); setShowMobile(false); }} className="px-4 py-3 rounded-xl text-left text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors">Sign Out</button>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </motion.nav>
-  );
-}
+import { useAuth } from "./context/AuthContext";
 
 function PersonalInfo() {
+  const { auth, updateAvatar } = useAuth();
   const stored = localStorage.getItem("kbk_user");
   const user = stored ? JSON.parse(stored) : {};
-  const auth = localStorage.getItem("kbk_auth") ? JSON.parse(localStorage.getItem("kbk_auth")) : {};
+  const authData = localStorage.getItem("kbk_auth") ? JSON.parse(localStorage.getItem("kbk_auth")) : {};
 
   const [firstName, setFirstName] = useState(user.firstName || "");
   const [lastName, setLastName] = useState(user.lastName || "");
@@ -154,7 +33,7 @@ function PersonalInfo() {
       setAvatar(base64);
       const updated = { ...user, avatar: base64 };
       localStorage.setItem("kbk_user", JSON.stringify(updated));
-      window.dispatchEvent(new Event("storage"));
+      updateAvatar(base64);
     };
     reader.readAsDataURL(file);
   };
@@ -164,7 +43,7 @@ function PersonalInfo() {
   const handleSave = () => {
     const updated = { ...user, firstName, lastName, email, mobile, avatar };
     localStorage.setItem("kbk_user", JSON.stringify(updated));
-    localStorage.setItem("kbk_auth", JSON.stringify({ ...auth, name: firstName + " " + lastName, email }));
+    localStorage.setItem("kbk_auth", JSON.stringify({ ...authData, name: firstName + " " + lastName, email }));
     setSaved(true);
     setTimeout(() => setSaved(false), 2000);
   };
@@ -216,7 +95,7 @@ function PersonalInfo() {
                       setAvatar(null);
                       const updated = { ...user, avatar: null };
                       localStorage.setItem("kbk_user", JSON.stringify(updated));
-                      window.dispatchEvent(new Event("storage"));
+                      updateAvatar(null);
                     }}
                     className="text-xs text-red-400 hover:text-red-500 font-medium transition-colors"
                   >
@@ -242,7 +121,7 @@ function PersonalInfo() {
                         setAvatar(emoji);
                         const updated = { ...user, avatar: emoji };
                         localStorage.setItem("kbk_user", JSON.stringify(updated));
-                        window.dispatchEvent(new Event("storage"));
+                        updateAvatar(emoji);
                         setShowEmojiPicker(false);
                       }}
                       className={`w-9 h-9 rounded-xl text-xl flex items-center justify-center hover:bg-saffron/10 transition-colors ${
@@ -623,12 +502,12 @@ function ChangePassword() {
 }
 
 export default function Profile() {
-  const auth = localStorage.getItem("kbk_auth");
+  const { auth } = useAuth();
   if (!auth) return <Navigate to="/signin" replace />;
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 overflow-x-hidden antialiased transition-colors duration-300">
-      <ProfileNavbar />
+      <Navbar />
       <section className="relative pt-32 pb-20 md:pt-40 md:pb-28 px-6 overflow-hidden">
         <div className="absolute top-[0%] left-[10%] w-[600px] h-[600px] bg-emerald-200/[0.12] rounded-full blur-[160px] pointer-events-none" />
         <div className="absolute bottom-[0%] right-[5%] w-[500px] h-[500px] bg-saffron/[0.06] rounded-full blur-[140px] pointer-events-none" />

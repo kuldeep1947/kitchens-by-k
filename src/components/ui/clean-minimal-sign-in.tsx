@@ -4,9 +4,11 @@ import * as React from "react"
 import { useState } from "react";
 import { LogIn, Lock, Mail, Phone, UserPlus, User, Eye, EyeOff } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 
 const SignIn2 = () => {
   const navigate = useNavigate();
+  const { login } = useAuth();
   const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -38,7 +40,7 @@ const SignIn2 = () => {
       return;
     }
     setError("");
-    localStorage.setItem("kbk_auth", JSON.stringify({ name: user.firstName + " " + user.lastName, email: user.email }));
+    login({ name: user.firstName + " " + user.lastName, email: user.email });
     navigate("/");
   };
 
@@ -142,6 +144,7 @@ const SignIn2 = () => {
 
 const SignUp = () => {
   const navigate = useNavigate();
+  const { login } = useAuth();
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
@@ -165,7 +168,7 @@ const SignUp = () => {
     }
     setError("");
     localStorage.setItem("kbk_user", JSON.stringify({ firstName, lastName, email, mobile, password }));
-    localStorage.setItem("kbk_auth", JSON.stringify({ name: firstName + " " + lastName, email }));
+    login({ name: firstName + " " + lastName, email });
     navigate("/");
   };
 
