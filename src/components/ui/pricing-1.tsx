@@ -498,7 +498,7 @@ function PlanModal({ plan, onClose }: { plan: any; onClose: () => void }) {
                   />
                 </div>
 
-                <div className="overflow-hidden">
+                <div>
                   <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-1.5">
                     <CalendarDays size={12} className="inline mr-1.5 text-slate-400" />Preferred Start Date
                   </label>
