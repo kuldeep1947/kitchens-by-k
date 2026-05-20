@@ -469,33 +469,31 @@ function PlanModal({ plan, onClose }: { plan: any; onClose: () => void }) {
                   />
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <div>
-                    <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-1.5">
-                      <CalendarDays size={12} className="inline mr-1.5 text-slate-400" />Preferred Start Date
-                    </label>
-                    <input
-                      type="date"
-                      value={startDate}
-                      onChange={(e) => setStartDate(e.target.value)}
-                      className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-orange-200 dark:focus:ring-emerald-800"
-                    />
-                  </div>
-                  <div>
-                    <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-1.5">
-                      Delivery Window
-                    </label>
-                    <select
-                      value={deliveryTime}
-                      onChange={(e) => setDeliveryTime(e.target.value)}
-                      className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-orange-200 dark:focus:ring-emerald-800 appearance-none cursor-pointer"
-                    >
+                <div>
+                  <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-1.5">
+                    <CalendarDays size={12} className="inline mr-1.5 text-slate-400" />Preferred Start Date
+                  </label>
+                  <input
+                    type="date"
+                    value={startDate}
+                    onChange={(e) => setStartDate(e.target.value)}
+                    className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-orange-200 dark:focus:ring-emerald-800"
+                  />
+                </div>
+                <div>
+                  <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-1.5">
+                    Delivery Window
+                  </label>
+                  <select
+                    value={deliveryTime}
+                    onChange={(e) => setDeliveryTime(e.target.value)}
+                    className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-orange-200 dark:focus:ring-emerald-800 appearance-none cursor-pointer"
+                  >
                       <option value="11:30-12:30">11:30 AM – 12:30 PM</option>
                       <option value="12:00-13:00">12:00 PM – 1:00 PM</option>
                       <option value="12:30-13:30">12:30 PM – 1:30 PM</option>
                       <option value="13:00-14:00">1:00 PM – 2:00 PM</option>
                     </select>
-                  </div>
                 </div>
               </motion.div>
             )}
