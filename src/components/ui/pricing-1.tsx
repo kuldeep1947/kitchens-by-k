@@ -437,7 +437,7 @@ function PlanModal({ plan, onClose }: { plan: any; onClose: () => void }) {
         </div>
 
         {/* Content */}
-        <div className="p-6 overflow-y-auto flex-1 min-h-0">
+        <div className="p-6 overflow-y-auto overflow-x-hidden flex-1 min-h-0">
           <AnimatePresence mode="wait">
             {step === "details" && (
               <motion.div
