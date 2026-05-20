@@ -49,8 +49,8 @@ const ScrollExpandMedia = ({
 
   return (
     <>
-      <div ref={sectionRef} className="relative h-[120vh] bg-white dark:bg-slate-950">
-        <div className="sticky top-0 h-screen flex items-center justify-center overflow-hidden bg-white dark:bg-slate-950">
+      <div ref={sectionRef} className="relative h-[120vh] bg-slate-50 dark:bg-slate-950">
+        <div className="sticky top-0 h-screen flex items-center justify-center overflow-hidden bg-slate-50 dark:bg-slate-950">
           {/* Background image */}
           <motion.div className="absolute inset-0 z-0" style={{ opacity: bgOpacity }}>
             <img

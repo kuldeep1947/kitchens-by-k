@@ -1,6 +1,6 @@
 import { useRef, useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { ArrowRight, Check, Phone, Mail, MapPin, ChefHat, Truck, Calendar, UtensilsCrossed, Repeat, ChevronDown, User, Menu, X } from "lucide-react";
 import { BackgroundPaths } from "./components/ui/background-paths";
 import ScrollExpandMedia from "./components/ui/scroll-expansion-hero";
@@ -16,6 +16,7 @@ import "./App.css";
 
 /* NAVBAR */
 function Navbar() {
+  const { pathname } = useLocation();
   const [showMenu, setShowMenu] = useState(false);
   const [showMobile, setShowMobile] = useState(false);
   const menuRef = useRef(null);
@@ -81,7 +82,7 @@ function Navbar() {
           <a href="#how" className="hover:text-slate-900 dark:hover:text-white transition-colors">How It Works</a>
           <a href="#menu" className="hover:text-slate-900 dark:hover:text-white transition-colors">Menu</a>
           <a href="#pricing" className="hover:text-slate-900 dark:hover:text-white transition-colors">Pricing</a>
-          <Link to="/about" className="hover:text-slate-900 dark:hover:text-white transition-colors">About</Link>
+          <Link to="/about" className={`hover:text-slate-900 dark:hover:text-white transition-colors ${pathname === "/about" ? "text-slate-900 dark:text-white font-semibold" : ""}`}>About</Link>
         </div>
         <div className="flex items-center gap-3">
           <AnimatedThemeToggler />
@@ -262,7 +263,7 @@ function FoodShowcase() {
       scrollToExpand="Scroll to explore"
       textBlend
     >
-      <div className="py-12 px-8 bg-slate-50 dark:bg-slate-950">
+      <div className="py-12 px-8">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-3xl md:text-5xl font-extrabold tracking-tighter text-slate-900 dark:text-white mb-6">
             Restaurant-Quality, Office-Delivered
@@ -385,7 +386,7 @@ function MenuCard({ item, i, expanded, setExpanded, featured = false, flipLayout
             <span className="text-[11px] font-semibold text-white bg-black/40 backdrop-blur-sm px-2.5 py-1 rounded-full">{item.category}</span>
           </div>
           <div className="absolute bottom-3 right-3 bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm text-[11px] font-medium text-slate-600 dark:text-slate-300 px-2.5 py-1 rounded-full">
-            Tap to see contents
+            <span className="hidden md:inline">Click</span><span className="md:hidden">Tap</span> to see contents
           </div>
         </div>
         <div className={`p-6 ${ featured ? "md:w-1/2 flex flex-col justify-center overflow-y-auto" : "" }`}>
@@ -774,8 +775,8 @@ function Footer() {
           </div>
         </div>
         <div className="border-t border-slate-800 mt-10 pt-6 flex flex-col md:flex-row items-center justify-between gap-4">
-          <p className="text-[12px] text-slate-600">By continuing past this page, you agree to our <a href="#" className="hover:text-slate-400 underline">Terms of Service</a>, <a href="#" className="hover:text-slate-400 underline">Privacy Policy</a> and <a href="#" className="hover:text-slate-400 underline">Cookie Policy</a>.</p>
-          <p className="text-[12px] text-slate-600 shrink-0">{new Date().getFullYear()} &copy; Kitchens by K&trade;. All rights reserved.</p>
+          <p className="text-[12px] text-slate-600 text-center md:text-left">By continuing past this page, you agree to our <a href="#" className="hover:text-slate-400 underline">Terms of Service</a>, <a href="#" className="hover:text-slate-400 underline">Privacy Policy</a> and <a href="#" className="hover:text-slate-400 underline">Cookie Policy</a>.</p>
+          <p className="text-[12px] text-slate-600 shrink-0 text-center md:text-right">{new Date().getFullYear()} &copy; Kitchens by K&trade;. All rights reserved.</p>
         </div>
       </div>
     </footer>

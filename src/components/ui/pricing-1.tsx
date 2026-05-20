@@ -5,6 +5,15 @@ import { motion, AnimatePresence } from "framer-motion";
 
 const Pricing1 = () => {
   const [selectedPlan, setSelectedPlan] = useState<number | null>(null);
+  const [activeDot, setActiveDot] = useState(0);
+  const scrollRef = React.useRef<HTMLDivElement>(null);
+
+  const handleScroll = () => {
+    if (!scrollRef.current) return;
+    const { scrollLeft, scrollWidth, clientWidth } = scrollRef.current;
+    const index = Math.round((scrollLeft / (scrollWidth - clientWidth)) * (pricingPlans.length - 1));
+    setActiveDot(index);
+  };
 
   // Pricing plan data
   const pricingPlans = [
@@ -83,7 +92,7 @@ const Pricing1 = () => {
         <p className="text-slate-500 dark:text-slate-400 max-w-md text-center">No hidden fees. No contracts. Cancel anytime.</p>
       </div>
 
-      <div className="flex md:grid md:grid-cols-3 gap-5 w-full max-w-5xl relative z-10 pt-4 overflow-x-auto snap-x snap-mandatory pb-4 -mx-6 px-6 md:mx-0 md:px-0 md:overflow-visible">
+      <div ref={scrollRef} onScroll={handleScroll} className="flex md:grid md:grid-cols-3 gap-5 w-full max-w-5xl relative z-10 pt-4 overflow-x-auto snap-x snap-mandatory pb-4 -mx-6 px-6 md:mx-0 md:px-0 md:overflow-visible">
         {pricingPlans.map((plan, index) => (
           <div
             key={index}
@@ -149,6 +158,26 @@ const Pricing1 = () => {
               </button>
             </div>
           </div>
+        ))}
+      </div>
+
+      {/* Swipe dots — mobile only */}
+      <div className="flex md:hidden items-center justify-center gap-2 mt-2 relative z-10">
+        {pricingPlans.map((_, i) => (
+          <button
+            key={i}
+            onClick={() => {
+              if (!scrollRef.current) return;
+              const cardWidth = scrollRef.current.scrollWidth / pricingPlans.length;
+              scrollRef.current.scrollTo({ left: cardWidth * i, behavior: "smooth" });
+              setActiveDot(i);
+            }}
+            className={`rounded-full transition-all duration-300 ${
+              activeDot === i
+                ? "w-5 h-2 bg-orange-500 dark:bg-emerald-500"
+                : "w-2 h-2 bg-slate-300 dark:bg-slate-600"
+            }`}
+          />
         ))}
       </div>
 
@@ -477,7 +506,7 @@ function PlanModal({ plan, onClose }: { plan: any; onClose: () => void }) {
                     type="date"
                     value={startDate}
                     onChange={(e) => setStartDate(e.target.value)}
-                    className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-orange-200 dark:focus:ring-emerald-800"
+                    className="w-full min-w-0 px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-orange-200 dark:focus:ring-emerald-800"
                   />
                 </div>
                 <div>
@@ -818,6 +847,12 @@ function PlanModal({ plan, onClose }: { plan: any; onClose: () => void }) {
                   if (isEnterprise) {
                     alert(`Request submitted! We'll send a custom quote for ${companyName} (${employeeCount} employees) within 24 hours. 🎉`);
                   } else {
+                    localStorage.setItem("kbk_active_plan", JSON.stringify({
+                      title: plan.title,
+                      price: plan.price,
+                      priceSuffix: plan.priceSuffix,
+                      meals: plan.title === "Weekly" ? "5 meals/week" : "22 meals/month",
+                    }));
                     alert(`Payment successful! Your ${plan.title} plan is now active. 🎉`);
                   }
                   onClose();

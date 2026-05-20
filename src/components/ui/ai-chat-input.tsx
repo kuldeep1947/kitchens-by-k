@@ -114,7 +114,7 @@ const PromptInput = React.forwardRef<HTMLDivElement, PromptInputProps>(
       <div
         ref={ref}
         className={cn(
-          "flex w-full max-w-2xl mx-auto items-center gap-2 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-4 py-3 shadow-lg shadow-slate-200/50 dark:shadow-black/20 focus-within:border-emerald-500 focus-within:ring-2 focus-within:ring-emerald-500/20 transition-all",
+          "flex w-full max-w-2xl mx-auto items-center gap-2 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-4 py-3 shadow-lg shadow-slate-200/50 dark:shadow-black/20 focus-within:border-saffron focus-within:ring-2 focus-within:ring-saffron/20 dark:focus-within:border-emerald-500 dark:focus-within:ring-emerald-500/20 transition-all",
           className
         )}
       >
@@ -151,7 +151,7 @@ const PromptInput = React.forwardRef<HTMLDivElement, PromptInputProps>(
             type="submit"
             size="icon"
             disabled={disabled || !value.trim()}
-            className="h-8 w-8 shrink-0 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white disabled:bg-slate-200 dark:disabled:bg-slate-700 disabled:text-slate-400"
+            className="h-8 w-8 shrink-0 rounded-lg bg-saffron hover:bg-saffron-dark dark:bg-emerald-600 dark:hover:bg-emerald-700 text-white disabled:bg-slate-200 dark:disabled:bg-slate-700 disabled:text-slate-400"
           >
             <ArrowUp size={16} />
             <span className="sr-only">Send message</span>

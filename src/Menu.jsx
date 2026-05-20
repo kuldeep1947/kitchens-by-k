@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { ArrowLeft, ChevronDown } from "lucide-react";
 import { AnimatedThemeToggler } from "./components/ui/animated-theme-toggler";
 import Logo from "./components/shared/Logo";
@@ -8,6 +8,7 @@ import Reveal from "./components/shared/Reveal";
 import CompactFooter from "./components/shared/CompactFooter";
 
 function MenuNavbar() {
+  const { pathname } = useLocation();
   return (
     <motion.nav initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}
       className="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[95%] max-w-5xl">
@@ -17,9 +18,9 @@ function MenuNavbar() {
           <span className="text-[15px] font-bold tracking-tight text-slate-900 dark:text-white">Kitchens by K</span>
         </Link>
         <div className="hidden md:flex items-center gap-7 text-[13px] text-slate-500 dark:text-slate-400 font-medium">
-          <Link to="/" className="hover:text-slate-900 dark:hover:text-white transition-colors">Home</Link>
-          <Link to="/menu" className="text-slate-900 dark:text-white font-semibold">Menu</Link>
-          <Link to="/about" className="hover:text-slate-900 dark:hover:text-white transition-colors">About</Link>
+          <Link to="/" className={`hover:text-slate-900 dark:hover:text-white transition-colors ${pathname === "/" ? "text-slate-900 dark:text-white font-semibold" : ""}`}>Home</Link>
+          <Link to="/menu" className={`hover:text-slate-900 dark:hover:text-white transition-colors ${pathname === "/menu" ? "text-slate-900 dark:text-white font-semibold" : ""}`}>Menu</Link>
+          <Link to="/about" className={`hover:text-slate-900 dark:hover:text-white transition-colors ${pathname === "/about" ? "text-slate-900 dark:text-white font-semibold" : ""}`}>About</Link>
         </div>
         <div className="flex items-center gap-3">
           <AnimatedThemeToggler />

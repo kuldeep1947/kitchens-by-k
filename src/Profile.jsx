@@ -308,8 +308,16 @@ function PersonalInfo() {
 
 function ActivePlan() {
   const navigate = useNavigate();
-  const plans = { Weekly: { price: "₹1,499", meals: "5 meals/week", color: "text-blue-600", bg: "bg-blue-50 dark:bg-blue-900/20" }, Monthly: { price: "₹4,999", meals: "22 meals/month", color: "text-emerald-600", bg: "bg-emerald-50 dark:bg-emerald-900/20" }, Enterprise: { price: "Custom", meals: "Unlimited", color: "text-saffron", bg: "bg-saffron/10" } };
-  const activePlan = null;
+  const [activePlan, setActivePlan] = useState(() => {
+    const stored = localStorage.getItem("kbk_active_plan");
+    return stored ? JSON.parse(stored) : null;
+  });
+
+  const planStyles = {
+    Weekly: { color: "text-blue-600", bg: "bg-blue-50 dark:bg-blue-900/20" },
+    Monthly: { color: "text-emerald-600", bg: "bg-emerald-50 dark:bg-emerald-900/20" },
+    Enterprise: { color: "text-saffron", bg: "bg-saffron/10" },
+  };
 
   const handleViewPlans = () => {
     navigate("/");
@@ -326,10 +334,18 @@ function ActivePlan() {
           <h3 className="text-lg font-bold text-slate-900 dark:text-white">Active Plan</h3>
         </div>
         {activePlan ? (
-          <div className={`${plans[activePlan].bg} rounded-2xl p-5`}>
-            <p className="text-sm font-semibold text-slate-900 dark:text-white">{activePlan} Plan</p>
-            <p className={`text-2xl font-extrabold ${plans[activePlan].color} mt-1`}>{plans[activePlan].price}<span className="text-sm font-normal text-slate-400">/month</span></p>
-            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">{plans[activePlan].meals}</p>
+          <div className={`${planStyles[activePlan.title]?.bg ?? "bg-slate-50 dark:bg-slate-800"} rounded-2xl p-5`}>
+            <p className="text-sm font-semibold text-slate-900 dark:text-white">{activePlan.title} Plan</p>
+            <p className={`text-2xl font-extrabold ${planStyles[activePlan.title]?.color ?? "text-saffron"} mt-1`}>
+              {activePlan.price}<span className="text-sm font-normal text-slate-400">{activePlan.priceSuffix}</span>
+            </p>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">{activePlan.meals}</p>
+            <button
+              onClick={() => { localStorage.removeItem("kbk_active_plan"); setActivePlan(null); }}
+              className="mt-4 text-xs text-red-400 hover:text-red-500 font-medium transition-colors"
+            >
+              Cancel Plan
+            </button>
           </div>
         ) : (
           <div className="flex flex-col items-center text-center py-10 px-4">
