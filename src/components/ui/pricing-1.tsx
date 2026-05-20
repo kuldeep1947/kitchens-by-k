@@ -498,7 +498,7 @@ function PlanModal({ plan, onClose }: { plan: any; onClose: () => void }) {
                   />
                 </div>
 
-                <div>
+                <div className="overflow-hidden">
                   <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-1.5">
                     <CalendarDays size={12} className="inline mr-1.5 text-slate-400" />Preferred Start Date
                   </label>
@@ -506,7 +506,7 @@ function PlanModal({ plan, onClose }: { plan: any; onClose: () => void }) {
                     type="date"
                     value={startDate}
                     onChange={(e) => setStartDate(e.target.value)}
-                    className="w-full min-w-0 px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-orange-200 dark:focus:ring-emerald-800"
+                    className="w-full max-w-full min-w-0 px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-orange-200 dark:focus:ring-emerald-800"
                   />
                 </div>
                 <div>
