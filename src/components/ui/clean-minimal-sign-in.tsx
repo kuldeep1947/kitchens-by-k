@@ -3,9 +3,10 @@
 import * as React from "react"
 import { useState } from "react";
 import { LogIn, Lock, Mail, Phone, UserPlus, User, Eye, EyeOff } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const SignIn2 = () => {
+  const navigate = useNavigate();
   const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -38,7 +39,7 @@ const SignIn2 = () => {
     }
     setError("");
     localStorage.setItem("kbk_auth", JSON.stringify({ name: user.firstName + " " + user.lastName, email: user.email }));
-    window.location.href = "/";
+    navigate("/");
   };
 
   return (
@@ -140,6 +141,7 @@ const SignIn2 = () => {
 };
 
 const SignUp = () => {
+  const navigate = useNavigate();
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
@@ -164,7 +166,7 @@ const SignUp = () => {
     setError("");
     localStorage.setItem("kbk_user", JSON.stringify({ firstName, lastName, email, mobile, password }));
     localStorage.setItem("kbk_auth", JSON.stringify({ name: firstName + " " + lastName, email }));
-    window.location.href = "/";
+    navigate("/");
   };
 
   return (

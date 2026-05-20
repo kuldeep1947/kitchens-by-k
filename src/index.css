@@ -52,6 +52,11 @@ body {
   color: #1E293B;
 }
 
+.dark ::selection {
+  background: rgba(5, 150, 105, 0.3);
+  color: #F1F5F9;
+}
+
 @keyframes steam {
   0% { transform: translateY(0) scaleX(1); opacity: 0; }
   15% { opacity: 1; }

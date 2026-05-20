@@ -1,66 +1,18 @@
 import { useRef, useState, useEffect } from "react";
-import { motion, useInView, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { Link } from "react-router-dom";
 import { ArrowRight, Check, Phone, Mail, MapPin, ChefHat, Truck, Calendar, UtensilsCrossed, Repeat, ChevronDown, User, Menu, X } from "lucide-react";
 import { BackgroundPaths } from "./components/ui/background-paths";
+import ScrollExpandMedia from "./components/ui/scroll-expansion-hero";
 import JourneyPath from "./components/ui/journey-path";
 import { Pricing1 } from "./components/ui/pricing-1";
 import { TestimonialsColumn } from "./components/ui/testimonials-columns-1";
 import { Spotlight } from "./components/ui/spotlight";
 import { PromptInput } from "./components/ui/ai-chat-input";
 import { AnimatedThemeToggler } from "./components/ui/animated-theme-toggler";
+import Logo from "./components/shared/Logo";
+import Reveal, { scaleIn } from "./components/shared/Reveal";
 import "./App.css";
-
-/* Animation Variants */
-const fadeUp = {
-  hidden: { opacity: 0, y: 50 },
-  visible: (i = 0) => ({
-    opacity: 1, y: 0,
-    transition: { delay: i * 0.1, duration: 0.8, ease: [0.22, 1, 0.36, 1] },
-  }),
-};
-const scaleIn = {
-  hidden: { opacity: 0, scale: 0.94 },
-  visible: (i = 0) => ({
-    opacity: 1, scale: 1,
-    transition: { delay: i * 0.1, duration: 0.7, ease: [0.22, 1, 0.36, 1] },
-  }),
-};
-
-function Reveal({ children, variants: v = fadeUp, custom = 0, className = "" }) {
-  const ref = useRef(null);
-  const inView = useInView(ref, { once: true, amount: 0.15 });
-  return (
-    <motion.div ref={ref} initial="hidden" animate={inView ? "visible" : "hidden"} variants={v} custom={custom} className={className}>
-      {children}
-    </motion.div>
-  );
-}
-
-/* SVG LOGO */
-function Logo({ className = "" }) {
-  return (
-    <svg viewBox="0 0 40 40" className={className} fill="none" xmlns="http://www.w3.org/2000/svg">
-      {/* Rounded square with subtle gradient */}
-      <defs>
-        <linearGradient id="logoBg" x1="0" y1="0" x2="40" y2="40" gradientUnits="userSpaceOnUse">
-          <stop offset="0%" stopColor="#064E3B"/>
-          <stop offset="100%" stopColor="#1E293B"/>
-        </linearGradient>
-        <linearGradient id="leafGrad" x1="24" y1="6" x2="32" y2="16" gradientUnits="userSpaceOnUse">
-          <stop offset="0%" stopColor="#34D399"/>
-          <stop offset="100%" stopColor="#059669"/>
-        </linearGradient>
-      </defs>
-      <rect width="40" height="40" rx="12" fill="url(#logoBg)"/>
-      {/* Elegant K letterform — geometric, modern */}
-      <path d="M12 29V11h3.2v7.4l7.2-7.4h4l-7.4 7.6L26.6 29h-4l-5.2-7.6-2.2 2.3V29H12z" fill="white" opacity="0.95"/>
-      {/* Leaf accent — top right, subtle organic shape */}
-      <path d="M28 7c3.5 2 5 5.5 4 9-1.5-1-3.5-1.5-5.5-.8 0-3.2 0.5-5.8 1.5-8.2z" fill="url(#leafGrad)" opacity="0.9"/>
-      <path d="M28.5 7.5c0 0 1 3.5 0.5 6.5" stroke="#6EE7B7" strokeWidth="0.6" strokeLinecap="round" opacity="0.7"/>
-    </svg>
-  );
-}
 
 /* NAVBAR */
 function Navbar() {
@@ -297,6 +249,33 @@ const journeySteps = [
   },
 ];
 
+/* FOOD SHOWCASE - SCROLL EXPAND */
+function FoodShowcase() {
+  return (
+    <ScrollExpandMedia
+      mediaType="image"
+      mediaSrc="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=1400&h=800&fit=crop&q=85"
+      darkMediaSrc="https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=1400&h=800&fit=crop&q=85"
+      bgImageSrc="https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=1920&h=1080&fit=crop&q=80"
+      title="Fresh Every Day"
+      date="Now Serving Mumbai"
+      scrollToExpand="Scroll to explore"
+      textBlend
+    >
+      <div className="py-12 px-8 bg-slate-50 dark:bg-slate-950">
+        <div className="max-w-4xl mx-auto text-center">
+          <h2 className="text-3xl md:text-5xl font-extrabold tracking-tighter text-slate-900 dark:text-white mb-6">
+            Restaurant-Quality, Office-Delivered
+          </h2>
+          <p className="text-lg text-slate-500 dark:text-slate-400 max-w-2xl mx-auto leading-relaxed">
+            Every meal is prepared fresh each morning by our team of experienced chefs using locally sourced ingredients. No reheating, no compromises.
+          </p>
+        </div>
+      </div>
+    </ScrollExpandMedia>
+  );
+}
+
 function HowItWorks() {
   return <JourneyPath steps={journeySteps} />;
 }
@@ -401,7 +380,7 @@ function MenuCard({ item, i, expanded, setExpanded, featured = false, flipLayout
         onClick={() => setExpanded(expanded === i ? null : i)}
       >
         <div className={`overflow-hidden relative ${ featured ? "md:w-1/2 h-56 md:h-full" : "h-56" }`}>
-          <img src={item.img} alt={item.name} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+          <img src={item.img} alt={item.name} loading="lazy" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
           <div className="absolute top-3 left-3">
             <span className="text-[11px] font-semibold text-white bg-black/40 backdrop-blur-sm px-2.5 py-1 rounded-full">{item.category}</span>
           </div>
@@ -562,7 +541,7 @@ function FloatingEmojis() {
     { emoji: "🥙", x: "90%", duration: 5, delay: 0.1 },
   ];
   return (
-    <div className="absolute inset-0 overflow-hidden pointer-events-none">
+    <div className="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
       {emojis.map((e, i) => (
         <motion.span
           key={i}
@@ -614,6 +593,7 @@ function SplineShowcase() {
               <img
                 src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800&h=600&fit=crop&q=80"
                 alt="Fresh gourmet food spread"
+                loading="lazy"
                 className="absolute inset-0 w-full h-full object-cover opacity-60"
               />
               <div className="absolute inset-0 bg-gradient-to-r from-slate-900 via-slate-900/80 to-transparent" />
@@ -795,7 +775,7 @@ function Footer() {
         </div>
         <div className="border-t border-slate-800 mt-10 pt-6 flex flex-col md:flex-row items-center justify-between gap-4">
           <p className="text-[12px] text-slate-600">By continuing past this page, you agree to our <a href="#" className="hover:text-slate-400 underline">Terms of Service</a>, <a href="#" className="hover:text-slate-400 underline">Privacy Policy</a> and <a href="#" className="hover:text-slate-400 underline">Cookie Policy</a>.</p>
-          <p className="text-[12px] text-slate-600 shrink-0">2026 &copy; Kitchens by K&trade;. All rights reserved.</p>
+          <p className="text-[12px] text-slate-600 shrink-0">{new Date().getFullYear()} &copy; Kitchens by K&trade;. All rights reserved.</p>
         </div>
       </div>
     </footer>
@@ -808,6 +788,7 @@ export default function App() {
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 overflow-x-hidden antialiased transition-colors duration-300">
       <Navbar />
       <Hero />
+      <FoodShowcase />
       <HowItWorks />
       <MenuSection />
       <Pricing />

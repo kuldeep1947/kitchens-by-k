@@ -1,14 +1,15 @@
-import { StrictMode } from 'react'
+import { StrictMode, lazy, Suspense } from 'react'
 import { createRoot } from 'react-dom/client'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import './index.css'
 import App from './App.jsx'
-import About from './About.jsx'
-import Demos from './Demos.jsx'
-import SignInPage from './SignIn.jsx'
-import SignUpPage from './SignUp.jsx'
-import Profile from './Profile.jsx'
-import MenuPage from './Menu.jsx'
+
+const About = lazy(() => import('./About.jsx'));
+const Demos = lazy(() => import('./Demos.jsx'));
+const SignInPage = lazy(() => import('./SignIn.jsx'));
+const SignUpPage = lazy(() => import('./SignUp.jsx'));
+const Profile = lazy(() => import('./Profile.jsx'));
+const MenuPage = lazy(() => import('./Menu.jsx'));
 
 function NotFound() {
   return (
@@ -20,19 +21,29 @@ function NotFound() {
   );
 }
 
+function Loading() {
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-950">
+      <div className="w-8 h-8 border-3 border-saffron/30 border-t-saffron rounded-full animate-spin" />
+    </div>
+  );
+}
+
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<App />} />
-        <Route path="/about" element={<About />} />
-        <Route path="/demos" element={<Demos />} />
-        <Route path="/signin" element={<SignInPage />} />
-        <Route path="/signup" element={<SignUpPage />} />
-        <Route path="/profile" element={<Profile />} />
-        <Route path="/menu" element={<MenuPage />} />
-        <Route path="*" element={<NotFound />} />
-      </Routes>
+      <Suspense fallback={<Loading />}>
+        <Routes>
+          <Route path="/" element={<App />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/demos" element={<Demos />} />
+          <Route path="/signin" element={<SignInPage />} />
+          <Route path="/signup" element={<SignUpPage />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/menu" element={<MenuPage />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </Suspense>
     </BrowserRouter>
   </StrictMode>,
 )
