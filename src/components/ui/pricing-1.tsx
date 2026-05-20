@@ -502,12 +502,14 @@ function PlanModal({ plan, onClose }: { plan: any; onClose: () => void }) {
                   <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-1.5">
                     <CalendarDays size={12} className="inline mr-1.5 text-slate-400" />Preferred Start Date
                   </label>
-                  <input
-                    type="date"
-                    value={startDate}
-                    onChange={(e) => setStartDate(e.target.value)}
-                    className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-orange-200 dark:focus:ring-emerald-800 [appearance:textfield]"
-                  />
+                  <div className="w-full border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden bg-white dark:bg-slate-800 focus-within:ring-2 focus-within:ring-orange-200 dark:focus-within:ring-emerald-800 focus-within:border-transparent transition-all">
+                    <input
+                      type="date"
+                      value={startDate}
+                      onChange={(e) => setStartDate(e.target.value)}
+                      className="w-full px-4 py-2.5 min-h-[42px] text-sm text-slate-900 dark:text-white bg-transparent border-none outline-none shadow-none focus:ring-0"
+                    />
+                  </div>
                 </div>
                 <div>
                   <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-1.5">
