@@ -1,7 +1,7 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { motion, useInView, AnimatePresence } from "framer-motion";
-import { Link, useNavigate } from "react-router-dom";
-import { ArrowLeft, User, Mail, Phone, Lock, Check, ChevronDown, Sparkles, Shield, MapPin, Plus, Trash2, Star, Camera, ArrowRight } from "lucide-react";
+import { Link, useNavigate, Navigate } from "react-router-dom";
+import { ArrowLeft, User, Mail, Phone, Lock, Check, ChevronDown, Sparkles, Shield, MapPin, Plus, Trash2, Star, Camera, ArrowRight, Menu, X, Eye, EyeOff } from "lucide-react";
 import { AnimatedThemeToggler } from "./components/ui/animated-theme-toggler";
 
 const fadeUp = {
@@ -53,10 +53,37 @@ function Logo({ className = "" }) {
 function ProfileNavbar() {
   const navigate = useNavigate();
   const [showMenu, setShowMenu] = useState(false);
+  const [showMobile, setShowMobile] = useState(false);
+  const menuRef = useRef(null);
+  const mobileRef = useRef(null);
+  const mobileToggleRef = useRef(null);
   const [auth, setAuth] = useState(() => {
     const stored = localStorage.getItem("kbk_auth");
     return stored ? JSON.parse(stored) : null;
   });
+
+  // Close dropdown on outside click
+  useEffect(() => {
+    if (!showMenu) return;
+    const handler = (e) => {
+      if (menuRef.current && !menuRef.current.contains(e.target)) setShowMenu(false);
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, [showMenu]);
+
+  // Close mobile menu on outside click
+  useEffect(() => {
+    if (!showMobile) return;
+    const handler = (e) => {
+      if (
+        mobileRef.current && !mobileRef.current.contains(e.target) &&
+        mobileToggleRef.current && !mobileToggleRef.current.contains(e.target)
+      ) setShowMobile(false);
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, [showMobile]);
 
   const handleSignOut = () => {
     localStorage.removeItem("kbk_auth");
@@ -79,8 +106,12 @@ function ProfileNavbar() {
         </div>
         <div className="flex items-center gap-3">
           <AnimatedThemeToggler />
+          {/* Mobile hamburger */}
+          <button ref={mobileToggleRef} onClick={() => setShowMobile(!showMobile)} className="md:hidden flex items-center justify-center w-8 h-8 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+            {showMobile ? <X size={18} className="text-slate-700 dark:text-white" /> : <Menu size={18} className="text-slate-700 dark:text-white" />}
+          </button>
           {auth && (
-            <div className="relative">
+            <div className="relative" ref={menuRef}>
               <button onClick={() => setShowMenu(!showMenu)} className="flex items-center gap-1 hover:opacity-80 transition-opacity">
                 <div className="w-8 h-8 rounded-full overflow-hidden bg-orange-100 dark:bg-emerald-900/40 flex items-center justify-center">
                   {(() => {
@@ -116,6 +147,27 @@ function ProfileNavbar() {
           )}
         </div>
       </div>
+      {/* Mobile menu */}
+      <AnimatePresence>
+        {showMobile && (
+          <motion.div
+            ref={mobileRef}
+            initial={{ opacity: 0, y: -8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.2 }}
+            className="md:hidden mt-2 bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border border-white/40 dark:border-slate-700/40 rounded-2xl shadow-lg overflow-hidden"
+          >
+            <div className="flex flex-col p-3 gap-1 text-[14px] font-medium">
+              <Link to="/" onClick={() => setShowMobile(false)} className="px-4 py-3 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">Home</Link>
+              <Link to="/about" onClick={() => setShowMobile(false)} className="px-4 py-3 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">About</Link>
+              <Link to="/menu" onClick={() => setShowMobile(false)} className="px-4 py-3 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">Menu</Link>
+              <div className="border-t border-slate-100 dark:border-slate-800 my-1" />
+              <button onClick={() => { handleSignOut(); setShowMobile(false); }} className="px-4 py-3 rounded-xl text-left text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors">Sign Out</button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.nav>
   );
 }
@@ -512,6 +564,7 @@ function ChangePassword() {
   const [confirm, setConfirm] = useState("");
   const [error, setError] = useState("");
   const [saved, setSaved] = useState(false);
+  const [showFields, setShowFields] = useState({ current: false, new: false, confirm: false });
 
   const handleChange = () => {
     const stored = localStorage.getItem("kbk_user");
@@ -529,7 +582,7 @@ function ChangePassword() {
   };
 
   return (
-    <Reveal variants={scaleIn} custom={2}>
+    <Reveal variants={scaleIn} custom={3}>
       <div className="bg-white/70 dark:bg-slate-800/70 backdrop-blur-md border border-white/40 dark:border-slate-700/40 rounded-3xl p-8 shadow-sm">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -557,18 +610,27 @@ function ChangePassword() {
             >
               <div className="flex flex-col gap-4 mt-6">
                 {[
-                  { label: "Current Password", value: current, set: setCurrent },
-                  { label: "New Password", value: newPass, set: setNewPass },
-                  { label: "Confirm New Password", value: confirm, set: setConfirm },
-                ].map(({ label, value, set }) => (
+                  { label: "Current Password", value: current, set: setCurrent, key: "current" },
+                  { label: "New Password", value: newPass, set: setNewPass, key: "new" },
+                  { label: "Confirm New Password", value: confirm, set: setConfirm, key: "confirm" },
+                ].map(({ label, value, set, key }) => (
                   <div key={label}>
                     <label className="text-xs font-medium text-slate-500 dark:text-slate-400 block mb-1.5"><Lock size={11} className="inline mr-1" />{label}</label>
-                    <input
-                      type="password"
-                      value={value}
-                      onChange={(e) => set(e.target.value)}
-                      className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-saffron/20"
-                    />
+                    <div className="relative">
+                      <input
+                        type={showFields[key] ? "text" : "password"}
+                        value={value}
+                        onChange={(e) => set(e.target.value)}
+                        className="w-full px-4 py-2.5 pr-10 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-saffron/20"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowFields((prev) => ({ ...prev, [key]: !prev[key] }))}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors"
+                      >
+                        {showFields[key] ? <EyeOff size={16} /> : <Eye size={16} />}
+                      </button>
+                    </div>
                   </div>
                 ))}
                 {error && <p className="text-sm text-red-500">{error}</p>}
@@ -588,9 +650,8 @@ function ChangePassword() {
 }
 
 export default function Profile() {
-  const navigate = useNavigate();
   const auth = localStorage.getItem("kbk_auth");
-  if (!auth) { navigate("/signin"); return null; }
+  if (!auth) return <Navigate to="/signin" replace />;
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 overflow-x-hidden antialiased transition-colors duration-300">
@@ -625,6 +686,20 @@ export default function Profile() {
           <ChangePassword />
         </div>
       </section>
+
+      <footer className="bg-slate-900 text-white py-8 px-6 rounded-t-[2rem]">
+        <div className="max-w-4xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <Logo className="w-7 h-7" />
+            <span className="font-bold text-[14px]">Kitchens by K</span>
+          </div>
+          <div className="flex flex-col sm:flex-row gap-4 text-[13px] text-slate-400">
+            <span className="flex items-center gap-2"><Phone size={13} className="text-saffron/50" /> +91 98765 43210</span>
+            <span className="flex items-center gap-2"><Mail size={13} className="text-saffron/50" /> hello@kitchensbyk.com</span>
+          </div>
+          <p className="text-[12px] text-slate-600">2026 &copy; Kitchens by K&trade;. All rights reserved.</p>
+        </div>
+      </footer>
     </div>
   );
 }

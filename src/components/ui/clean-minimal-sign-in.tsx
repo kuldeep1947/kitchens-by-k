@@ -2,12 +2,13 @@
 
 import * as React from "react"
 import { useState } from "react";
-import { LogIn, Lock, Mail, Phone, UserPlus, User } from "lucide-react";
+import { LogIn, Lock, Mail, Phone, UserPlus, User, Eye, EyeOff } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const SignIn2 = () => {
   const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
 
   const validateInput = (value: string) => {
@@ -71,11 +72,18 @@ const SignIn2 = () => {
             </span>
             <input
               placeholder="Password"
-              type="password"
+              type={showPassword ? "text" : "password"}
               value={password}
               className="w-full pl-10 pr-10 py-2 rounded-xl border border-gray-200 dark:border-slate-600 focus:outline-none focus:ring-2 focus:ring-emerald-200 dark:focus:ring-emerald-800 bg-gray-50 dark:bg-slate-800 text-black dark:text-white text-sm"
               onChange={(e) => setPassword(e.target.value)}
             />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-slate-300 transition-colors"
+            >
+              {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+            </button>
           </div>
           <div className="w-full flex justify-between items-center">
             {error && (
@@ -137,6 +145,7 @@ const SignUp = () => {
   const [email, setEmail] = useState("");
   const [mobile, setMobile] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
 
   const handleSignUp = () => {
@@ -224,11 +233,18 @@ const SignUp = () => {
             </span>
             <input
               placeholder="Password"
-              type="password"
+              type={showPassword ? "text" : "password"}
               value={password}
-              className="w-full pl-10 pr-3 py-2 rounded-xl border border-gray-200 dark:border-slate-600 focus:outline-none focus:ring-2 focus:ring-emerald-200 dark:focus:ring-emerald-800 bg-gray-50 dark:bg-slate-800 text-black dark:text-white text-sm"
+              className="w-full pl-10 pr-10 py-2 rounded-xl border border-gray-200 dark:border-slate-600 focus:outline-none focus:ring-2 focus:ring-emerald-200 dark:focus:ring-emerald-800 bg-gray-50 dark:bg-slate-800 text-black dark:text-white text-sm"
               onChange={(e) => setPassword(e.target.value)}
             />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-slate-300 transition-colors"
+            >
+              {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+            </button>
           </div>
           {error && (
             <div className="text-sm text-red-500 text-left">{error}</div>

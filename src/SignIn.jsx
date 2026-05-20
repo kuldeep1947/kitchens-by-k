@@ -11,11 +11,8 @@ const emojis = [
 ];
 
 export default function SignInPage() {
-  const isDark = document.documentElement.classList.contains("dark");
-
   return (
-    <div className={isDark ? "dark" : ""}>
-      <div className="relative min-h-screen bg-slate-50 dark:bg-slate-950 overflow-hidden">
+    <div className="relative min-h-screen bg-slate-50 dark:bg-slate-950 overflow-hidden">
         {/* Ambient blurs */}
         <div className="absolute top-[5%] left-[10%] w-[400px] h-[400px] bg-saffron/[0.06] dark:bg-saffron/[0.08] rounded-full blur-[140px] pointer-events-none" />
         <div className="absolute bottom-[5%] right-[10%] w-[350px] h-[350px] bg-emerald-200/[0.1] dark:bg-emerald-500/[0.07] rounded-full blur-[120px] pointer-events-none" />
@@ -44,6 +41,5 @@ export default function SignInPage() {
 
         <SignIn2 />
       </div>
-    </div>
   );
 }

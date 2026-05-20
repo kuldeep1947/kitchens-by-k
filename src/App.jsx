@@ -1,9 +1,8 @@
 import { useRef, useState, useEffect } from "react";
 import { motion, useInView, AnimatePresence } from "framer-motion";
 import { Link } from "react-router-dom";
-import { ArrowRight, Check, Phone, Mail, MapPin, Clock, ChefHat, Truck, Calendar, UtensilsCrossed, Repeat, ChevronDown, User, Menu, X } from "lucide-react";
+import { ArrowRight, Check, Phone, Mail, MapPin, ChefHat, Truck, Calendar, UtensilsCrossed, Repeat, ChevronDown, User, Menu, X } from "lucide-react";
 import { BackgroundPaths } from "./components/ui/background-paths";
-import ScrollExpandMedia from "./components/ui/scroll-expansion-hero";
 import JourneyPath from "./components/ui/journey-path";
 import { Pricing1 } from "./components/ui/pricing-1";
 import { TestimonialsColumn } from "./components/ui/testimonials-columns-1";
@@ -67,6 +66,9 @@ function Logo({ className = "" }) {
 function Navbar() {
   const [showMenu, setShowMenu] = useState(false);
   const [showMobile, setShowMobile] = useState(false);
+  const menuRef = useRef(null);
+  const mobileRef = useRef(null);
+  const mobileToggleRef = useRef(null);
   const [auth, setAuth] = useState(() => {
     const stored = localStorage.getItem("kbk_auth");
     return stored ? JSON.parse(stored) : null;
@@ -85,6 +87,29 @@ function Navbar() {
     window.addEventListener("storage", handler);
     return () => window.removeEventListener("storage", handler);
   }, []);
+
+  // Close dropdown on outside click
+  useEffect(() => {
+    if (!showMenu) return;
+    const handler = (e) => {
+      if (menuRef.current && !menuRef.current.contains(e.target)) setShowMenu(false);
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, [showMenu]);
+
+  // Close mobile menu on outside click
+  useEffect(() => {
+    if (!showMobile) return;
+    const handler = (e) => {
+      if (
+        mobileRef.current && !mobileRef.current.contains(e.target) &&
+        mobileToggleRef.current && !mobileToggleRef.current.contains(e.target)
+      ) setShowMobile(false);
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, [showMobile]);
 
   const handleSignOut = () => {
     localStorage.removeItem("kbk_auth");
@@ -108,15 +133,24 @@ function Navbar() {
         </div>
         <div className="flex items-center gap-3">
           <AnimatedThemeToggler />
-          <motion.a href={auth ? undefined : "#pricing"} onClick={auth ? undefined : undefined} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.96 }}
-            className="hidden md:block bg-slate-900 hover:bg-slate-800 text-white text-[13px] font-semibold px-5 py-2.5 rounded-xl transition-colors dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100">
-            {auth ? <Link to="/profile" className="text-white dark:text-slate-900">My Plan</Link> : "Get Started"}
-          </motion.a>
+          {auth ? (
+            <Link to="/profile">
+              <motion.span whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.96 }}
+                className="hidden md:block bg-slate-900 hover:bg-slate-800 text-white text-[13px] font-semibold px-5 py-2.5 rounded-xl transition-colors dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 cursor-pointer">
+                My Plan
+              </motion.span>
+            </Link>
+          ) : (
+            <motion.a href="#pricing" whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.96 }}
+              className="hidden md:block bg-slate-900 hover:bg-slate-800 text-white text-[13px] font-semibold px-5 py-2.5 rounded-xl transition-colors dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100">
+              Get Started
+            </motion.a>
+          )}
           {/* Mobile hamburger */}
-          <button onClick={() => setShowMobile(!showMobile)} className="md:hidden flex items-center justify-center w-8 h-8 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+          <button ref={mobileToggleRef} onClick={() => setShowMobile(!showMobile)} className="md:hidden flex items-center justify-center w-8 h-8 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
             {showMobile ? <X size={18} className="text-slate-700 dark:text-white" /> : <Menu size={18} className="text-slate-700 dark:text-white" />}
           </button>
-          <div className="relative">
+          <div className="relative" ref={menuRef}>
             <button onClick={() => setShowMenu(!showMenu)} className="flex items-center gap-1 hover:opacity-80 transition-opacity">
               <div className="w-8 h-8 rounded-full overflow-hidden bg-orange-100 dark:bg-emerald-900/40 flex items-center justify-center">
                 {avatar ? (
@@ -184,6 +218,7 @@ function Navbar() {
       <AnimatePresence>
         {showMobile && (
           <motion.div
+            ref={mobileRef}
             initial={{ opacity: 0, y: -8 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
@@ -225,33 +260,6 @@ function Hero() {
       buttonHref="#pricing"
       badge="Now Serving Mumbai"
     />
-  );
-}
-
-/* FOOD SHOWCASE - SCROLL EXPAND */
-function FoodShowcase() {
-  return (
-    <ScrollExpandMedia
-      mediaType="image"
-      mediaSrc="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=1400&h=800&fit=crop&q=85"
-      darkMediaSrc="https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=1400&h=800&fit=crop&q=85"
-      bgImageSrc="https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=1920&h=1080&fit=crop&q=80"
-      title="Fresh Every Day"
-      date="Now Serving Mumbai"
-      scrollToExpand="Scroll to explore"
-      textBlend
-    >
-      <div className="py-12 px-8 bg-slate-50 dark:bg-slate-950">
-        <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-3xl md:text-5xl font-extrabold tracking-tighter text-slate-900 dark:text-white mb-6">
-            Restaurant-Quality, Office-Delivered
-          </h2>
-          <p className="text-lg text-slate-500 dark:text-slate-400 max-w-2xl mx-auto leading-relaxed">
-            Every meal is prepared fresh each morning by our team of experienced chefs using locally sourced ingredients. No reheating, no compromises.
-          </p>
-        </div>
-      </div>
-    </ScrollExpandMedia>
   );
 }
 
@@ -384,6 +392,9 @@ function MenuCard({ item, i, expanded, setExpanded, featured = false, flipLayout
   return (
     <Reveal variants={scaleIn} custom={i}>
       <div
+        role="button"
+        tabIndex={0}
+        onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setExpanded(expanded === i ? null : i); } }}
         className={`group bg-white/70 dark:bg-white/5 backdrop-blur-md border border-white/40 dark:border-slate-700/40 rounded-3xl overflow-hidden shadow-sm hover:shadow-xl hover:shadow-slate-200/40 dark:hover:shadow-black/20 transition-all duration-500 cursor-pointer ${
           featured ? `flex flex-col md:h-[280px] ${flipLayout ? "md:flex-row-reverse" : "md:flex-row"}` : ""
         }`}
@@ -771,20 +782,12 @@ function Footer() {
             </div>
             <div className="col-span-2 md:col-span-1">
               <p className="text-[11px] font-semibold uppercase tracking-[0.15em] text-slate-500 mb-4">Download App</p>
-              <div className="flex flex-row gap-2">
-                <a href="#" className="flex items-center gap-3 bg-white/10 hover:bg-white/20 transition-colors px-4 py-2.5 rounded-xl">
-                  <svg className="w-6 h-6 text-white shrink-0" viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
-                  <div>
-                    <p className="text-[10px] text-slate-400 leading-none">Download on the</p>
-                    <p className="text-[13px] font-bold text-white leading-tight mt-0.5">App Store</p>
-                  </div>
+              <div className="flex flex-col gap-3 items-start">
+                <a href="#" target="_blank" rel="noopener noreferrer" className="transition-transform duration-200 hover:scale-105 active:scale-95">
+                  <img src="https://upload.wikimedia.org/wikipedia/commons/3/3c/Download_on_the_App_Store_Badge.svg" alt="Download on the App Store" className="h-[40px] w-[135px]" />
                 </a>
-                <a href="#" className="flex items-center gap-3 bg-white/10 hover:bg-white/20 transition-colors px-4 py-2.5 rounded-xl">
-                  <img src="/images/kbk-playstore.svg" className="w-6 h-6" alt="Google Play" />
-                  <div>
-                    <p className="text-[10px] text-slate-400 leading-none">Get it on</p>
-                    <p className="text-[13px] font-bold text-white leading-tight mt-0.5">Google Play</p>
-                  </div>
+                <a href="#" target="_blank" rel="noopener noreferrer" className="transition-transform duration-200 hover:scale-105 active:scale-95">
+                  <img src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg" alt="Get it on Google Play" className="h-[40px] w-[135px]" />
                 </a>
               </div>
             </div>
@@ -805,7 +808,6 @@ export default function App() {
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 overflow-x-hidden antialiased transition-colors duration-300">
       <Navbar />
       <Hero />
-      <FoodShowcase />
       <HowItWorks />
       <MenuSection />
       <Pricing />

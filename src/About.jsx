@@ -1,7 +1,7 @@
 import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
 import { Link } from "react-router-dom";
-import { ArrowLeft, ArrowRight, Shield, Clock, Sparkles, Phone, Mail, MapPin } from "lucide-react";
+import { ArrowLeft, Shield, Clock, Sparkles, Phone, Mail } from "lucide-react";
 import { AnimatedThemeToggler } from "./components/ui/animated-theme-toggler";
 
 /* Animation Variants */
@@ -242,38 +242,20 @@ function WhyUs() {
   );
 }
 
-/* CTA + FOOTER */
+/* FOOTER */
 function AboutFooter() {
   return (
-    <footer className="bg-slate-900 text-white pt-20 pb-10 px-6 rounded-t-[3rem]">
-      <div className="max-w-6xl mx-auto">
-        <div className="text-center mb-20">
-          <h2 className="text-3xl md:text-5xl font-extrabold tracking-tighter mb-4">Ready to elevate your team&rsquo;s lunch?</h2>
-          <p className="text-slate-400 mb-8 max-w-md mx-auto">Experience the Kitchens by K difference. Start with a free trial week.</p>
-          <div className="flex flex-col sm:flex-row gap-3 justify-center">
-            <motion.a href="mailto:hello@kitchensbyk.com" whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}
-              className="inline-flex items-center gap-3 bg-saffron hover:bg-saffron-dark text-white font-bold px-10 py-5 rounded-2xl text-base shadow-xl shadow-saffron/20 transition-colors">
-              Start Eating Better Today <ArrowRight size={18} />
-            </motion.a>
-            <Link to="/"
-              className="inline-flex items-center justify-center gap-2 text-slate-400 hover:text-white font-medium px-8 py-5 rounded-2xl text-[15px] border border-slate-700 hover:border-slate-500 transition-all">
-              <ArrowLeft size={16} /> Back to Home
-            </Link>
-          </div>
+    <footer className="bg-slate-900 text-white py-8 px-6 rounded-t-[2rem]">
+      <div className="max-w-4xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+        <Link to="/" className="flex items-center gap-3">
+          <Logo className="w-7 h-7" />
+          <span className="font-bold text-[14px]">Kitchens by K</span>
+        </Link>
+        <div className="flex flex-col sm:flex-row gap-4 text-[13px] text-slate-400">
+          <span className="flex items-center gap-2"><Phone size={13} className="text-saffron/50" /> +91 98765 43210</span>
+          <span className="flex items-center gap-2"><Mail size={13} className="text-saffron/50" /> hello@kitchensbyk.com</span>
         </div>
-
-        <div className="border-t border-slate-800 pt-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-8">
-          <Link to="/" className="flex items-center gap-3">
-            <Logo className="w-8 h-8" />
-            <span className="font-bold text-[15px]">Kitchens by K</span>
-          </Link>
-          <div className="flex flex-col sm:flex-row gap-5 text-[13px] text-slate-400">
-            <span className="flex items-center gap-2"><Phone size={14} className="text-saffron/50" /> +91 98765 43210</span>
-            <span className="flex items-center gap-2"><Mail size={14} className="text-saffron/50" /> hello@kitchensbyk.com</span>
-            <span className="flex items-center gap-2"><MapPin size={14} className="text-saffron/50" /> Mumbai, India</span>
-          </div>
-        </div>
-        <p className="text-[12px] text-slate-600 mt-8 text-center">&copy; 2026 Kitchens by K. All rights reserved.</p>
+        <p className="text-[12px] text-slate-600">2026 &copy; Kitchens by K&trade;. All rights reserved.</p>
       </div>
     </footer>
   );
