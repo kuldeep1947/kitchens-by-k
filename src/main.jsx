@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client'
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 import { AuthProvider } from './context/AuthContext.jsx'
+import Layout from './components/shared/Layout.jsx'
 import './index.css'
 import App from './App.jsx'
 
@@ -34,28 +35,43 @@ function Loading() {
 function AnimatedRoutes() {
   const location = useLocation();
   return (
-    <AnimatePresence mode="wait">
-      <motion.div
-        key={location.pathname}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        transition={{ duration: 0.18, ease: "easeInOut" }}
-      >
-        <Suspense fallback={<Loading />}>
-          <Routes location={location}>
-            <Route path="/" element={<App />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/demos" element={<Demos />} />
-            <Route path="/signin" element={<SignInPage />} />
-            <Route path="/signup" element={<SignUpPage />} />
-            <Route path="/profile" element={<Profile />} />
-            <Route path="/menu" element={<MenuPage />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </Suspense>
-      </motion.div>
-    </AnimatePresence>
+    <Routes location={location}>
+      <Route element={<Layout />}>
+        <Route
+          path="/"
+          element={
+            <AnimatePresence mode="wait">
+              <motion.div key="home" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.18, ease: "easeInOut" }}>
+                <App />
+              </motion.div>
+            </AnimatePresence>
+          }
+        />
+        <Route path="/about" element={
+          <Suspense fallback={<Loading />}>
+            <AnimatePresence mode="wait">
+              <motion.div key="about" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.18, ease: "easeInOut" }}>
+                <About />
+              </motion.div>
+            </AnimatePresence>
+          </Suspense>
+        } />
+        <Route path="/demos" element={<Suspense fallback={<Loading />}><Demos /></Suspense>} />
+        <Route path="/signin" element={<Suspense fallback={<Loading />}><SignInPage /></Suspense>} />
+        <Route path="/signup" element={<Suspense fallback={<Loading />}><SignUpPage /></Suspense>} />
+        <Route path="/profile" element={<Suspense fallback={<Loading />}><Profile /></Suspense>} />
+        <Route path="/menu" element={
+          <Suspense fallback={<Loading />}>
+            <AnimatePresence mode="wait">
+              <motion.div key="menu" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.18, ease: "easeInOut" }}>
+                <MenuPage />
+              </motion.div>
+            </AnimatePresence>
+          </Suspense>
+        } />
+      </Route>
+      <Route path="*" element={<NotFound />} />
+    </Routes>
   );
 }
 

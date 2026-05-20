@@ -1,5 +1,5 @@
-import { useRef, useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useRef, useState } from "react";
+import { motion, AnimatePresence, useScroll, useMotionValueEvent } from "framer-motion";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { ChevronDown, User, Menu, X } from "lucide-react";
 import { AnimatedThemeToggler } from "../ui/animated-theme-toggler";
@@ -13,32 +13,25 @@ export default function Navbar() {
 
   const [showMenu, setShowMenu] = useState(false);
   const [showMobile, setShowMobile] = useState(false);
+  const [hidden, setHidden] = useState(false);
   const menuRef = useRef(null);
   const mobileRef = useRef(null);
   const mobileToggleRef = useRef(null);
+  const lastScrollY = useRef(0);
 
-  // Close dropdown on outside click
-  useEffect(() => {
-    if (!showMenu) return;
-    const handler = (e) => {
-      if (menuRef.current && !menuRef.current.contains(e.target)) setShowMenu(false);
-    };
-    document.addEventListener("mousedown", handler);
-    return () => document.removeEventListener("mousedown", handler);
-  }, [showMenu]);
+  const { scrollY } = useScroll();
 
-  // Close mobile menu on outside click
-  useEffect(() => {
-    if (!showMobile) return;
-    const handler = (e) => {
-      if (
-        mobileRef.current && !mobileRef.current.contains(e.target) &&
-        mobileToggleRef.current && !mobileToggleRef.current.contains(e.target)
-      ) setShowMobile(false);
-    };
-    document.addEventListener("mousedown", handler);
-    return () => document.removeEventListener("mousedown", handler);
-  }, [showMobile]);
+  useMotionValueEvent(scrollY, "change", (latest) => {
+    const previous = lastScrollY.current;
+    if (latest > 100 && latest > previous) {
+      setHidden(true);
+      setShowMenu(false);
+      setShowMobile(false);
+    } else {
+      setHidden(false);
+    }
+    lastScrollY.current = latest;
+  });
 
   const handleSignOut = () => {
     logout();
@@ -60,8 +53,6 @@ export default function Navbar() {
     return <Link to={to} onClick={() => setShowMobile(false)} className={cls}>{label}</Link>;
   };
 
-  // Determine nav links based on current page
-  const isHome = pathname === "/";
   const isAbout = pathname === "/about";
   const isMenu = pathname === "/menu";
   const isProfile = pathname === "/profile";
@@ -69,8 +60,8 @@ export default function Navbar() {
   return (
     <motion.nav
       initial={{ opacity: 0, y: -20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6 }}
+      animate={{ opacity: 1, y: hidden ? "-150%" : 0 }}
+      transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
       className="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[95%] max-w-5xl"
     >
       <div className="bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl border border-white/40 dark:border-slate-700/40 shadow-lg shadow-slate-200/30 dark:shadow-black/20 rounded-2xl px-6 py-3.5 flex items-center justify-between">

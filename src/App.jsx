@@ -1,5 +1,3 @@
-import Navbar from "./components/shared/Navbar";
-import Footer from "./components/shared/Footer";
 import Hero from "./components/home/Hero";
 import FoodShowcase from "./components/home/FoodShowcase";
 import HowItWorks from "./components/home/HowItWorks";
@@ -12,8 +10,7 @@ import "./App.css";
 
 export default function App() {
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 overflow-x-hidden antialiased transition-colors duration-300">
-      <Navbar />
+    <>
       <Hero />
       <FoodShowcase />
       <HowItWorks />
@@ -22,7 +19,6 @@ export default function App() {
       <Testimonials />
       <SplineShowcase />
       <AskSection />
-      <Footer />
-    </div>
+    </>
   );
 }

@@ -1,10 +1,7 @@
-import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { Link, useLocation } from "react-router-dom";
+import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
 import { ArrowLeft, Shield, Clock, Sparkles } from "lucide-react";
-import Navbar from "./components/shared/Navbar";
 import Reveal, { fadeUp, scaleIn } from "./components/shared/Reveal";
-import CompactFooter from "./components/shared/CompactFooter";
 
 /* HERO */
 function AboutHero() {
@@ -177,11 +174,9 @@ function WhyUs() {
 export default function About() {
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 overflow-x-hidden antialiased transition-colors duration-300">
-      <Navbar />
       <AboutHero />
       <FounderProfile />
       <WhyUs />
-      <CompactFooter />
     </div>
   );
 }

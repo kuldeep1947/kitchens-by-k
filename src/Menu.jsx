@@ -1,10 +1,8 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Link, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { ArrowLeft, ChevronDown } from "lucide-react";
-import Navbar from "./components/shared/Navbar";
 import Reveal from "./components/shared/Reveal";
-import CompactFooter from "./components/shared/CompactFooter";
 
 const TAGS = {
   veg: { label: "Veg", color: "text-emerald-600 bg-emerald-50 dark:bg-emerald-900/20 dark:text-emerald-400" },
@@ -208,9 +206,7 @@ export default function MenuPage() {
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 overflow-x-hidden antialiased transition-colors duration-300">
-      <Navbar />
 
-      {/* Hero */}
       <section className="relative pt-32 pb-16 md:pt-40 md:pb-20 px-6 overflow-hidden">
         <div className="absolute top-0 left-[10%] w-[600px] h-[500px] bg-saffron/[0.06] rounded-full blur-[160px] pointer-events-none" />
         <div className="absolute bottom-0 right-[5%] w-[400px] h-[400px] bg-emerald-200/[0.08] rounded-full blur-[140px] pointer-events-none" />
@@ -266,8 +262,6 @@ export default function MenuPage() {
           )}
         </div>
       </section>
-
-      <CompactFooter />
     </div>
   );
 }

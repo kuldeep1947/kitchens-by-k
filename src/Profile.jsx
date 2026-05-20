@@ -2,9 +2,7 @@ import { useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link, useNavigate, Navigate } from "react-router-dom";
 import { ArrowLeft, User, Mail, Phone, Lock, Check, Sparkles, Shield, MapPin, Plus, Trash2, Star, Camera, ArrowRight, Eye, EyeOff } from "lucide-react";
-import Navbar from "./components/shared/Navbar";
 import Reveal, { scaleIn } from "./components/shared/Reveal";
-import CompactFooter from "./components/shared/CompactFooter";
 import { useAuth } from "./context/AuthContext";
 
 function PersonalInfo() {
@@ -507,7 +505,6 @@ export default function Profile() {
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 overflow-x-hidden antialiased transition-colors duration-300">
-      <Navbar />
       <section className="relative pt-32 pb-20 md:pt-40 md:pb-28 px-6 overflow-hidden">
         <div className="absolute top-[0%] left-[10%] w-[600px] h-[600px] bg-emerald-200/[0.12] rounded-full blur-[160px] pointer-events-none" />
         <div className="absolute bottom-[0%] right-[5%] w-[500px] h-[500px] bg-saffron/[0.06] rounded-full blur-[140px] pointer-events-none" />
@@ -538,8 +535,6 @@ export default function Profile() {
           <ChangePassword />
         </div>
       </section>
-
-      <CompactFooter />
     </div>
   );
 }
