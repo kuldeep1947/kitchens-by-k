@@ -35,13 +35,13 @@ function BackToTop() {
 
 export default function Layout() {
   return (
-    <>
+    <div className="overflow-x-hidden">
       <Navbar />
       <main className="min-h-screen">
         <Outlet />
       </main>
       <Footer />
       <BackToTop />
-    </>
+    </div>
   );
 }

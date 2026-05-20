@@ -41,6 +41,10 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+button, a {
+  touch-action: manipulation;
+}
+
 .dark body,
 :root.dark body {
   background-color: #020617;
