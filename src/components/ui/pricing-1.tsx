@@ -2,6 +2,7 @@ import { CheckIcon, X, ChevronRight, CreditCard, UtensilsCrossed, Users, Buildin
 import React, { useState } from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
+import SpotlightCard from "./spotlight-card";
 
 const Pricing1 = () => {
   const [selectedPlan, setSelectedPlan] = useState<number | null>(null);
@@ -94,12 +95,12 @@ const Pricing1 = () => {
 
       <div ref={scrollRef} onScroll={handleScroll} className="flex md:grid md:grid-cols-3 gap-5 w-full max-w-5xl relative z-10 pt-4 overflow-x-auto snap-x snap-mandatory pb-4 -mx-6 px-6 md:mx-0 md:px-0 md:overflow-visible">
         {pricingPlans.map((plan, index) => (
-          <div
+          <SpotlightCard
             key={index}
-            className={`relative rounded-3xl border backdrop-blur-md transition-all duration-300 shrink-0 w-[80vw] md:w-auto snap-center ${
+            className={`shrink-0 w-[80vw] md:w-auto snap-center backdrop-blur-md transition-all duration-300 ${
               plan.popular
-                ? "bg-white/80 dark:bg-white/10 border-orange-200 dark:border-emerald-500/30 shadow-xl shadow-orange-100/50 dark:shadow-emerald-500/10 ring-2 ring-orange-500/20 dark:ring-emerald-500/20 backdrop-blur-xl"
-                : "bg-white/60 dark:bg-white/5 border-slate-200 dark:border-white/10 shadow-sm hover:shadow-lg backdrop-blur-xl"
+                ? "bg-white/80 dark:bg-white/10 border-orange-200 dark:border-emerald-500/30 shadow-xl shadow-orange-100/50 dark:shadow-emerald-500/10 ring-2 ring-orange-500/20 dark:ring-emerald-500/20"
+                : "bg-white/60 dark:bg-white/5 border-slate-200 dark:border-white/10 shadow-sm hover:shadow-lg"
             }`}
           >
             {plan.popular && (
@@ -157,7 +158,7 @@ const Pricing1 = () => {
                 Get Started
               </button>
             </div>
-          </div>
+          </SpotlightCard>
         ))}
       </div>
 

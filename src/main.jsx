@@ -34,44 +34,43 @@ function Loading() {
 
 function AnimatedRoutes() {
   const location = useLocation();
+
+  const pageVariants = {
+    initial: { opacity: 0, y: 30, filter: "blur(10px)", scale: 0.97 },
+    animate: { opacity: 1, y: 0, filter: "blur(0px)", scale: 1 },
+    exit: { opacity: 0, y: -30, filter: "blur(10px)", scale: 0.97 },
+  };
+
+  const transitionData = { duration: 0.5, ease: [0.22, 1, 0.36, 1] };
+
+  const PageWrapper = ({ children }) => (
+    <motion.div
+      variants={pageVariants}
+      initial="initial"
+      animate="animate"
+      exit="exit"
+      transition={transitionData}
+      className="will-change-[opacity,transform,filter]"
+    >
+      {children}
+    </motion.div>
+  );
+
   return (
-    <Routes location={location}>
-      <Route element={<Layout />}>
-        <Route
-          path="/"
-          element={
-            <AnimatePresence mode="wait">
-              <motion.div key="home" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.18, ease: "easeInOut" }}>
-                <App />
-              </motion.div>
-            </AnimatePresence>
-          }
-        />
-        <Route path="/about" element={
-          <Suspense fallback={<Loading />}>
-            <AnimatePresence mode="wait">
-              <motion.div key="about" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.18, ease: "easeInOut" }}>
-                <About />
-              </motion.div>
-            </AnimatePresence>
-          </Suspense>
-        } />
-        <Route path="/demos" element={<Suspense fallback={<Loading />}><Demos /></Suspense>} />
-        <Route path="/signin" element={<Suspense fallback={<Loading />}><SignInPage /></Suspense>} />
-        <Route path="/signup" element={<Suspense fallback={<Loading />}><SignUpPage /></Suspense>} />
-        <Route path="/profile" element={<Suspense fallback={<Loading />}><Profile /></Suspense>} />
-        <Route path="/menu" element={
-          <Suspense fallback={<Loading />}>
-            <AnimatePresence mode="wait">
-              <motion.div key="menu" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.18, ease: "easeInOut" }}>
-                <MenuPage />
-              </motion.div>
-            </AnimatePresence>
-          </Suspense>
-        } />
-      </Route>
-      <Route path="*" element={<NotFound />} />
-    </Routes>
+    <AnimatePresence mode="wait">
+      <Routes location={location} key={location.pathname}>
+        <Route element={<Layout />}>
+          <Route path="/" element={<PageWrapper><App /></PageWrapper>} />
+          <Route path="/about" element={<Suspense fallback={<Loading />}><PageWrapper><About /></PageWrapper></Suspense>} />
+          <Route path="/demos" element={<Suspense fallback={<Loading />}><PageWrapper><Demos /></PageWrapper></Suspense>} />
+          <Route path="/signin" element={<Suspense fallback={<Loading />}><PageWrapper><SignInPage /></PageWrapper></Suspense>} />
+          <Route path="/signup" element={<Suspense fallback={<Loading />}><PageWrapper><SignUpPage /></PageWrapper></Suspense>} />
+          <Route path="/profile" element={<Suspense fallback={<Loading />}><PageWrapper><Profile /></PageWrapper></Suspense>} />
+          <Route path="/menu" element={<Suspense fallback={<Loading />}><PageWrapper><MenuPage /></PageWrapper></Suspense>} />
+        </Route>
+        <Route path="*" element={<PageWrapper><NotFound /></PageWrapper>} />
+      </Routes>
+    </AnimatePresence>
   );
 }
 
