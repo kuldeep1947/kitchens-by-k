@@ -1,3 +1,5 @@
+import { useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import Hero from "./components/home/Hero";
 import FoodShowcase from "./components/home/FoodShowcase";
 import HowItWorks from "./components/home/HowItWorks";
@@ -9,6 +11,14 @@ import AskSection from "./components/home/AskSection";
 import "./App.css";
 
 export default function App() {
+  const { hash } = useLocation();
+
+  useEffect(() => {
+    if (!hash) return;
+    const el = document.getElementById(hash.replace("#", ""));
+    if (el) setTimeout(() => el.scrollIntoView({ behavior: "smooth" }), 100);
+  }, [hash]);
+
   return (
     <>
       <Hero />

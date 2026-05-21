@@ -1,6 +1,7 @@
+import { useEffect } from "react";
 import { useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Link, useNavigate, Navigate } from "react-router-dom";
+import { Link, useNavigate, Navigate, useLocation } from "react-router-dom";
 import { ArrowLeft, User, Mail, Phone, Lock, Check, Sparkles, Shield, MapPin, Plus, Trash2, Star, Camera, ArrowRight, Eye, EyeOff } from "lucide-react";
 import Reveal, { scaleIn } from "./components/shared/Reveal";
 import { useAuth } from "./context/AuthContext";
@@ -189,6 +190,7 @@ function ActivePlan() {
     const stored = localStorage.getItem("kbk_active_plan");
     return stored ? JSON.parse(stored) : null;
   });
+  const [showDetails, setShowDetails] = useState(false);
 
   const planStyles = {
     Weekly: { color: "text-blue-600", bg: "bg-blue-50 dark:bg-blue-900/20" },
@@ -197,13 +199,12 @@ function ActivePlan() {
   };
 
   const handleViewPlans = () => {
-    navigate("/");
-    setTimeout(() => document.getElementById("pricing")?.scrollIntoView({ behavior: "smooth" }), 300);
+    navigate("/#pricing");
   };
 
   return (
     <Reveal variants={scaleIn} custom={1}>
-      <div className="bg-white/70 dark:bg-slate-800/70 backdrop-blur-md border border-white/40 dark:border-slate-700/40 rounded-3xl p-8 shadow-sm">
+      <div id="active-plan" className="bg-white/70 dark:bg-slate-800/70 backdrop-blur-md border border-white/40 dark:border-slate-700/40 rounded-3xl p-8 shadow-sm">
         <div className="flex items-center gap-3 mb-6">
           <div className="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-900/30 flex items-center justify-center">
             <Sparkles size={18} className="text-emerald-600 dark:text-emerald-400" />
@@ -212,11 +213,82 @@ function ActivePlan() {
         </div>
         {activePlan ? (
           <div className={`${planStyles[activePlan.title]?.bg ?? "bg-slate-50 dark:bg-slate-800"} rounded-2xl p-5`}>
-            <p className="text-sm font-semibold text-slate-900 dark:text-white">{activePlan.title} Plan</p>
-            <p className={`text-2xl font-extrabold ${planStyles[activePlan.title]?.color ?? "text-saffron"} mt-1`}>
-              {activePlan.price}<span className="text-sm font-normal text-slate-400">{activePlan.priceSuffix}</span>
-            </p>
-            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">{activePlan.meals}</p>
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <p className="text-sm font-semibold text-slate-900 dark:text-white">{activePlan.title} Plan</p>
+                <p className={`text-2xl font-extrabold ${planStyles[activePlan.title]?.color ?? "text-saffron"} mt-1`}>
+                  {activePlan.finalPrice ?? activePlan.price}
+                  {!activePlan.finalPrice && <span className="text-sm font-normal text-slate-400">{activePlan.priceSuffix}</span>}
+                </p>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">{activePlan.meals}</p>
+              </div>
+              <button
+                onClick={() => setShowDetails(!showDetails)}
+                className="text-xs font-semibold text-saffron hover:text-amber-600 dark:text-emerald-400 dark:hover:text-emerald-300 transition-colors shrink-0 mt-1"
+              >
+                {showDetails ? "Hide details" : "View details"}
+              </button>
+            </div>
+
+            <AnimatePresence>
+              {showDetails && (
+                <motion.div
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: "auto", opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  transition={{ duration: 0.3 }}
+                  className="overflow-hidden"
+                >
+                  <div className="mt-4 pt-4 border-t border-black/10 dark:border-white/10 space-y-3">
+                    {/* Price Breakdown */}
+                    <div>
+                      <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2">Price Breakdown</p>
+                      <div className="space-y-1.5">
+                        <div className="flex justify-between text-xs text-slate-600 dark:text-slate-300">
+                          <span>Base plan</span>
+                          <span>₹{activePlan.basePrice?.toLocaleString("en-IN")}</span>
+                        </div>
+                        {activePlan.totalExtras > 0 && (
+                          <div className="flex justify-between text-xs text-amber-600 dark:text-amber-400">
+                            <span>Add-ons (₹{activePlan.extrasPerMeal}/meal × {activePlan.mealCount} meals)</span>
+                            <span>+₹{activePlan.totalExtras?.toLocaleString("en-IN")}</span>
+                          </div>
+                        )}
+                        <div className="flex justify-between text-xs font-bold text-slate-900 dark:text-white pt-1 border-t border-black/10 dark:border-white/10">
+                          <span>Total paid</span>
+                          <span>{activePlan.finalPrice}</span>
+                        </div>
+                      </div>
+                    </div>
+                    {activePlan.selectedMeals?.length > 0 && (
+                      <div>
+                        <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1.5">Selected Meals</p>
+                        <div className="flex flex-wrap gap-1.5">
+                          {activePlan.selectedMeals.map((meal) => (
+                            <span key={meal} className="text-[11px] font-medium bg-white/60 dark:bg-slate-700/60 text-slate-700 dark:text-slate-300 px-2.5 py-1 rounded-full">
+                              {meal}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                    {activePlan.customizations?.length > 0 && (
+                      <div>
+                        <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1.5">Preferences</p>
+                        <div className="flex flex-wrap gap-1.5">
+                          {activePlan.customizations.map((c) => (
+                            <span key={c} className="text-[11px] font-medium bg-white/60 dark:bg-slate-700/60 text-slate-700 dark:text-slate-300 px-2.5 py-1 rounded-full">
+                              {c}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
             <button
               onClick={() => { localStorage.removeItem("kbk_active_plan"); setActivePlan(null); }}
               className="mt-4 text-xs text-red-400 hover:text-red-500 font-medium transition-colors"
@@ -501,6 +573,14 @@ function ChangePassword() {
 
 export default function Profile() {
   const { auth } = useAuth();
+  const { hash } = useLocation();
+
+  useEffect(() => {
+    if (!hash) return;
+    const el = document.getElementById(hash.replace("#", ""));
+    if (el) setTimeout(() => el.scrollIntoView({ behavior: "smooth", block: "center" }), 300);
+  }, [hash]);
+
   if (!auth) return <Navigate to="/signin" replace />;
 
   return (

@@ -855,6 +855,18 @@ function PlanModal({ plan, onClose }: { plan: any; onClose: () => void }) {
                       price: plan.price,
                       priceSuffix: plan.priceSuffix,
                       meals: plan.title === "Weekly" ? "5 meals/week" : "22 meals/month",
+                      finalPrice: `₹${finalPrice.toLocaleString("en-IN")}`,
+                      basePrice,
+                      totalExtras,
+                      extrasPerMeal,
+                      mealCount,
+                      selectedMeals: selectedMeals.map((subId) => {
+                        for (const cat of mealOptions) {
+                          const sub = cat.subs.find((s) => s.id === subId);
+                          if (sub) return sub.name;
+                        }
+                      }).filter(Boolean),
+                      customizations: selectedCustomizations.map((id) => customizations.find((c) => c.id === id)?.label).filter(Boolean),
                     }));
                     alert(`Payment successful! Your ${plan.title} plan is now active. 🎉`);
                   }

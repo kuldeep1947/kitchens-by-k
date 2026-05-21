@@ -135,7 +135,7 @@ export default function Navbar() {
 
           {/* CTA button — desktop */}
           {isProfile ? null : auth ? (
-            <Link to="/profile">
+            <Link to="/profile#active-plan">
               <motion.span whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.96 }}
                 className="hidden md:block bg-slate-900 hover:bg-slate-800 text-white text-[13px] font-semibold px-5 py-2.5 rounded-xl transition-colors dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 cursor-pointer">
                 My Plan
@@ -250,8 +250,6 @@ export default function Navbar() {
                   {mobileNavLink("Home", "/")}
                   {mobileNavLink("About", "/about")}
                   {mobileNavLink("Menu", "/menu")}
-                  <div className="border-t border-slate-100 dark:border-slate-800 my-1" />
-                  <button onClick={handleSignOut} className="px-4 py-3 rounded-xl text-left text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors">Sign Out</button>
                 </>
               ) : isAbout ? (
                 <>
@@ -278,11 +276,7 @@ export default function Navbar() {
                   {mobileNavLink("About", "/about")}
                   <div className="border-t border-slate-100 dark:border-slate-800 my-1" />
                   {auth ? (
-                    <>
-                      {mobileNavLink("Profile", "/profile")}
-                      <button onClick={handleSignOut} className="px-4 py-3 rounded-xl text-left text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors">Sign Out</button>
-                      <Link to="/profile" onClick={() => setShowMobile(false)} className="mx-1 mt-1 px-4 py-3 rounded-xl text-center bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-semibold">My Plan</Link>
-                    </>
+                    <Link to="/profile#active-plan" onClick={() => setShowMobile(false)} className="mx-1 mt-1 px-4 py-3 rounded-xl text-center bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-semibold">My Plan</Link>
                   ) : (
                     <a href="#pricing" onClick={() => setShowMobile(false)} className="mx-1 mt-1 px-4 py-3 rounded-xl text-center bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-semibold">Get Started</a>
                   )}
