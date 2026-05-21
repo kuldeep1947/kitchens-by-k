@@ -16,6 +16,8 @@ export function AuthProvider({ children }) {
   const login = (authData) => {
     localStorage.setItem("kbk_auth", JSON.stringify(authData));
     setAuth(authData);
+    const user = localStorage.getItem("kbk_user");
+    setAvatar(user ? JSON.parse(user).avatar : null);
   };
 
   const logout = () => {
