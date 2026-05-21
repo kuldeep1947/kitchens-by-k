@@ -8,7 +8,6 @@ import PricingSection from "./components/home/PricingSection";
 import Testimonials from "./components/home/Testimonials";
 import SplineShowcase from "./components/home/SplineShowcase";
 import AskSection from "./components/home/AskSection";
-import "./App.css";
 
 export default function App() {
   const { hash } = useLocation();
