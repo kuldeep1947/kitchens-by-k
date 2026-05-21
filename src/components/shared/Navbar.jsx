@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { motion, AnimatePresence, useScroll, useMotionValueEvent } from "framer-motion";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { ChevronDown, User, Menu, X } from "lucide-react";
@@ -32,6 +32,33 @@ export default function Navbar() {
     }
     lastScrollY.current = latest;
   });
+
+  // Close both on outside click
+  useEffect(() => {
+    const handler = (e) => {
+      if (menuRef.current && !menuRef.current.contains(e.target)) {
+        setShowMenu(false);
+      }
+      if (
+        mobileRef.current && !mobileRef.current.contains(e.target) &&
+        mobileToggleRef.current && !mobileToggleRef.current.contains(e.target)
+      ) {
+        setShowMobile(false);
+      }
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
+
+  const toggleMobile = () => {
+    setShowMobile((prev) => !prev);
+    setShowMenu(false); // close profile dropdown when opening mobile menu
+  };
+
+  const toggleMenu = () => {
+    setShowMenu((prev) => !prev);
+    setShowMobile(false); // close mobile menu when opening profile dropdown
+  };
 
   const handleSignOut = () => {
     logout();
@@ -134,14 +161,14 @@ export default function Navbar() {
           )}
 
           {/* Mobile hamburger */}
-          <button ref={mobileToggleRef} onClick={() => setShowMobile(!showMobile)}
+          <button ref={mobileToggleRef} onClick={toggleMobile}
             className="md:hidden flex items-center justify-center w-8 h-8 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
             {showMobile ? <X size={18} className="text-slate-700 dark:text-white" /> : <Menu size={18} className="text-slate-700 dark:text-white" />}
           </button>
 
           {/* Avatar dropdown */}
           <div className="relative" ref={menuRef}>
-            <button onClick={() => setShowMenu(!showMenu)} className="flex items-center gap-1 hover:opacity-80 transition-opacity">
+            <button onClick={toggleMenu} className="flex items-center gap-1 hover:opacity-80 transition-opacity">
               <div className="w-8 h-8 rounded-full overflow-hidden bg-orange-100 dark:bg-emerald-900/40 flex items-center justify-center">
                 {avatar && auth ? (
                   avatar.startsWith("data:") ? (
