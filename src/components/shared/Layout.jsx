@@ -19,9 +19,9 @@ function BackToTop() {
       {visible && (
         <motion.button
           initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
+          animate={{ opacity: 1, y: [0, -4, 0] }}
           exit={{ opacity: 0, y: 10 }}
-          transition={{ duration: 0.2 }}
+          transition={{ duration: 0.2, y: { duration: 1.5, repeat: Infinity, ease: "easeInOut" } }}
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
           className="fixed bottom-6 right-6 z-50 text-saffron dark:text-emerald-500 hover:text-saffron-dark dark:hover:text-emerald-400 transition-colors"
           aria-label="Back to top"
