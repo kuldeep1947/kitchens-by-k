@@ -63,11 +63,11 @@ function AnimatedRoutes() {
           <Route path="/" element={<PageWrapper><App /></PageWrapper>} />
           <Route path="/about" element={<Suspense fallback={<Loading />}><PageWrapper><About /></PageWrapper></Suspense>} />
           <Route path="/demos" element={<Suspense fallback={<Loading />}><PageWrapper><Demos /></PageWrapper></Suspense>} />
-          <Route path="/signin" element={<Suspense fallback={<Loading />}><PageWrapper><SignInPage /></PageWrapper></Suspense>} />
-          <Route path="/signup" element={<Suspense fallback={<Loading />}><PageWrapper><SignUpPage /></PageWrapper></Suspense>} />
           <Route path="/profile" element={<Suspense fallback={<Loading />}><PageWrapper><Profile /></PageWrapper></Suspense>} />
           <Route path="/menu" element={<Suspense fallback={<Loading />}><PageWrapper><MenuPage /></PageWrapper></Suspense>} />
         </Route>
+        <Route path="/signin" element={<Suspense fallback={<Loading />}><PageWrapper><SignInPage /></PageWrapper></Suspense>} />
+        <Route path="/signup" element={<Suspense fallback={<Loading />}><PageWrapper><SignUpPage /></PageWrapper></Suspense>} />
         <Route path="*" element={<PageWrapper><NotFound /></PageWrapper>} />
       </Routes>
     </AnimatePresence>

@@ -143,7 +143,7 @@ export default function Navbar() {
           <div className="relative" ref={menuRef}>
             <button onClick={() => setShowMenu(!showMenu)} className="flex items-center gap-1 hover:opacity-80 transition-opacity">
               <div className="w-8 h-8 rounded-full overflow-hidden bg-orange-100 dark:bg-emerald-900/40 flex items-center justify-center">
-                {avatar ? (
+                {avatar && auth ? (
                   avatar.startsWith("data:") ? (
                     <img src={avatar} alt="avatar" className="w-full h-full object-cover" />
                   ) : (
