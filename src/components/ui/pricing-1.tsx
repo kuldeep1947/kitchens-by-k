@@ -2,12 +2,53 @@ import { CheckIcon, X, ChevronRight, CreditCard, UtensilsCrossed, Users, Buildin
 import React, { useState } from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 import SpotlightCard from "./spotlight-card";
 
+const pricingPlans = [
+  {
+    title: "Weekly",
+    popular: false,
+    description: "Perfect for trying us out. Fresh meals delivered every weekday to your office.",
+    price: "₹1,499",
+    priceSuffix: "/week",
+    features: ["5 freshly cooked meals", "Free delivery across Mumbai", "Flexible skip days", "WhatsApp menu updates", "Cancel anytime"],
+    details: { includes: ["Mon–Fri lunch delivery", "Choose from 3 daily options", "Eco-friendly packaging", "Real-time tracking"], ideal: "Small teams of 5–15 trying corporate tiffin for the first time" },
+  },
+  {
+    title: "Monthly",
+    popular: true,
+    description: "Our most popular plan. Best value for teams who want consistent, quality meals.",
+    price: "₹4,999",
+    priceSuffix: "/month",
+    savingsBadge: "Save ₹1,000 vs weekly",
+    features: ["22 freshly cooked meals", "Priority delivery", "Weekend bonus meals", "Dedicated account manager", "Custom dietary preferences", "Cancel anytime"],
+    details: { includes: ["22 weekday meals + 4 weekend meals", "Priority delivery before 12:30 PM", "Personalized menu preferences", "Monthly feedback sessions", "Dedicated WhatsApp support"], ideal: "Teams of 15–50 who want reliable, daily meals with customization" },
+  },
+  {
+    title: "Enterprise",
+    popular: false,
+    description: "For large teams and offices. Custom menus, bulk pricing, and dedicated support.",
+    price: "Custom",
+    priceSuffix: "",
+    features: ["Unlimited team members", "Custom menu planning", "Dedicated chef allocation", "24/7 support", "Onboarding & tasting session", "Cancel anytime"],
+    details: { includes: ["Unlimited headcount", "Custom menu designed with your team", "Dedicated chef & kitchen allocation", "On-site tasting before launch", "Festival & event catering included", "Monthly review meetings"], ideal: "Companies with 50+ employees or multiple office locations" },
+  },
+];
+
 const Pricing1 = () => {
-  const [selectedPlan, setSelectedPlan] = useState<number | null>(null);
+  const [selectedPlan, setSelectedPlan] = useState<number | null>(() => {
+    const pending = localStorage.getItem("kbk_pending_plan");
+    if (pending && localStorage.getItem("kbk_auth")) {
+      const data = JSON.parse(pending);
+      const idx = pricingPlans.findIndex((p) => p.title === data.planTitle);
+      return idx >= 0 ? idx : null;
+    }
+    return null;
+  });
   const [activeDot, setActiveDot] = useState(0);
   const scrollRef = React.useRef<HTMLDivElement>(null);
+  const navigate = useNavigate();
 
   const handleScroll = () => {
     if (!scrollRef.current) return;
@@ -15,70 +56,6 @@ const Pricing1 = () => {
     const index = Math.round((scrollLeft / (scrollWidth - clientWidth)) * (pricingPlans.length - 1));
     setActiveDot(index);
   };
-
-  // Pricing plan data
-  const pricingPlans = [
-    {
-      title: "Weekly",
-      popular: false,
-      description:
-        "Perfect for trying us out. Fresh meals delivered every weekday to your office.",
-      price: "₹1,499",
-      priceSuffix: "/week",
-      features: [
-        "5 freshly cooked meals",
-        "Free delivery across Mumbai",
-        "Flexible skip days",
-        "WhatsApp menu updates",
-        "Cancel anytime",
-      ],
-      details: {
-        includes: ["Mon–Fri lunch delivery", "Choose from 3 daily options", "Eco-friendly packaging", "Real-time tracking"],
-        ideal: "Small teams of 5–15 trying corporate tiffin for the first time",
-      },
-    },
-    {
-      title: "Monthly",
-      popular: true,
-      description:
-        "Our most popular plan. Best value for teams who want consistent, quality meals.",
-      price: "₹4,999",
-      priceSuffix: "/month",
-      savingsBadge: "Save ₹1,000 vs weekly",
-      features: [
-        "22 freshly cooked meals",
-        "Priority delivery",
-        "Weekend bonus meals",
-        "Dedicated account manager",
-        "Custom dietary preferences",
-        "Cancel anytime",
-      ],
-      details: {
-        includes: ["22 weekday meals + 4 weekend meals", "Priority delivery before 12:30 PM", "Personalized menu preferences", "Monthly feedback sessions", "Dedicated WhatsApp support"],
-        ideal: "Teams of 15–50 who want reliable, daily meals with customization",
-      },
-    },
-    {
-      title: "Enterprise",
-      popular: false,
-      description:
-        "For large teams and offices. Custom menus, bulk pricing, and dedicated support.",
-      price: "Custom",
-      priceSuffix: "",
-      features: [
-        "Unlimited team members",
-        "Custom menu planning",
-        "Dedicated chef allocation",
-        "24/7 support",
-        "Onboarding & tasting session",
-        "Cancel anytime",
-      ],
-      details: {
-        includes: ["Unlimited headcount", "Custom menu designed with your team", "Dedicated chef & kitchen allocation", "On-site tasting before launch", "Festival & event catering included", "Monthly review meetings"],
-        ideal: "Companies with 50+ employees or multiple office locations",
-      },
-    },
-  ];
 
   return (
     <section className="flex flex-col items-center justify-center gap-16 w-full max-w-6xl mx-auto py-32 px-6 relative">
@@ -188,6 +165,7 @@ const Pricing1 = () => {
           <PlanModal
             plan={pricingPlans[selectedPlan]}
             onClose={() => setSelectedPlan(null)}
+            navigate={navigate}
           />
         )}
       </AnimatePresence>
@@ -297,15 +275,26 @@ function MealCategory({ cat, selectedMeals, toggleMeal }: { cat: any; selectedMe
   );
 }
 
-function PlanModal({ plan, onClose }: { plan: any; onClose: () => void }) {
+function PlanModal({ plan, onClose, navigate }: { plan: any; onClose: () => void; navigate: any }) {
   const isEnterprise = plan.title === "Enterprise";
   const steps = isEnterprise
     ? (["details", "meals", "customize", "payment"] as const)
     : (["meals", "customize", "payment"] as const);
   type StepType = typeof steps[number];
-  const [step, setStep] = useState<StepType>(steps[0]);
-  const [selectedMeals, setSelectedMeals] = useState<string[]>([]);
-  const [selectedCustomizations, setSelectedCustomizations] = useState<string[]>([]);
+
+  // Restore pending plan if returning from sign-in
+  const pending = React.useMemo(() => {
+    const raw = localStorage.getItem("kbk_pending_plan");
+    if (raw && localStorage.getItem("kbk_auth")) {
+      localStorage.removeItem("kbk_pending_plan");
+      return JSON.parse(raw);
+    }
+    return null;
+  }, []);
+
+  const [step, setStep] = useState<StepType>(pending ? "payment" : steps[0]);
+  const [selectedMeals, setSelectedMeals] = useState<string[]>(pending?.selectedMeals || []);
+  const [selectedCustomizations, setSelectedCustomizations] = useState<string[]>(pending?.selectedCustomizations || []);
 
   // Enterprise-specific fields
   const [employeeCount, setEmployeeCount] = useState("");
@@ -847,6 +836,27 @@ function PlanModal({ plan, onClose }: { plan: any; onClose: () => void }) {
               </button>
               <button
                 onClick={() => {
+                  // Check if user is signed in
+                  const isLoggedIn = localStorage.getItem("kbk_auth");
+                  if (!isLoggedIn) {
+                    // Save pending plan selection before redirecting
+                    localStorage.setItem("kbk_pending_plan", JSON.stringify({
+                      planTitle: plan.title,
+                      selectedMeals,
+                      selectedCustomizations,
+                      billingName,
+                      billingEmail,
+                      billingPhone,
+                      gstNumber,
+                      ...(isEnterprise && { companyName, employeeCount, officeLocations, startDate, deliveryTime }),
+                    }));
+                    onClose();
+                    navigate("/signin?redirect=/#pricing");
+                    return;
+                  }
+
+                  if (!billingName || !billingEmail || !billingPhone) return;
+
                   if (isEnterprise) {
                     alert(`Request submitted! We'll send a custom quote for ${companyName} (${employeeCount} employees) within 24 hours. 🎉`);
                   } else {
@@ -870,11 +880,12 @@ function PlanModal({ plan, onClose }: { plan: any; onClose: () => void }) {
                     }));
                     alert(`Payment successful! Your ${plan.title} plan is now active. 🎉`);
                   }
+                  localStorage.removeItem("kbk_pending_plan");
                   onClose();
                 }}
-                disabled={!billingName || !billingEmail || !billingPhone}
+                disabled={!!localStorage.getItem("kbk_auth") && (!billingName || !billingEmail || !billingPhone)}
                 className={`flex-1 py-3 rounded-2xl font-semibold text-[14px] transition-all cursor-pointer flex items-center justify-center gap-2 ${
-                  billingName && billingEmail && billingPhone
+                  !localStorage.getItem("kbk_auth") || (billingName && billingEmail && billingPhone)
                     ? "bg-orange-600 hover:bg-orange-500 dark:bg-emerald-600 dark:hover:bg-emerald-500 text-white shadow-lg shadow-orange-600/20 dark:shadow-emerald-600/20"
                     : "bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-500 cursor-not-allowed"
                 }`}

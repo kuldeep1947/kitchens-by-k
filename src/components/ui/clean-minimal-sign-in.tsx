@@ -3,11 +3,12 @@
 import * as React from "react"
 import { useState } from "react";
 import { LogIn, Lock, Mail, Phone, UserPlus, User, Eye, EyeOff } from "lucide-react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 
 const SignIn2 = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { login } = useAuth();
   const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
@@ -41,7 +42,8 @@ const SignIn2 = () => {
     }
     setError("");
     login({ name: user.firstName + " " + user.lastName, email: user.email });
-    navigate("/");
+    const redirect = searchParams.get("redirect");
+    navigate(redirect || "/");
   };
 
   return (

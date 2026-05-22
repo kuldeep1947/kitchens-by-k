@@ -285,3 +285,9 @@ Private project — all rights reserved.
 ## 👩‍💼 About
 
 **Kitchens by K** is co-founded by CA Kanak Maheshwari, bringing Big Four precision to corporate meal delivery in Mumbai. Serving 50+ corporate clients with chef-crafted, nutrition-balanced meals daily.
+
+---
+
+## 👨‍💻 Developer
+
+Designed & developed by **Kuldeep Agrawal** — full-stack developer passionate about crafting high-performance, pixel-perfect web experiences with modern React, motion design, and PWA architecture.
