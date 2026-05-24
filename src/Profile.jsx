@@ -18,6 +18,7 @@ function PersonalInfo() {
   const [mobile, setMobile] = useState(user.mobile || "");
   const [avatar, setAvatar] = useState(user.avatar || null);
   const [saved, setSaved] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
   const fileRef = useRef(null);
 
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
@@ -135,50 +136,89 @@ function PersonalInfo() {
             </AnimatePresence>
           </div>
         </div>
-        <div className="grid sm:grid-cols-2 gap-4">
-          <div>
-            <label className="text-xs font-medium text-slate-500 dark:text-slate-400 block mb-1.5">First Name</label>
-            <input
-              type="text"
-              value={firstName}
-              onChange={(e) => setFirstName(e.target.value)}
-              className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-saffron/20"
-            />
-          </div>
-          <div>
-            <label className="text-xs font-medium text-slate-500 dark:text-slate-400 block mb-1.5">Last Name</label>
-            <input
-              type="text"
-              value={lastName}
-              onChange={(e) => setLastName(e.target.value)}
-              className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-saffron/20"
-            />
-          </div>
-          <div>
-            <label className="text-xs font-medium text-slate-500 dark:text-slate-400 block mb-1.5"><Mail size={11} className="inline mr-1" />Email</label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-saffron/20"
-            />
-          </div>
-          <div>
-            <label className="text-xs font-medium text-slate-500 dark:text-slate-400 block mb-1.5"><Phone size={11} className="inline mr-1" />Mobile</label>
-            <input
-              type="tel"
-              value={mobile}
-              onChange={(e) => setMobile(e.target.value)}
-              className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-saffron/20"
-            />
-          </div>
-        </div>
-        <button
-          onClick={handleSave}
-          className="mt-6 flex items-center gap-2 bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-semibold px-6 py-2.5 rounded-xl text-sm hover:brightness-105 transition-all"
-        >
-          {saved ? <><Check size={14} /> Saved!</> : "Save Changes"}
-        </button>
+        {isEditing ? (
+          <>
+            <div className="grid sm:grid-cols-2 gap-4">
+              <div>
+                <label className="text-xs font-medium text-slate-500 dark:text-slate-400 block mb-1.5">First Name</label>
+                <input
+                  type="text"
+                  value={firstName}
+                  onChange={(e) => setFirstName(e.target.value)}
+                  className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-saffron/20"
+                />
+              </div>
+              <div>
+                <label className="text-xs font-medium text-slate-500 dark:text-slate-400 block mb-1.5">Last Name</label>
+                <input
+                  type="text"
+                  value={lastName}
+                  onChange={(e) => setLastName(e.target.value)}
+                  className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-saffron/20"
+                />
+              </div>
+              <div>
+                <label className="text-xs font-medium text-slate-500 dark:text-slate-400 block mb-1.5"><Mail size={11} className="inline mr-1" />Email</label>
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-saffron/20"
+                />
+              </div>
+              <div>
+                <label className="text-xs font-medium text-slate-500 dark:text-slate-400 block mb-1.5"><Phone size={11} className="inline mr-1" />Mobile</label>
+                <input
+                  type="tel"
+                  value={mobile}
+                  onChange={(e) => setMobile(e.target.value)}
+                  className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-saffron/20"
+                />
+              </div>
+            </div>
+            <div className="mt-6 flex items-center gap-3">
+              <button
+                onClick={() => { handleSave(); setIsEditing(false); }}
+                className="flex items-center gap-2 bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-semibold px-6 py-2.5 rounded-xl text-sm hover:brightness-105 transition-all"
+              >
+                {saved ? <><Check size={14} /> Saved!</> : "Save Changes"}
+              </button>
+              <button
+                onClick={() => { setFirstName(user.firstName || ""); setLastName(user.lastName || ""); setEmail(user.email || ""); setMobile(user.mobile || ""); setIsEditing(false); }}
+                className="px-5 py-2.5 rounded-xl text-sm font-medium border border-slate-200 dark:border-slate-700 text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
+              >
+                Cancel
+              </button>
+            </div>
+          </>
+        ) : (
+          <>
+            <div className="grid sm:grid-cols-2 gap-4">
+              <div>
+                <p className="text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">First Name</p>
+                <p className="text-sm font-semibold text-slate-900 dark:text-white">{firstName || "—"}</p>
+              </div>
+              <div>
+                <p className="text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">Last Name</p>
+                <p className="text-sm font-semibold text-slate-900 dark:text-white">{lastName || "—"}</p>
+              </div>
+              <div>
+                <p className="text-xs font-medium text-slate-500 dark:text-slate-400 mb-1"><Mail size={11} className="inline mr-1" />Email</p>
+                <p className="text-sm font-semibold text-slate-900 dark:text-white">{email || "—"}</p>
+              </div>
+              <div>
+                <p className="text-xs font-medium text-slate-500 dark:text-slate-400 mb-1"><Phone size={11} className="inline mr-1" />Mobile</p>
+                <p className="text-sm font-semibold text-slate-900 dark:text-white">{mobile || "—"}</p>
+              </div>
+            </div>
+            <button
+              onClick={() => setIsEditing(true)}
+              className="mt-6 flex items-center gap-2 text-sm font-semibold text-saffron hover:text-amber-600 transition-colors"
+            >
+              Edit Profile
+            </button>
+          </>
+        )}
       </div>
     </Reveal>
   );
