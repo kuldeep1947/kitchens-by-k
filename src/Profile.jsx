@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link, useNavigate, Navigate, useLocation } from "react-router-dom";
-import { ArrowLeft, User, Mail, Phone, Lock, Check, Sparkles, Shield, MapPin, Plus, Trash2, Star, Camera, ArrowRight, Eye, EyeOff } from "lucide-react";
+import { ArrowLeft, User, Mail, Phone, Lock, Check, Sparkles, Shield, MapPin, Plus, Trash2, Star, Camera, ArrowRight, Eye, EyeOff, Pencil, MoreVertical, X } from "lucide-react";
 import Reveal, { scaleIn } from "./components/shared/Reveal";
 import { useAuth } from "./context/AuthContext";
 
@@ -359,8 +359,24 @@ function Addresses() {
     return stored ? JSON.parse(stored) : [];
   });
   const [showForm, setShowForm] = useState(false);
+  const [editingId, setEditingId] = useState(null);
+  const [openMenu, setOpenMenu] = useState(null);
   const [form, setForm] = useState({ label: "Home", address: "", city: "", pincode: "" });
   const [error, setError] = useState("");
+  const menuRef = useRef(null);
+
+  useEffect(() => {
+    if (!openMenu) return;
+    const handleClick = (e) => {
+      if (menuRef.current && !menuRef.current.contains(e.target)) setOpenMenu(null);
+    };
+    document.addEventListener("mousedown", handleClick);
+    document.addEventListener("touchstart", handleClick);
+    return () => {
+      document.removeEventListener("mousedown", handleClick);
+      document.removeEventListener("touchstart", handleClick);
+    };
+  }, [openMenu]);
 
   const save = (updated) => {
     setAddresses(updated);
@@ -370,11 +386,23 @@ function Addresses() {
   const handleAdd = () => {
     if (!form.address || !form.city || !form.pincode) { setError("Please fill in all fields."); return; }
     if (!/^\d{6}$/.test(form.pincode)) { setError("Enter a valid 6-digit pincode."); return; }
-    const newAddr = { ...form, id: Date.now(), isDefault: addresses.length === 0 };
-    save([...addresses, newAddr]);
+    if (editingId) {
+      save(addresses.map((a) => a.id === editingId ? { ...a, ...form } : a));
+      setEditingId(null);
+    } else {
+      const newAddr = { ...form, id: Date.now(), isDefault: addresses.length === 0 };
+      save([...addresses, newAddr]);
+    }
     setForm({ label: "Home", address: "", city: "", pincode: "" });
     setError("");
     setShowForm(false);
+  };
+
+  const startEdit = (addr) => {
+    setForm({ label: addr.label, address: addr.address, city: addr.city, pincode: addr.pincode });
+    setEditingId(addr.id);
+    setShowForm(true);
+    setError("");
   };
 
   const setDefault = (id) => {
@@ -389,7 +417,7 @@ function Addresses() {
 
   return (
     <Reveal variants={scaleIn} custom={3}>
-      <div className="bg-white/70 dark:bg-slate-800/70 backdrop-blur-md border border-white/40 dark:border-slate-700/40 rounded-3xl p-8 shadow-sm">
+      <div className="bg-white/70 dark:bg-slate-800/70 backdrop-blur-md border border-white/40 dark:border-slate-700/40 rounded-3xl p-8 shadow-sm overflow-visible relative z-10">
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center">
@@ -415,8 +443,8 @@ function Addresses() {
           >
             <div>
               <label className="text-xs font-medium text-slate-500 dark:text-slate-400 block mb-1.5">Label</label>
-              <div className="flex gap-2">
-                {["Home", "Office", "Other"].map((l) => (
+              <div className="flex gap-2 items-center">
+                {["Home", "Office"].map((l) => (
                   <button
                     key={l}
                     onClick={() => setForm((f) => ({ ...f, label: l }))}
@@ -429,6 +457,18 @@ function Addresses() {
                     {l}
                   </button>
                 ))}
+                <input
+                  type="text"
+                  value={form.label === "Home" || form.label === "Office" ? "" : form.label}
+                  onChange={(e) => setForm((f) => ({ ...f, label: e.target.value }))}
+                  onFocus={() => { if (form.label === "Home" || form.label === "Office") setForm((f) => ({ ...f, label: "" })); }}
+                  placeholder="Custom label"
+                  className={`px-3 py-1.5 rounded-xl text-xs font-semibold border transition-all w-28 focus:outline-none focus:ring-2 focus:ring-saffron/20 ${
+                    form.label !== "Home" && form.label !== "Office" && form.label !== ""
+                      ? "bg-saffron text-white border-saffron placeholder:text-white/60"
+                      : "border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 bg-white dark:bg-slate-800 placeholder:text-slate-400"
+                  }`}
+                />
               </div>
             </div>
             <div>
@@ -467,9 +507,9 @@ function Addresses() {
             {error && <p className="text-xs text-red-500">{error}</p>}
             <div className="flex gap-2 pt-1">
               <button onClick={handleAdd} className="flex items-center gap-2 bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-semibold px-5 py-2 rounded-xl text-sm hover:brightness-105 transition-all">
-                <Check size={14} /> Save Address
+                <Check size={14} /> {editingId ? "Update Address" : "Save Address"}
               </button>
-              <button onClick={() => { setShowForm(false); setError(""); }} className="px-5 py-2 rounded-xl text-sm font-medium border border-slate-200 dark:border-slate-700 text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
+              <button onClick={() => { setShowForm(false); setEditingId(null); setError(""); setForm({ label: "Home", address: "", city: "", pincode: "" }); }} className="px-5 py-2 rounded-xl text-sm font-medium border border-slate-200 dark:border-slate-700 text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
                 Cancel
               </button>
             </div>
@@ -481,12 +521,12 @@ function Addresses() {
           <p className="text-slate-400 dark:text-slate-500 text-sm text-center py-6">No saved addresses yet.</p>
         ) : (
           <div className="space-y-3">
-            {addresses.map((addr) => (
-              <div key={addr.id} className={`flex items-start justify-between p-4 rounded-2xl border transition-all ${
+            {addresses.filter((addr) => addr.id !== editingId).map((addr) => (
+              <div key={addr.id} className={`relative flex items-start justify-between p-4 rounded-2xl border transition-all ${
                 addr.isDefault
                   ? "border-saffron/30 bg-saffron/5 dark:bg-saffron/10"
                   : "border-slate-200 dark:border-slate-700"
-              }`}>
+              } ${openMenu === addr.id ? "z-[50]" : ""}`}>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-1">
                     <span className="text-xs font-bold text-slate-700 dark:text-slate-200 uppercase tracking-wide">{addr.label}</span>
@@ -499,15 +539,52 @@ function Addresses() {
                   <p className="text-sm text-slate-600 dark:text-slate-300">{addr.address}</p>
                   <p className="text-xs text-slate-400 mt-0.5">{addr.city} — {addr.pincode}</p>
                 </div>
-                <div className="flex items-center gap-2 ml-4 shrink-0">
-                  {!addr.isDefault && (
-                    <button onClick={() => setDefault(addr.id)} className="text-[11px] font-medium text-slate-400 hover:text-saffron transition-colors">
-                      Set default
-                    </button>
-                  )}
-                  <button onClick={() => remove(addr.id)} className="w-7 h-7 flex items-center justify-center rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors">
-                    <Trash2 size={14} className="text-red-400" />
+                <div className="relative ml-4 shrink-0" ref={openMenu === addr.id ? menuRef : null}>
+                  <button
+                    onClick={() => setOpenMenu(openMenu === addr.id ? null : addr.id)}
+                    className="w-8 h-8 flex items-center justify-center rounded-xl hover:bg-slate-100 dark:hover:bg-slate-700/50 transition-colors"
+                  >
+                    <MoreVertical size={16} className="text-slate-400" />
                   </button>
+                  <AnimatePresence>
+                    {openMenu === addr.id && (
+                      <motion.div
+                        initial={{ opacity: 0, scale: 0.9, y: -4 }}
+                        animate={{ opacity: 1, scale: 1, y: 0 }}
+                        exit={{ opacity: 0, scale: 0.9, y: -4 }}
+                        transition={{ duration: 0.15 }}
+                        className="absolute right-0 top-10 z-20 w-44 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl shadow-xl p-1.5 space-y-0.5"
+                      >
+                        {!addr.isDefault && (
+                          <button
+                            onClick={() => { setDefault(addr.id); setOpenMenu(null); }}
+                            className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-medium text-slate-600 dark:text-slate-300 hover:bg-saffron/10 hover:text-saffron transition-colors"
+                          >
+                            <Star size={13} /> Set as default
+                          </button>
+                        )}
+                        <button
+                          onClick={() => { startEdit(addr); setOpenMenu(null); }}
+                          className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-medium text-slate-600 dark:text-slate-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-500 transition-colors"
+                        >
+                          <Pencil size={13} /> Edit address
+                        </button>
+                        <button
+                          onClick={() => { remove(addr.id); setOpenMenu(null); }}
+                          className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-medium text-slate-600 dark:text-slate-300 hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-500 transition-colors"
+                        >
+                          <Trash2 size={13} /> Delete
+                        </button>
+                        <div className="border-t border-slate-100 dark:border-slate-700 my-1" />
+                        <button
+                          onClick={() => setOpenMenu(null)}
+                          className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-medium text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700/50 hover:text-slate-600 dark:hover:text-slate-300 transition-colors"
+                        >
+                          <X size={13} /> Cancel
+                        </button>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </div>
               </div>
             ))}
