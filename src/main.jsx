@@ -15,6 +15,7 @@ const SignUpPage = lazy(() => import('./SignUp.jsx'));
 const Profile = lazy(() => import('./Profile.jsx'));
 const MenuPage = lazy(() => import('./Menu.jsx'));
 const Faqs = lazy(() => import('./Faqs.jsx'));
+const Pricing = lazy(() => import('./Pricing.jsx'));
 
 function NotFound() {
   return (
@@ -74,6 +75,7 @@ function AnimatedRoutes() {
           <Route path="/profile" element={<Suspense fallback={<Loading />}><PageWrapper><Profile /></PageWrapper></Suspense>} />
           <Route path="/menu" element={<Suspense fallback={<Loading />}><PageWrapper><MenuPage /></PageWrapper></Suspense>} />
           <Route path="/faqs" element={<Suspense fallback={<Loading />}><PageWrapper><Faqs /></PageWrapper></Suspense>} />
+          <Route path="/pricing" element={<Suspense fallback={<Loading />}><PageWrapper><Pricing /></PageWrapper></Suspense>} />
         </Route>
         <Route path="/signin" element={<Suspense fallback={<Loading />}><PageWrapper><SignInPage /></PageWrapper></Suspense>} />
         <Route path="/signup" element={<Suspense fallback={<Loading />}><PageWrapper><SignUpPage /></PageWrapper></Suspense>} />

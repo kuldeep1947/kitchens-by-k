@@ -891,7 +891,7 @@ function PlanModal({ plan, onClose, navigate }: { plan: any; onClose: () => void
                       ...(isEnterprise && { companyName, employeeCount, officeLocations, startDate, deliveryTime }),
                     }));
                     onClose();
-                    navigate("/signin?redirect=/#pricing");
+                    navigate("/signin?redirect=/pricing");
                     return;
                   }
 

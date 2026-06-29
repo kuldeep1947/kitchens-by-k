@@ -1,6 +1,7 @@
 "use client";
 
 import { motion, useReducedMotion } from "framer-motion";
+import { Link } from "react-router-dom";
 import AuroraBackground from "./aurora-background";
 import HeroParticles from "./hero-particles";
 import { Magnetic } from "./magnetic";
@@ -136,14 +137,14 @@ export function BackgroundPaths({
                         className="flex flex-col sm:flex-row gap-3 justify-center items-center"
                     >
                         <Magnetic strength={reduce ? 0 : 0.4}>
-                            <a
-                                href={buttonHref}
+                            <Link
+                                to={buttonHref}
                                 className="group relative inline-flex items-center justify-center gap-2 overflow-hidden rounded-2xl bg-slate-900 dark:bg-white px-8 py-4 text-[15px] font-semibold text-white dark:text-slate-900 elev-2 transition-transform"
                             >
                                 <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-saffron via-amber-400 to-emerald-400 opacity-0 transition-all duration-500 group-hover:translate-x-0 group-hover:opacity-100 dark:from-emerald-400 dark:via-teal-300 dark:to-emerald-500" />
                                 <span className="relative z-10 transition-colors duration-300 group-hover:text-white dark:group-hover:text-slate-900">{buttonText}</span>
                                 <span className="relative z-10 transition-transform duration-300 group-hover:translate-x-1 group-hover:text-white dark:group-hover:text-slate-900">→</span>
-                            </a>
+                            </Link>
                         </Magnetic>
                         <Magnetic strength={reduce ? 0 : 0.3}>
                             <a

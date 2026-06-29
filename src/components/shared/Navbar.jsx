@@ -6,6 +6,15 @@ import { AnimatedThemeToggler } from "../ui/animated-theme-toggler";
 import Logo from "./Logo";
 import { useAuth } from "../../context/AuthContext";
 
+// Single source of truth for the top nav — identical on every page.
+const NAV_ITEMS = [
+  { label: "Home", to: "/" },
+  { label: "Menu", to: "/menu" },
+  { label: "Pricing", to: "/pricing" },
+  { label: "About", to: "/about" },
+  { label: "FAQs", to: "/faqs" },
+];
+
 export default function Navbar() {
   const { pathname } = useLocation();
   const navigate = useNavigate();
@@ -36,9 +45,7 @@ export default function Navbar() {
   // Close both on outside click
   useEffect(() => {
     const handler = (e) => {
-      if (menuRef.current && !menuRef.current.contains(e.target)) {
-        setShowMenu(false);
-      }
+      if (menuRef.current && !menuRef.current.contains(e.target)) setShowMenu(false);
       if (
         mobileRef.current && !mobileRef.current.contains(e.target) &&
         mobileToggleRef.current && !mobileToggleRef.current.contains(e.target)
@@ -50,15 +57,8 @@ export default function Navbar() {
     return () => document.removeEventListener("mousedown", handler);
   }, []);
 
-  const toggleMobile = () => {
-    setShowMobile((prev) => !prev);
-    setShowMenu(false); // close profile dropdown when opening mobile menu
-  };
-
-  const toggleMenu = () => {
-    setShowMenu((prev) => !prev);
-    setShowMobile(false); // close mobile menu when opening profile dropdown
-  };
+  const toggleMobile = () => { setShowMobile((p) => !p); setShowMenu(false); };
+  const toggleMenu = () => { setShowMenu((p) => !p); setShowMobile(false); };
 
   const handleSignOut = () => {
     logout();
@@ -67,23 +67,7 @@ export default function Navbar() {
     navigate("/");
   };
 
-  const navLink = (label, to, isAnchor = false) => {
-    const isActive = !isAnchor && pathname === to;
-    const cls = `hover:text-slate-900 dark:hover:text-white transition-colors ${isActive ? "text-slate-900 dark:text-white font-semibold" : ""}`;
-    if (isAnchor) return <a href={to} className={cls}>{label}</a>;
-    return <Link to={to} className={cls}>{label}</Link>;
-  };
-
-  const mobileNavLink = (label, to, isAnchor = false) => {
-    const cls = "px-4 py-3 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors";
-    if (isAnchor) return <a href={to} onClick={() => setShowMobile(false)} className={cls}>{label}</a>;
-    return <Link to={to} onClick={() => setShowMobile(false)} className={cls}>{label}</Link>;
-  };
-
-  const isAbout = pathname === "/about";
-  const isMenu = pathname === "/menu";
-  const isProfile = pathname === "/profile";
-  const isFaqs = pathname === "/faqs";
+  const isActive = (to) => pathname === to;
 
   return (
     <motion.nav
@@ -99,88 +83,53 @@ export default function Navbar() {
           <span className="text-[15px] font-bold tracking-tight text-slate-900 dark:text-white">Kitchens by K</span>
         </Link>
 
-        {/* Desktop links */}
+        {/* Desktop links — uniform across all pages */}
         <div className="hidden md:flex items-center gap-7 text-[13px] text-slate-500 dark:text-slate-400 font-medium">
-          {isProfile ? (
-            <>
-              {navLink("Home", "/")}
-              {navLink("About", "/about")}
-              {navLink("FAQs", "/faqs")}
-              <Link to="/profile" className="text-slate-900 dark:text-white font-semibold">Profile</Link>
-            </>
-          ) : isAbout ? (
-            <>
-              {navLink("Home", "/")}
-              {navLink("Menu", "/menu")}
-              <a href="/#pricing" className="hover:text-slate-900 dark:hover:text-white transition-colors">Pricing</a>
-              <Link to="/about" className="text-slate-900 dark:text-white font-semibold">About</Link>
-              {navLink("FAQs", "/faqs")}
-            </>
-          ) : isMenu ? (
-            <>
-              {navLink("Home", "/")}
-              <Link to="/menu" className="text-slate-900 dark:text-white font-semibold">Menu</Link>
-              {navLink("About", "/about")}
-              {navLink("FAQs", "/faqs")}
-            </>
-          ) : isFaqs ? (
-            <>
-              {navLink("Home", "/")}
-              {navLink("Menu", "/menu")}
-              {navLink("About", "/about")}
-              <Link to="/faqs" className="text-slate-900 dark:text-white font-semibold">FAQs</Link>
-            </>
-          ) : (
-            <>
-              <a href="#how" className="hover:text-slate-900 dark:hover:text-white transition-colors">How It Works</a>
-              <a href="#menu" className="hover:text-slate-900 dark:hover:text-white transition-colors">Menu</a>
-              <a href="#pricing" className="hover:text-slate-900 dark:hover:text-white transition-colors">Pricing</a>
-              {navLink("About", "/about")}
-              {navLink("FAQs", "/faqs")}
-            </>
-          )}
+          {NAV_ITEMS.map((item) => (
+            <Link
+              key={item.to}
+              to={item.to}
+              className={`hover:text-slate-900 dark:hover:text-white transition-colors ${
+                isActive(item.to) ? "text-slate-900 dark:text-white font-semibold" : ""
+              }`}
+            >
+              {item.label}
+            </Link>
+          ))}
         </div>
 
         {/* Right side */}
         <div className="flex items-center gap-3">
           <AnimatedThemeToggler />
 
-          {/* CTA button — desktop */}
-          {isProfile ? null : auth ? (
+          {/* CTA — desktop */}
+          {auth ? (
             <Link to="/profile#active-plan">
               <motion.span whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.96 }}
                 className="hidden md:block bg-slate-900 hover:bg-slate-800 text-white text-[13px] font-semibold px-5 py-2.5 rounded-xl transition-colors dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 cursor-pointer">
                 My Plan
               </motion.span>
             </Link>
-          ) : isAbout ? (
-            <motion.a href="mailto:hello@kitchensbyk.com" whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.96 }}
-              className="hidden md:block bg-slate-900 hover:bg-slate-800 text-white text-[13px] font-semibold px-5 py-2.5 rounded-xl transition-colors">
-              Contact Us
-            </motion.a>
-          ) : isMenu || isFaqs ? (
-            <Link to="/#pricing">
+          ) : (
+            <Link to="/pricing">
               <motion.span whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.96 }}
-                className="hidden md:block bg-slate-900 hover:bg-slate-800 text-white text-[13px] font-semibold px-5 py-2.5 rounded-xl transition-colors dark:bg-white dark:text-slate-900 cursor-pointer">
+                className="hidden md:block bg-slate-900 hover:bg-slate-800 text-white text-[13px] font-semibold px-5 py-2.5 rounded-xl transition-colors dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 cursor-pointer">
                 Get Started
               </motion.span>
             </Link>
-          ) : (
-            <motion.a href="#pricing" whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.96 }}
-              className="hidden md:block bg-slate-900 hover:bg-slate-800 text-white text-[13px] font-semibold px-5 py-2.5 rounded-xl transition-colors dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100">
-              Get Started
-            </motion.a>
           )}
 
           {/* Mobile hamburger */}
           <button ref={mobileToggleRef} onClick={toggleMobile}
+            aria-label={showMobile ? "Close menu" : "Open menu"}
+            aria-expanded={showMobile}
             className="md:hidden flex items-center justify-center w-8 h-8 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
             {showMobile ? <X size={18} className="text-slate-700 dark:text-white" /> : <Menu size={18} className="text-slate-700 dark:text-white" />}
           </button>
 
           {/* Avatar dropdown */}
           <div className="relative" ref={menuRef}>
-            <button onClick={toggleMenu} className="flex items-center gap-1 hover:opacity-80 transition-opacity">
+            <button onClick={toggleMenu} aria-label="Account menu" aria-expanded={showMenu} className="flex items-center gap-1 hover:opacity-80 transition-opacity">
               <div className="w-8 h-8 rounded-full overflow-hidden bg-orange-100 dark:bg-emerald-900/40 flex items-center justify-center">
                 {avatar && auth ? (
                   avatar.startsWith("data:") ? (
@@ -217,12 +166,9 @@ export default function Navbar() {
                       <Link to="/profile" onClick={() => setShowMenu(false)} className="block px-4 py-3 text-[13px] text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors">
                         Profile
                       </Link>
-                      <a href="#" className="block px-4 py-3 text-[13px] text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors">
-                        My Orders
-                      </a>
-                      <a href="#" className="block px-4 py-3 text-[13px] text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors">
-                        Help & Support
-                      </a>
+                      <Link to="/faqs" onClick={() => setShowMenu(false)} className="block px-4 py-3 text-[13px] text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors">
+                        Help & FAQs
+                      </Link>
                       <div className="border-t border-slate-100 dark:border-slate-700" />
                       <button onClick={handleSignOut} className="w-full text-left px-4 py-3 text-[13px] text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors">
                         Sign Out
@@ -230,10 +176,10 @@ export default function Navbar() {
                     </>
                   ) : (
                     <>
-                      <Link to="/signin" className="block px-4 py-3 text-[13px] font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors">
+                      <Link to="/signin" onClick={() => setShowMenu(false)} className="block px-4 py-3 text-[13px] font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors">
                         Sign In
                       </Link>
-                      <Link to="/signup" className="block px-4 py-3 text-[13px] font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors">
+                      <Link to="/signup" onClick={() => setShowMenu(false)} className="block px-4 py-3 text-[13px] font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors">
                         Create Account
                       </Link>
                     </>
@@ -245,7 +191,7 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* Mobile menu */}
+      {/* Mobile menu — uniform across all pages */}
       <AnimatePresence>
         {showMobile && (
           <motion.div
@@ -254,58 +200,28 @@ export default function Navbar() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.2 }}
-            className="md:hidden mt-2 rounded-2xl overflow-y-auto max-h-[75vh] bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border border-slate-200 dark:border-slate-700 shadow-xl"
+            className="glass-strong md:hidden mt-2 rounded-2xl overflow-y-auto max-h-[75vh] bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border border-slate-200 dark:border-slate-700 shadow-xl"
           >
             <div className="flex flex-col p-3 gap-1 text-[14px] font-medium">
-              {isProfile ? (
-                <>
-                  {mobileNavLink("Home", "/")}
-                  {mobileNavLink("About", "/about")}
-                  {mobileNavLink("FAQs", "/faqs")}
-                  {mobileNavLink("Menu", "/menu")}
-                </>
-              ) : isAbout ? (
-                <>
-                  {mobileNavLink("Home", "/")}
-                  {mobileNavLink("Menu", "/menu")}
-                  <a href="/#pricing" onClick={() => setShowMobile(false)} className="px-4 py-3 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">Pricing</a>
-                  {mobileNavLink("About", "/about")}
-                  {mobileNavLink("FAQs", "/faqs")}
-                  <div className="border-t border-slate-100 dark:border-slate-800 my-1" />
-                  <a href="mailto:hello@kitchensbyk.com" onClick={() => setShowMobile(false)} className="mx-1 mt-1 px-4 py-3 rounded-xl text-center bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-semibold">Contact Us</a>
-                </>
-              ) : isMenu ? (
-                <>
-                  {mobileNavLink("Home", "/")}
-                  {mobileNavLink("Menu", "/menu")}
-                  {mobileNavLink("About", "/about")}
-                  {mobileNavLink("FAQs", "/faqs")}
-                  <div className="border-t border-slate-100 dark:border-slate-800 my-1" />
-                  <a href="/#pricing" onClick={() => setShowMobile(false)} className="mx-1 mt-1 px-4 py-3 rounded-xl text-center bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-semibold">Get Started</a>
-                </>
-              ) : isFaqs ? (
-                <>
-                  {mobileNavLink("Home", "/")}
-                  {mobileNavLink("Menu", "/menu")}
-                  {mobileNavLink("About", "/about")}
-                  {mobileNavLink("FAQs", "/faqs")}
-                  <div className="border-t border-slate-100 dark:border-slate-800 my-1" />
-                  <a href="/#pricing" onClick={() => setShowMobile(false)} className="mx-1 mt-1 px-4 py-3 rounded-xl text-center bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-semibold">Get Started</a>
-                </>
+              {NAV_ITEMS.map((item) => (
+                <Link
+                  key={item.to}
+                  to={item.to}
+                  onClick={() => setShowMobile(false)}
+                  className={`px-4 py-3 rounded-xl transition-colors ${
+                    isActive(item.to)
+                      ? "text-slate-900 dark:text-white font-semibold bg-slate-100 dark:bg-slate-800"
+                      : "text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
+                  }`}
+                >
+                  {item.label}
+                </Link>
+              ))}
+              <div className="border-t border-slate-100 dark:border-slate-800 my-1" />
+              {auth ? (
+                <Link to="/profile#active-plan" onClick={() => setShowMobile(false)} className="mx-1 mt-1 px-4 py-3 rounded-xl text-center bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-semibold">My Plan</Link>
               ) : (
-                <>
-                  <a href="#how" onClick={() => setShowMobile(false)} className="px-4 py-3 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">How It Works</a>
-                  <a href="#menu" onClick={() => setShowMobile(false)} className="px-4 py-3 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">Menu</a>
-                  <a href="#pricing" onClick={() => setShowMobile(false)} className="px-4 py-3 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">Pricing</a>
-                  {mobileNavLink("About", "/about")}
-                  {mobileNavLink("FAQs", "/faqs")}
-                  <div className="border-t border-slate-100 dark:border-slate-800 my-1" />
-                  {auth ? (
-                    <Link to="/profile#active-plan" onClick={() => setShowMobile(false)} className="mx-1 mt-1 px-4 py-3 rounded-xl text-center bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-semibold">My Plan</Link>
-                  ) : (
-                    <a href="#pricing" onClick={() => setShowMobile(false)} className="mx-1 mt-1 px-4 py-3 rounded-xl text-center bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-semibold">Get Started</a>
-                  )}
-                </>
+                <Link to="/pricing" onClick={() => setShowMobile(false)} className="mx-1 mt-1 px-4 py-3 rounded-xl text-center bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-semibold">Get Started</Link>
               )}
             </div>
           </motion.div>

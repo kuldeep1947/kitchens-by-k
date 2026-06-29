@@ -239,7 +239,7 @@ function ActivePlan() {
   };
 
   const handleViewPlans = () => {
-    navigate("/#pricing");
+    navigate("/pricing");
   };
 
   return (

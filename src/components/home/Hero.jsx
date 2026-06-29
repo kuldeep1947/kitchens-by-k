@@ -6,7 +6,7 @@ export default function Hero() {
       title="Premium Meals Delivered"
       subtitle="Chef-crafted, nutrition-balanced lunches for Mumbai's busiest professionals. Subscribe once, eat fresh every day."
       buttonText="View Plans"
-      buttonHref="#pricing"
+      buttonHref="/pricing"
       badge="Now Serving Mumbai"
     />
   );

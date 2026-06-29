@@ -40,7 +40,7 @@ export default function Footer() {
                 <Link to="/faqs" className="hover:text-white transition-colors">FAQs</Link>
                 <a href="#how" className="hover:text-white transition-colors">How It Works</a>
                 <a href="#menu" className="hover:text-white transition-colors">Menu</a>
-                <a href="#pricing" className="hover:text-white transition-colors">Pricing</a>
+                <Link to="/pricing" className="hover:text-white transition-colors">Pricing</Link>
               </div>
             </div>
             <div>

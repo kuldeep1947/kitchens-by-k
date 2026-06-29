@@ -5,7 +5,6 @@ import Hero from "./components/home/Hero";
 import FoodShowcase from "./components/home/FoodShowcase";
 import HowItWorks from "./components/home/HowItWorks";
 import MenuSection from "./components/home/MenuSection";
-import PricingSection from "./components/home/PricingSection";
 import Testimonials from "./components/home/Testimonials";
 import SplineShowcase from "./components/home/SplineShowcase";
 
@@ -48,7 +47,6 @@ export default function App() {
       <FoodShowcase />
       <HowItWorks />
       <MenuSection />
-      <PricingSection />
       <Testimonials />
       <SplineShowcase />
     </>
