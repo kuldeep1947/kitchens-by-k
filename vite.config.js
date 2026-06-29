@@ -10,21 +10,19 @@ export default defineConfig({
     tailwindcss(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['favicon.svg', 'app-icon.png'],
+      includeAssets: ['logo-icon.svg', 'apple-touch-icon.png', 'app-icon.png'],
       manifest: {
         name: 'Kitchens by K',
-        short_name: 'K',
+        short_name: 'Kitchens by K',
         description: 'Premium Meals Delivered in Mumbai.',
         theme_color: '#020617',
         background_color: '#020617',
         display: 'standalone',
         icons: [
-          {
-            src: 'app-icon.png',
-            sizes: '512x512',
-            type: 'image/png',
-            purpose: 'any maskable'
-          }
+          { src: 'pwa-192x192.png', sizes: '192x192', type: 'image/png', purpose: 'any' },
+          { src: 'pwa-512x512.png', sizes: '512x512', type: 'image/png', purpose: 'any' },
+          { src: 'pwa-512x512.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' },
+          { src: 'logo-icon.svg', sizes: 'any', type: 'image/svg+xml', purpose: 'any' }
         ]
       }
     })

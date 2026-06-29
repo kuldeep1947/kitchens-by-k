@@ -13,6 +13,56 @@ const quickResponses = {
 
 const FALLBACK = "Thanks for your question! Our team will get back to you shortly at hello@kitchensbyk.com 😊";
 
+// Lightweight intent matcher — scores the query against keyword topics so
+// free-typed questions get a real answer, not just the preset chips.
+const TOPICS = [
+  {
+    keys: ["menu", "dish", "food", "meal", "eat", "week", "today", "special", "thali", "bowl", "biryani", "cuisine"],
+    a: "Our menu rotates weekly across four categories — Executive Thalis, High-Protein Bowls, Regional Specials and Light & Green. This week: Mon Punjabi Thali, Tue Grilled Paneer Bowl, Wed Hyderabadi Biryani, Thu Mediterranean Bowl, Fri South Indian Thali. 🍱 Check the full menu for all 16 variations!",
+  },
+  {
+    keys: ["price", "pricing", "cost", "much", "plan", "rate", "charge", "fee", "budget", "employee", "enterprise", "subscription"],
+    a: "We offer Weekly (5 meals) and Monthly (22 meals) plans, plus custom Enterprise pricing for teams of 50+ with dedicated chef allocation. Head to the Pricing section to build your plan and see exact costs. 📋",
+  },
+  {
+    keys: ["deliver", "delivery", "area", "where", "location", "mumbai", "bkc", "andheri", "powai", "office", "serve", "reach"],
+    a: "We deliver across Mumbai — BKC, Andheri, Powai, Lower Parel, Nariman Point, Goregaon, Malad and more. If your area isn't listed, drop us a line and we'll check feasibility! 🚚",
+  },
+  {
+    keys: ["time", "when", "timing", "noon", "lunch", "hour", "schedule", "early", "arrive"],
+    a: "Meals are cooked fresh each morning and reach your desk before the lunch bell — hot, sealed and on time, every day. ⏰",
+  },
+  {
+    keys: ["custom", "customize", "gluten", "allerg", "diet", "jain", "onion", "garlic", "protein", "calorie", "nutrition", "vegan", "vegetarian", "healthy", "spice"],
+    a: "Every plan supports vegetarian, vegan, gluten-free, low-spice, no onion/garlic and extra-protein options — and macros are balanced by our nutritionists. You can set preferences while choosing your plan. 🥗",
+  },
+  {
+    keys: ["trial", "tasting", "sample", "demo", "try", "free"],
+    a: "For teams of 50+, our Enterprise plan includes a free on-site tasting session before launch. Email hello@kitchensbyk.com and we'll set it up within 24 hours! ✨",
+  },
+  {
+    keys: ["contact", "email", "phone", "whatsapp", "call", "feedback", "support", "help", "reach"],
+    a: "You can reach us at hello@kitchensbyk.com or WhatsApp +91 98765 43210. We'd love to hear from you! 💬",
+  },
+  {
+    keys: ["cancel", "pause", "stop", "skip", "hold", "commitment", "lock", "flexible"],
+    a: "Plans are fully flexible — pause, skip or cancel anytime with no lock-in. Manage everything from your profile. 👍",
+  },
+];
+
+function matchAnswer(query) {
+  if (quickResponses[query]) return quickResponses[query];
+  const q = query.toLowerCase();
+  let best = null;
+  let bestScore = 0;
+  for (const topic of TOPICS) {
+    let score = 0;
+    for (const k of topic.keys) if (q.includes(k)) score++;
+    if (score > bestScore) { bestScore = score; best = topic; }
+  }
+  return best ? best.a : FALLBACK;
+}
+
 export default function AskSection() {
   const [inputValue, setInputValue] = useState("");
   const [asked, setAsked] = useState("");
@@ -30,7 +80,7 @@ export default function AskSection() {
     setFull("");
     setThinking(true);
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const answer = quickResponses[value] || FALLBACK;
+    const answer = matchAnswer(value);
     timers.current.push(setTimeout(() => {
       setThinking(false);
       setFull(reduce ? answer : "");
@@ -59,8 +109,7 @@ export default function AskSection() {
   const handleQuickAction = (q) => ask(q);
 
   return (
-    <section className="py-20 md:py-28 px-6 bg-slate-50 dark:bg-slate-950 relative overflow-hidden">
-      <div className="aurora-mesh absolute left-1/2 top-[10%] h-[420px] w-[680px] -translate-x-1/2 opacity-30" aria-hidden="true" />
+    <section className="px-6 pb-28 pt-4 relative overflow-hidden">
       <div className="max-w-3xl mx-auto text-center relative z-10">
         <Reveal>
           <span className="glass inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-[12px] font-semibold uppercase tracking-[0.15em] text-saffron mb-4">

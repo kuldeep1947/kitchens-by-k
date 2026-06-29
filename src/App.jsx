@@ -8,7 +8,6 @@ import MenuSection from "./components/home/MenuSection";
 import PricingSection from "./components/home/PricingSection";
 import Testimonials from "./components/home/Testimonials";
 import SplineShowcase from "./components/home/SplineShowcase";
-import AskSection from "./components/home/AskSection";
 
 // Ambient aurora orbs that drift on scroll — adds depth behind the whole page.
 function AmbientDepth() {
@@ -52,7 +51,6 @@ export default function App() {
       <PricingSection />
       <Testimonials />
       <SplineShowcase />
-      <AskSection />
     </>
   );
 }

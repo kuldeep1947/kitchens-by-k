@@ -37,6 +37,7 @@ export default function Footer() {
               <p className="text-[11px] font-semibold uppercase tracking-[0.15em] text-slate-500 mb-4">Company</p>
               <div className="flex flex-col gap-3 text-[13px] text-slate-400">
                 <Link to="/about" className="hover:text-white transition-colors">About Us</Link>
+                <Link to="/faqs" className="hover:text-white transition-colors">FAQs</Link>
                 <a href="#how" className="hover:text-white transition-colors">How It Works</a>
                 <a href="#menu" className="hover:text-white transition-colors">Menu</a>
                 <a href="#pricing" className="hover:text-white transition-colors">Pricing</a>

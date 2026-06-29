@@ -2,14 +2,58 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/png" href="/app-icon.png" />
+    <link rel="icon" type="image/svg+xml" href="/logo-icon.svg" />
+    <link rel="icon" type="image/png" href="/pwa-192x192.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#0f172a">
+    <meta name="theme-color" content="#020617">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Kitchens by K">
-    <link rel="apple-touch-icon" href="/app-icon.png">
-    <title>Kitchens by K | Premium Corporate Tiffin Service</title>
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
+    <title>Kitchens by K | Premium Corporate Tiffin Service in Mumbai</title>
+    <meta name="description" content="Chef-crafted, nutrition-balanced corporate lunches delivered fresh across Mumbai. Subscribe once, eat fresh every day — weekly, monthly & enterprise meal plans for busy teams." />
+    <meta name="author" content="Kitchens by K" />
+
+    <link rel="canonical" href="https://kitchens-by-k.vercel.app/" />
+
+    <!-- Open Graph (LinkedIn, WhatsApp, Slack, Facebook) -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Kitchens by K" />
+    <meta property="og:title" content="Kitchens by K | Premium Corporate Tiffin Service" />
+    <meta property="og:description" content="Chef-crafted, nutrition-balanced corporate lunches delivered fresh across Mumbai. Subscribe once, eat fresh every day." />
+    <meta property="og:url" content="https://kitchens-by-k.vercel.app/" />
+    <meta property="og:image" content="https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=1200&h=630&fit=crop&q=80" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+
+    <!-- Twitter / X -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Kitchens by K | Premium Corporate Tiffin Service" />
+    <meta name="twitter:description" content="Chef-crafted, nutrition-balanced corporate lunches delivered fresh across Mumbai." />
+    <meta name="twitter:image" content="https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=1200&h=630&fit=crop&q=80" />
+
+    <!-- Structured data for search engines -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Restaurant",
+        "name": "Kitchens by K",
+        "description": "Premium corporate tiffin service delivering chef-crafted, nutrition-balanced lunches across Mumbai.",
+        "servesCuisine": ["Indian", "Healthy", "Continental"],
+        "priceRange": "$$",
+        "url": "https://kitchens-by-k.vercel.app/",
+        "telephone": "+91-98765-43210",
+        "email": "hello@kitchensbyk.com",
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": "Mumbai",
+          "addressRegion": "MH",
+          "addressCountry": "IN"
+        },
+        "areaServed": "Mumbai"
+      }
+    </script>
     <script>
       (function(){var t=localStorage.getItem('theme');if(t==='dark'||(! t&&window.matchMedia('(prefers-color-scheme:dark)').matches)){document.documentElement.classList.add('dark')}})();
     </script>
