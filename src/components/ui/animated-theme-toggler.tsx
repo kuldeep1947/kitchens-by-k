@@ -62,6 +62,7 @@ export function AnimatedThemeToggler({
   const maskId = `att${rawId.replace(/:/g, "")}`;
   const lastSnd = useRef(0);
   const isFirst = useRef(true);
+  const btnRef = useRef<HTMLButtonElement>(null);
   const [isDark, setIsDark] = useState(false);
 
   useEffect(() => {
@@ -71,11 +72,52 @@ export function AnimatedThemeToggler({
     });
   }, []);
 
-  const toggle = () => {
+  const apply = () => {
     const dark = document.documentElement.classList.toggle("dark");
     setIsDark(dark);
     localStorage.setItem("theme", dark ? "dark" : "light");
+  };
+
+  const toggle = async () => {
     if (sound) tick(lastSnd);
+
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    // Progressive enhancement: circular clip-path reveal via the View Transitions API.
+    const doc = document as Document & {
+      startViewTransition?: (cb: () => void) => { ready: Promise<void> };
+    };
+    if (reduce || !doc.startViewTransition || !btnRef.current) {
+      apply();
+      return;
+    }
+
+    const rect = btnRef.current.getBoundingClientRect();
+    const x = rect.left + rect.width / 2;
+    const y = rect.top + rect.height / 2;
+    const endRadius = Math.hypot(
+      Math.max(x, window.innerWidth - x),
+      Math.max(y, window.innerHeight - y)
+    );
+
+    const transition = doc.startViewTransition(() => apply());
+    try {
+      await transition.ready;
+      document.documentElement.animate(
+        {
+          clipPath: [
+            `circle(0px at ${x}px ${y}px)`,
+            `circle(${endRadius}px at ${x}px ${y}px)`,
+          ],
+        },
+        {
+          duration: 520,
+          easing: "cubic-bezier(0.16, 1, 0.3, 1)",
+          pseudoElement: "::view-transition-new(root)",
+        }
+      );
+    } catch {
+      /* transition unsupported mid-flight — already applied */
+    }
   };
 
   const spring = isFirst.current
@@ -84,6 +126,7 @@ export function AnimatedThemeToggler({
 
   return (
     <motion.button
+      ref={btnRef}
       onClick={toggle}
       whileHover={{ scale: 1.1 }}
       whileTap={{ scale: 0.86 }}

@@ -15,8 +15,8 @@ export default defineConfig({
         name: 'Kitchens by K',
         short_name: 'K',
         description: 'Premium Meals Delivered in Mumbai.',
-        theme_color: '#0f172a',
-        background_color: '#0f172a',
+        theme_color: '#020617',
+        background_color: '#020617',
         display: 'standalone',
         icons: [
           {
@@ -33,6 +33,8 @@ export default defineConfig({
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
     },
+    // Keep a single React copy (good hygiene, avoids duplicate-React issues).
+    dedupe: ['react', 'react-dom'],
   },
   server: {
     historyApiFallback: true,

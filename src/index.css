@@ -1,48 +1,178 @@
-﻿@import "tailwindcss";
+@import "tailwindcss";
 
 @custom-variant dark (&:where(.dark, .dark *));
 
+/* ============================================================================
+   DESIGN TOKENS  —  the single source of truth for the "Culinary Aurora" system
+   ============================================================================ */
 @theme {
+  /* Brand — saffron (light) reskins to emerald (dark); see .dark overrides */
   --color-saffron: #F27D21;
   --color-saffron-light: #F59E4B;
   --color-saffron-dark: #D96A10;
   --color-cream: #FFF7ED;
   --color-warm-50: #FFF7ED;
   --color-warm-100: #FFEDD5;
+
+  /* Aurora accent pair — drives meshes, glows & gradient text */
+  --color-aurora-from: #F27D21;
+  --color-aurora-via: #FBBF24;
+  --color-aurora-to: #10B981;
+
+  /* Fluid display type scale (clamp-based, viewport-responsive) */
+  --text-display: clamp(2.75rem, 7vw, 6rem);
+  --text-display-lg: clamp(2.75rem, 6.5vw, 5.5rem);
+  --text-eyebrow: clamp(0.7rem, 1.4vw, 0.8rem);
+
+  /* Motion system — every animation references these, no magic numbers */
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out-soft: cubic-bezier(0.65, 0, 0.35, 1);
+  --dur-fast: 0.25s;
+  --dur-base: 0.5s;
+  --dur-slow: 0.8s;
+  --dur-slower: 1.2s;
+
+  /* Existing keyframe-backed animation */
   --animate-spotlight: spotlight 2s ease 0.75s 1 forwards;
 }
 
 :root {
+  /* Orbital gradient hues (HSL triplets) */
   --color-1: 25 90% 54%;
   --color-2: 30 85% 55%;
   --color-3: 20 80% 50%;
   --color-4: 35 90% 48%;
+
+  /* Surfaces & elevation — light */
+  --surface-base: #F8FAFC;
+  --surface-raised: #FFFFFF;
+  --glass-bg: rgba(255, 255, 255, 0.55);
+  --glass-border: rgba(15, 23, 42, 0.08);
+  --glass-blur: 16px;
+  --glow: 242 125 33; /* saffron rgb, for glow shadows */
+  --shadow-elev-1: 0 1px 2px rgba(15, 23, 42, 0.06), 0 2px 8px rgba(15, 23, 42, 0.04);
+  --shadow-elev-2: 0 4px 12px rgba(15, 23, 42, 0.08), 0 12px 32px rgba(15, 23, 42, 0.06);
+  --shadow-elev-3: 0 8px 24px rgba(15, 23, 42, 0.1), 0 24px 64px rgba(15, 23, 42, 0.1);
 }
 
 .dark {
   --color-saffron: #059669;
   --color-saffron-light: #10B981;
   --color-saffron-dark: #047857;
+  --color-aurora-from: #10B981;
+  --color-aurora-via: #34D399;
+  --color-aurora-to: #6EE7B7;
   --color-1: 160 85% 35%;
   --color-2: 152 70% 45%;
   --color-3: 170 60% 40%;
   --color-4: 145 80% 30%;
+
+  --surface-base: #020617;
+  --surface-raised: #0B1120;
+  --glass-bg: rgba(15, 23, 42, 0.45);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glow: 16 185 129; /* emerald rgb */
+  --shadow-elev-1: 0 1px 2px rgba(0, 0, 0, 0.4), 0 2px 8px rgba(0, 0, 0, 0.3);
+  --shadow-elev-2: 0 4px 12px rgba(0, 0, 0, 0.45), 0 12px 32px rgba(0, 0, 0, 0.35);
+  --shadow-elev-3: 0 8px 24px rgba(0, 0, 0, 0.5), 0 24px 64px rgba(0, 0, 0, 0.45);
 }
 
+/* ============================================================================
+   BASE
+   ============================================================================ */
 html {
   scroll-behavior: smooth;
 }
 
 body {
   font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  background-color: #F8FAFC;
+  background-color: var(--surface-base);
   color: #1E293B;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
+.dark body,
+:root.dark body {
+  background-color: var(--surface-base);
+  color: #E2E8F0;
+}
+
 button, a {
   touch-action: manipulation;
+}
+
+::selection {
+  background: rgba(242, 125, 33, 0.2);
+  color: #1E293B;
+}
+.dark ::selection {
+  background: rgba(16, 185, 129, 0.3);
+  color: #F1F5F9;
+}
+
+/* Futuristic thin scrollbar */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgb(var(--glow) / 0.4) transparent;
+}
+*::-webkit-scrollbar { width: 8px; height: 8px; }
+*::-webkit-scrollbar-track { background: transparent; }
+*::-webkit-scrollbar-thumb {
+  background: rgb(var(--glow) / 0.35);
+  border-radius: 9999px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+*::-webkit-scrollbar-thumb:hover { background: rgb(var(--glow) / 0.6); background-clip: content-box; }
+
+/* ============================================================================
+   UTILITIES  —  glass, glow, aurora, grain
+   ============================================================================ */
+.glass {
+  background: var(--glass-bg);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(160%);
+  backdrop-filter: blur(var(--glass-blur)) saturate(160%);
+  border: 1px solid var(--glass-border);
+}
+.glass-strong {
+  background: var(--glass-bg);
+  -webkit-backdrop-filter: blur(28px) saturate(180%);
+  backdrop-filter: blur(28px) saturate(180%);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--shadow-elev-2);
+}
+
+.elev-1 { box-shadow: var(--shadow-elev-1); }
+.elev-2 { box-shadow: var(--shadow-elev-2); }
+.elev-3 { box-shadow: var(--shadow-elev-3); }
+
+.glow-saffron { box-shadow: 0 0 40px -8px rgb(var(--glow) / 0.5); }
+.glow-ring { box-shadow: 0 0 0 1px rgb(var(--glow) / 0.25), 0 0 32px -6px rgb(var(--glow) / 0.45); }
+.text-glow { text-shadow: 0 0 28px rgb(var(--glow) / 0.45); }
+
+/* Animated gradient text. padding-bottom prevents background-clip:text from
+   cropping glyph descenders (g, y, p) under tight line-heights. */
+.text-aurora {
+  background-image: linear-gradient(110deg, var(--color-aurora-from), var(--color-aurora-via), var(--color-aurora-to), var(--color-aurora-from));
+  background-size: 250% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  padding-bottom: 0.14em;
+  animation: aurora-pan 8s linear infinite;
+}
+
+/* Animated aurora mesh backdrop (CSS-only, GPU-friendly) */
+.aurora-mesh {
+  background:
+    radial-gradient(40% 50% at 20% 25%, rgb(var(--glow) / 0.22), transparent 70%),
+    radial-gradient(35% 45% at 80% 20%, color-mix(in srgb, var(--color-aurora-via) 30%, transparent), transparent 70%),
+    radial-gradient(45% 55% at 70% 80%, color-mix(in srgb, var(--color-aurora-to) 25%, transparent), transparent 70%),
+    radial-gradient(40% 50% at 25% 85%, rgb(var(--glow) / 0.18), transparent 70%);
+  filter: blur(40px) saturate(140%);
+  animation: aurora-drift 24s var(--ease-in-out-soft) infinite alternate;
 }
 
 .bg-grain {
@@ -50,21 +180,27 @@ button, a {
   pointer-events: none;
 }
 
-.dark body,
-:root.dark body {
-  background-color: #020617;
-  color: #E2E8F0;
+.bg-gradient-orbital {
+  background: linear-gradient(to bottom right, #6366f1, #3b82f6, #14b8a6);
+}
+.shadow-orbital { box-shadow: 0 0 15px rgba(255, 255, 255, 0.1); }
+
+/* Shimmer skeleton */
+.skeleton {
+  background: linear-gradient(100deg, rgb(var(--glow) / 0.04) 30%, rgb(var(--glow) / 0.14) 50%, rgb(var(--glow) / 0.04) 70%);
+  background-size: 200% 100%;
+  animation: shimmer 1.6s linear infinite;
 }
 
-::selection {
-  background: rgba(212, 118, 44, 0.2);
-  color: #1E293B;
+/* ============================================================================
+   KEYFRAMES
+   ============================================================================ */
+@keyframes aurora-pan { to { background-position: 250% 0; } }
+@keyframes aurora-drift {
+  0%   { transform: translate3d(0,0,0) scale(1) rotate(0deg); }
+  100% { transform: translate3d(0,-3%,0) scale(1.12) rotate(8deg); }
 }
-
-.dark ::selection {
-  background: rgba(5, 150, 105, 0.3);
-  color: #F1F5F9;
-}
+@keyframes shimmer { to { background-position: -200% 0; } }
 
 @keyframes steam {
   0% { transform: translateY(0) scaleX(1); opacity: 0; }
@@ -72,10 +208,7 @@ button, a {
   50% { transform: translateY(-20px) scaleX(1.3); opacity: 0.6; }
   100% { transform: translateY(-45px) scaleX(0.8); opacity: 0; }
 }
-
-.steam-particle {
-  animation: steam 2.5s ease-out infinite;
-}
+.steam-particle { animation: steam 2.5s ease-out infinite; }
 
 @keyframes spotlight {
   0% { opacity: 0; }
@@ -94,19 +227,16 @@ button, a {
   50% { top: 50%; right: 25%; }
   75% { top: 25%; right: 50%; }
 }
-
 @keyframes gradient-2 {
   0%, 100% { top: 0; left: 0; }
   60% { top: 75%; left: 25%; }
   85% { top: 50%; left: 50%; }
 }
-
 @keyframes gradient-3 {
   0%, 100% { bottom: 0; left: 0; }
   40% { bottom: 50%; left: 25%; }
   65% { bottom: 25%; left: 50%; }
 }
-
 @keyframes gradient-4 {
   0%, 100% { bottom: 0; right: 0; }
   50% { bottom: 25%; right: 40%; }
@@ -118,18 +248,41 @@ button, a {
   50% { background-position: 100% 50%; }
   100% { background-position: 0% 50%; }
 }
-
 .animate-gradient-text {
   background-size: 200% 200%;
   animation: gradient-shift 4s ease-in-out infinite;
 }
 
-/* Custom gradient for orbital timeline */
-.bg-gradient-orbital {
-  background: linear-gradient(to bottom right, #6366f1, #3b82f6, #14b8a6);
+@keyframes float-y {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
 }
+.animate-float { animation: float-y 6s var(--ease-in-out-soft) infinite; }
 
-/* Custom shadow for orbital nodes */
-.shadow-orbital {
-  box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+/* ============================================================================
+   VIEW TRANSITIONS  —  circular theme reveal (set via JS clip-path origin)
+   ============================================================================ */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+::view-transition-old(root) { z-index: 1; }
+::view-transition-new(root) { z-index: 9999; }
+.dark::view-transition-old(root) { z-index: 9999; }
+.dark::view-transition-new(root) { z-index: 1; }
+
+/* ============================================================================
+   ACCESSIBILITY  —  honor reduced-motion everywhere
+   ============================================================================ */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+  .aurora-mesh, .skeleton, .animate-float, .steam-particle, .text-aurora { animation: none !important; }
+  ::view-transition-old(root), ::view-transition-new(root) { animation: none !important; }
 }

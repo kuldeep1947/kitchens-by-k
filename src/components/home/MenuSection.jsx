@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 import Reveal, { scaleIn } from "../shared/Reveal";
+import SmartImage from "../ui/smart-image";
 
 function MenuCard({ item, i, expanded, setExpanded, featured = false, flipLayout = false }) {
   return (
@@ -10,14 +11,15 @@ function MenuCard({ item, i, expanded, setExpanded, featured = false, flipLayout
       <div
         role="button"
         tabIndex={0}
+        aria-expanded={expanded === i}
         onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setExpanded(expanded === i ? null : i); } }}
-        className={`group bg-white/70 dark:bg-white/5 backdrop-blur-md border border-white/40 dark:border-slate-700/40 rounded-3xl overflow-hidden shadow-sm hover:shadow-xl hover:shadow-slate-200/40 dark:hover:shadow-black/20 transition-all duration-500 cursor-pointer ${
+        className={`group glass rounded-3xl overflow-hidden transition-all duration-500 cursor-pointer hover:glow-ring ${
           featured ? `flex flex-col md:h-[280px] ${flipLayout ? "md:flex-row-reverse" : "md:flex-row"}` : ""
         }`}
         onClick={() => setExpanded(expanded === i ? null : i)}
       >
         <div className={`overflow-hidden relative ${ featured ? "md:w-1/2 h-56 md:h-full" : "h-56" }`}>
-          <img src={item.img} alt={item.name} loading="lazy" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+          <SmartImage src={item.img} alt={item.name} className="absolute inset-0 w-full h-full" imgClassName="transition-transform duration-700 group-hover:scale-110" />
           <div className="absolute top-3 left-3">
             <span className="text-[11px] font-semibold text-white bg-black/40 backdrop-blur-sm px-2.5 py-1 rounded-full">{item.category}</span>
           </div>
@@ -82,7 +84,7 @@ export default function MenuSection() {
         <Reveal custom={1}>
           <div className="flex items-end justify-between mb-8">
             <h2 className="text-3xl md:text-5xl font-extrabold tracking-tighter text-slate-900 dark:text-white">
-              Today&apos;s specials.<br /><span className="text-slate-400">Always fresh.</span>
+              Today&apos;s specials.<br /><span className="text-aurora">Always fresh.</span>
             </h2>
             <Link to="/menu">
               <motion.span whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}
@@ -95,19 +97,26 @@ export default function MenuSection() {
 
         <Reveal custom={2}>
           <div className="flex gap-2 mb-6 flex-wrap">
-            {filters.map((f) => (
-              <button
-                key={f}
-                onClick={() => { setActiveFilter(f); setExpanded(null); }}
-                className={`px-5 py-2 rounded-full text-[13px] font-semibold border transition-all ${
-                  activeFilter === f
-                    ? "bg-saffron text-white border-saffron shadow-lg shadow-saffron/20"
-                    : "border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:border-saffron hover:text-saffron"
-                }`}
-              >
-                {f}
-              </button>
-            ))}
+            {filters.map((f) => {
+              const active = activeFilter === f;
+              return (
+                <button
+                  key={f}
+                  onClick={() => { setActiveFilter(f); setExpanded(null); }}
+                  className={`relative px-5 py-2 rounded-full text-[13px] font-semibold border transition-colors ${
+                    active
+                      ? "border-transparent text-white"
+                      : "border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:border-saffron hover:text-saffron"
+                  }`}
+                >
+                  {active && (
+                    <motion.span layoutId="homeMenuFilterPill" transition={{ type: "spring", stiffness: 400, damping: 32 }}
+                      className="absolute inset-0 rounded-full bg-saffron shadow-lg shadow-saffron/30" />
+                  )}
+                  <span className="relative z-10">{f}</span>
+                </button>
+              );
+            })}
           </div>
           <div className="md:hidden mb-8">
             <Link to="/menu" className="inline-flex items-center gap-2 text-[13px] font-semibold text-saffron hover:text-amber-600 transition-colors">

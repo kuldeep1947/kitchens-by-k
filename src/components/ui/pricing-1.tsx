@@ -1,6 +1,7 @@
-import { CheckIcon, X, ChevronRight, CreditCard, UtensilsCrossed, Users, Building2, CalendarDays } from "lucide-react";
+import { CheckIcon, X, ChevronRight, CreditCard, Users, Building2, CalendarDays } from "lucide-react";
 import React, { useState } from "react";
 import { createPortal } from "react-dom";
+import { fireConfetti } from "./confetti";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import SpotlightCard from "./spotlight-card";
@@ -293,6 +294,7 @@ function PlanModal({ plan, onClose, navigate }: { plan: any; onClose: () => void
   }, []);
 
   const [step, setStep] = useState<StepType>(pending ? "payment" : steps[0]);
+  const [success, setSuccess] = useState<string | null>(null);
   const [selectedMeals, setSelectedMeals] = useState<string[]>(pending?.selectedMeals || []);
   const [selectedCustomizations, setSelectedCustomizations] = useState<string[]>(pending?.selectedCustomizations || []);
 
@@ -359,22 +361,57 @@ function PlanModal({ plan, onClose, navigate }: { plan: any; onClose: () => void
   const basePrice = getBasePrice();
   const finalPrice = basePrice + totalExtras;
 
+  // a11y: Escape to close + lock background scroll while the dialog is open
+  React.useEffect(() => {
+    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") onClose(); };
+    document.addEventListener("keydown", onKey);
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => { document.removeEventListener("keydown", onKey); document.body.style.overflow = prev; };
+  }, [onClose]);
+
   return createPortal(
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
+      className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-md"
       onClick={onClose}
     >
       <motion.div
-        initial={{ opacity: 0, scale: 0.95, y: 20 }}
+        role="dialog"
+        aria-modal="true"
+        aria-label={`${plan.title} plan checkout`}
+        initial={{ opacity: 0, scale: 0.92, y: 30 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
-        exit={{ opacity: 0, scale: 0.95, y: 20 }}
-        transition={{ duration: 0.2, ease: "easeOut" }}
-        className="relative w-full max-w-lg max-h-[85vh] bg-white dark:bg-slate-900 rounded-3xl shadow-2xl border border-slate-200 dark:border-slate-700 overflow-hidden flex flex-col"
+        exit={{ opacity: 0, scale: 0.94, y: 20 }}
+        transition={{ type: "spring", stiffness: 260, damping: 26 }}
+        className="glass-strong relative flex max-h-[85vh] w-full max-w-lg flex-col overflow-hidden rounded-3xl glow-ring"
         onClick={(e) => e.stopPropagation()}
       >
+        <AnimatePresence>
+          {success && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="glass-strong absolute inset-0 z-20 flex flex-col items-center justify-center gap-4 p-12 text-center"
+            >
+              <motion.div
+                initial={{ scale: 0, rotate: -20 }}
+                animate={{ scale: 1, rotate: 0 }}
+                transition={{ type: "spring", stiffness: 240, damping: 15 }}
+                className="flex h-16 w-16 items-center justify-center rounded-full bg-emerald-500 text-white shadow-lg shadow-emerald-500/40"
+              >
+                <CheckIcon size={32} />
+              </motion.div>
+              <h3 className="text-xl font-bold text-slate-900 dark:text-white">
+                {isEnterprise ? "Request received!" : "Payment successful!"}
+              </h3>
+              <p className="max-w-xs text-sm text-slate-500 dark:text-slate-400">{success}</p>
+            </motion.div>
+          )}
+        </AnimatePresence>
         {/* Header */}
         <div className="p-6 pb-4 border-b border-slate-100 dark:border-slate-800 shrink-0">
           <div className="flex items-center justify-between">
@@ -408,9 +445,12 @@ function PlanModal({ plan, onClose, navigate }: { plan: any; onClose: () => void
                   onClick={() => {
                     const currentIdx = steps.indexOf(step);
                     const targetIdx = steps.indexOf(s);
-                    if (targetIdx <= currentIdx) setStep(s);
-                    if (s === "meals" && isEnterprise && !employeeCount) return;
+                    // Backward navigation is always allowed.
+                    if (targetIdx <= currentIdx) { setStep(s); return; }
+                    // Forward navigation must satisfy each step's prerequisites.
+                    if (isEnterprise && targetIdx > steps.indexOf("details") && (!employeeCount || !companyName)) return;
                     if ((s === "customize" || s === "payment") && selectedMeals.length === 0) return;
+                    setStep(s);
                   }}
                   className={`text-[11px] font-semibold uppercase tracking-wide px-2.5 py-1 rounded-full transition-colors whitespace-nowrap ${
                     step === s
@@ -857,8 +897,9 @@ function PlanModal({ plan, onClose, navigate }: { plan: any; onClose: () => void
 
                   if (!billingName || !billingEmail || !billingPhone) return;
 
+                  let msg: string;
                   if (isEnterprise) {
-                    alert(`Request submitted! We'll send a custom quote for ${companyName} (${employeeCount} employees) within 24 hours. 🎉`);
+                    msg = `We'll send a custom quote for ${companyName} (${employeeCount} employees) within 24 hours.`;
                   } else {
                     localStorage.setItem("kbk_active_plan", JSON.stringify({
                       title: plan.title,
@@ -878,10 +919,12 @@ function PlanModal({ plan, onClose, navigate }: { plan: any; onClose: () => void
                       }).filter(Boolean),
                       customizations: selectedCustomizations.map((id) => customizations.find((c) => c.id === id)?.label).filter(Boolean),
                     }));
-                    alert(`Payment successful! Your ${plan.title} plan is now active. 🎉`);
+                    msg = `Your ${plan.title} plan is now active. Enjoy fresh meals every day!`;
                   }
                   localStorage.removeItem("kbk_pending_plan");
-                  onClose();
+                  fireConfetti();
+                  setSuccess(msg);
+                  setTimeout(onClose, 2900);
                 }}
                 disabled={!!localStorage.getItem("kbk_auth") && (!billingName || !billingEmail || !billingPhone)}
                 className={`flex-1 py-3 rounded-2xl font-semibold text-[14px] transition-all cursor-pointer flex items-center justify-center gap-2 ${

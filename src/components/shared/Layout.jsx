@@ -4,6 +4,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ArrowUp } from "lucide-react";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
+import SpotlightCursor from "../ui/spotlight-cursor";
+import PWAManager from "../ui/pwa-manager";
 
 function BackToTop() {
   const [visible, setVisible] = useState(false);
@@ -18,12 +20,14 @@ function BackToTop() {
     <AnimatePresence>
       {visible && (
         <motion.button
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: [0, -4, 0] }}
-          exit={{ opacity: 0, y: 10 }}
-          transition={{ duration: 0.2, y: { duration: 1.5, repeat: Infinity, ease: "easeInOut" } }}
+          initial={{ opacity: 0, y: 10, scale: 0.8 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          exit={{ opacity: 0, y: 10, scale: 0.8 }}
+          whileHover={{ y: -3 }}
+          whileTap={{ scale: 0.92 }}
+          transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-          className="fixed bottom-6 right-6 z-50 text-saffron dark:text-emerald-500 hover:text-saffron-dark dark:hover:text-emerald-400 transition-colors"
+          className="glass-strong fixed bottom-6 right-6 z-50 flex h-11 w-11 items-center justify-center rounded-full text-saffron dark:text-emerald-400 glow-saffron"
           aria-label="Back to top"
         >
           <ArrowUp size={18} />
@@ -35,13 +39,15 @@ function BackToTop() {
 
 export default function Layout() {
   return (
-    <div className="overflow-x-hidden">
+    <div className="overflow-x-clip">
+      <SpotlightCursor />
       <Navbar />
       <main className="min-h-screen">
         <Outlet />
       </main>
       <Footer />
       <BackToTop />
+      <PWAManager />
     </div>
   );
 }

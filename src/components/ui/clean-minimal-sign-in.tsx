@@ -58,6 +58,7 @@ const SignIn2 = () => {
         <p className="text-gray-500 dark:text-slate-400 text-sm mb-6 text-center">
           Sign in with your email or mobile number
         </p>
+        <form onSubmit={(e) => { e.preventDefault(); handleSignIn(); }} className="w-full flex flex-col items-center">
         <div className="w-full flex flex-col gap-3 mb-2">
           <div className="relative">
             <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
@@ -65,6 +66,8 @@ const SignIn2 = () => {
             </span>
             <input
               placeholder="Email or mobile number"
+              aria-label="Email or mobile number"
+              autoComplete="username"
               type="text"
               value={identifier}
               className="w-full pl-10 pr-3 py-2 rounded-xl border border-gray-200 dark:border-slate-600 focus:outline-none focus:ring-2 focus:ring-emerald-200 dark:focus:ring-emerald-800 bg-gray-50 dark:bg-slate-800 text-black dark:text-white text-sm"
@@ -77,6 +80,8 @@ const SignIn2 = () => {
             </span>
             <input
               placeholder="Password"
+              aria-label="Password"
+              autoComplete="current-password"
               type={showPassword ? "text" : "password"}
               value={password}
               className="w-full pl-10 pr-10 py-2 rounded-xl border border-gray-200 dark:border-slate-600 focus:outline-none focus:ring-2 focus:ring-emerald-200 dark:focus:ring-emerald-800 bg-gray-50 dark:bg-slate-800 text-black dark:text-white text-sm"
@@ -84,6 +89,7 @@ const SignIn2 = () => {
             />
             <button
               type="button"
+              aria-label={showPassword ? "Hide password" : "Show password"}
               onClick={() => setShowPassword(!showPassword)}
               className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-slate-300 transition-colors"
             >
@@ -92,19 +98,20 @@ const SignIn2 = () => {
           </div>
           <div className="w-full flex justify-between items-center">
             {error && (
-              <div className="text-sm text-red-500 text-left">{error}</div>
+              <div role="alert" className="text-sm text-red-500 text-left">{error}</div>
             )}
-            <button className="text-xs hover:underline font-medium text-slate-600 dark:text-slate-400 ml-auto">
+            <button type="button" className="text-xs hover:underline font-medium text-slate-600 dark:text-slate-400 ml-auto">
               Forgot password?
             </button>
           </div>
         </div>
         <button
-          onClick={handleSignIn}
+          type="submit"
           className="w-full bg-gradient-to-b from-slate-700 to-slate-900 dark:from-white dark:to-slate-200 text-white dark:text-slate-900 font-medium py-2 rounded-xl shadow hover:brightness-105 cursor-pointer transition mb-4 mt-2"
         >
           Sign In
         </button>
+        </form>
         <div className="flex items-center w-full my-2">
           <div className="flex-grow border-t border-dashed border-gray-200 dark:border-slate-700"></div>
           <span className="mx-2 text-xs text-gray-400 dark:text-slate-500">Or sign in with</span>
@@ -186,6 +193,7 @@ const SignUp = () => {
         <p className="text-gray-500 dark:text-slate-400 text-sm mb-6 text-center">
           Join Kitchens by K and start ordering fresh meals
         </p>
+        <form onSubmit={(e) => { e.preventDefault(); handleSignUp(); }} className="w-full flex flex-col items-center">
         <div className="w-full flex flex-col gap-3 mb-2">
           <div className="flex gap-3">
             <div className="relative flex-1">
@@ -194,6 +202,8 @@ const SignUp = () => {
               </span>
               <input
                 placeholder="First name"
+                aria-label="First name"
+                autoComplete="given-name"
                 type="text"
                 value={firstName}
                 className="w-full pl-10 pr-3 py-2 rounded-xl border border-gray-200 dark:border-slate-600 focus:outline-none focus:ring-2 focus:ring-emerald-200 dark:focus:ring-emerald-800 bg-gray-50 dark:bg-slate-800 text-black dark:text-white text-sm"
@@ -240,6 +250,8 @@ const SignUp = () => {
             </span>
             <input
               placeholder="Password"
+              aria-label="Password"
+              autoComplete="new-password"
               type={showPassword ? "text" : "password"}
               value={password}
               className="w-full pl-10 pr-10 py-2 rounded-xl border border-gray-200 dark:border-slate-600 focus:outline-none focus:ring-2 focus:ring-emerald-200 dark:focus:ring-emerald-800 bg-gray-50 dark:bg-slate-800 text-black dark:text-white text-sm"
@@ -247,6 +259,7 @@ const SignUp = () => {
             />
             <button
               type="button"
+              aria-label={showPassword ? "Hide password" : "Show password"}
               onClick={() => setShowPassword(!showPassword)}
               className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-slate-300 transition-colors"
             >
@@ -254,15 +267,16 @@ const SignUp = () => {
             </button>
           </div>
           {error && (
-            <div className="text-sm text-red-500 text-left">{error}</div>
+            <div role="alert" className="text-sm text-red-500 text-left">{error}</div>
           )}
         </div>
         <button
-          onClick={handleSignUp}
+          type="submit"
           className="w-full bg-gradient-to-b from-slate-700 to-slate-900 dark:from-white dark:to-slate-200 text-white dark:text-slate-900 font-medium py-2 rounded-xl shadow hover:brightness-105 cursor-pointer transition mb-4 mt-2"
         >
           Create Account
         </button>
+        </form>
         <div className="flex items-center w-full my-2">
           <div className="flex-grow border-t border-dashed border-gray-200 dark:border-slate-700"></div>
           <span className="mx-2 text-xs text-gray-400 dark:text-slate-500">Or sign up with</span>

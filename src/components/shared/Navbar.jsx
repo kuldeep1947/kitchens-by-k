@@ -91,7 +91,7 @@ export default function Navbar() {
       transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
       className="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[95%] max-w-5xl"
     >
-      <div className="bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl border border-white/40 dark:border-slate-700/40 shadow-lg shadow-slate-200/30 dark:shadow-black/20 rounded-2xl px-6 py-3.5 flex items-center justify-between">
+      <div className="glass-strong rounded-2xl px-6 py-3.5 flex items-center justify-between">
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2.5">
           <Logo className="w-8 h-8" />
@@ -178,7 +178,7 @@ export default function Navbar() {
                   )
                 ) : auth ? (
                   <span className="text-[11px] font-bold text-orange-700 dark:text-emerald-400">
-                    {auth.name.split(" ").map((n) => n[0]).join("").slice(0, 2).toUpperCase()}
+                    {(auth.name || "").split(" ").map((n) => n[0]).join("").slice(0, 2).toUpperCase() || "U"}
                   </span>
                 ) : (
                   <User size={16} className="text-orange-700 dark:text-emerald-400" />
@@ -194,7 +194,7 @@ export default function Navbar() {
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   exit={{ opacity: 0, y: 8, scale: 0.95 }}
                   transition={{ duration: 0.15 }}
-                  className="absolute right-0 top-12 w-48 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-xl shadow-slate-200/50 dark:shadow-black/30 overflow-hidden"
+                  className="absolute right-0 top-12 w-48 rounded-xl overflow-hidden bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border border-slate-200 dark:border-slate-700 shadow-xl shadow-black/10 dark:shadow-black/40"
                 >
                   {auth ? (
                     <>
@@ -242,7 +242,7 @@ export default function Navbar() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.2 }}
-            className="md:hidden mt-2 bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border border-white/40 dark:border-slate-700/40 rounded-2xl shadow-lg overflow-y-auto max-h-[75vh]"
+            className="md:hidden mt-2 rounded-2xl overflow-y-auto max-h-[75vh] bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border border-slate-200 dark:border-slate-700 shadow-xl"
           >
             <div className="flex flex-col p-3 gap-1 text-[14px] font-medium">
               {isProfile ? (

@@ -50,7 +50,7 @@ function PersonalInfo() {
 
   return (
     <Reveal variants={scaleIn} custom={0}>
-      <div className="bg-white/70 dark:bg-slate-800/70 backdrop-blur-md border border-white/40 dark:border-slate-700/40 rounded-3xl p-8 shadow-sm">
+      <div className="glass rounded-3xl p-8 shadow-sm">
         <div className="flex items-center gap-3 mb-6">
           <div className="w-10 h-10 rounded-xl bg-saffron/10 flex items-center justify-center">
             <User size={18} className="text-saffron" />
@@ -244,7 +244,7 @@ function ActivePlan() {
 
   return (
     <Reveal variants={scaleIn} custom={1}>
-      <div id="active-plan" className="bg-white/70 dark:bg-slate-800/70 backdrop-blur-md border border-white/40 dark:border-slate-700/40 rounded-3xl p-8 shadow-sm">
+      <div id="active-plan" className="glass rounded-3xl p-8 shadow-sm">
         <div className="flex items-center gap-3 mb-6">
           <div className="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-900/30 flex items-center justify-center">
             <Sparkles size={18} className="text-emerald-600 dark:text-emerald-400" />
@@ -417,7 +417,7 @@ function Addresses() {
 
   return (
     <Reveal variants={scaleIn} custom={3}>
-      <div className="bg-white/70 dark:bg-slate-800/70 backdrop-blur-md border border-white/40 dark:border-slate-700/40 rounded-3xl p-8 shadow-sm overflow-visible relative z-10">
+      <div className="glass rounded-3xl p-8 shadow-sm overflow-visible relative z-10">
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center">
@@ -622,7 +622,7 @@ function ChangePassword() {
 
   return (
     <Reveal variants={scaleIn} custom={3}>
-      <div className="bg-white/70 dark:bg-slate-800/70 backdrop-blur-md border border-white/40 dark:border-slate-700/40 rounded-3xl p-8 shadow-sm">
+      <div className="glass rounded-3xl p-8 shadow-sm">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-700 flex items-center justify-center">
@@ -703,8 +703,6 @@ export default function Profile() {
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 overflow-x-hidden antialiased transition-colors duration-300">
       <section className="relative pt-32 pb-20 md:pt-40 md:pb-28 px-6 overflow-hidden">
-        <div className="absolute top-[0%] left-[10%] w-[600px] h-[600px] bg-emerald-200/[0.12] rounded-full blur-[160px] pointer-events-none" />
-        <div className="absolute bottom-[0%] right-[5%] w-[500px] h-[500px] bg-saffron/[0.06] rounded-full blur-[140px] pointer-events-none" />
         <div className="max-w-4xl mx-auto text-center relative z-10">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.2 }}>
             <Link to="/" className="inline-flex items-center gap-2 text-[13px] text-slate-400 hover:text-slate-600 transition-colors mb-8">
@@ -719,7 +717,7 @@ export default function Profile() {
             className="text-4xl sm:text-5xl md:text-[4.5rem] font-extrabold leading-[0.95] tracking-tighter text-slate-900 dark:text-white">
             Your profile,
             <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-saffron via-amber-500 to-emerald-500">your way.</span>
+            <span className="text-aurora text-glow">your way.</span>
           </motion.h1>
         </div>
       </section>

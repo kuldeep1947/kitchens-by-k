@@ -29,12 +29,12 @@ export default function Testimonials() {
           viewport={{ once: true }}
           className="flex flex-col items-center justify-center max-w-[540px] mx-auto"
         >
-          <span className="inline-flex items-center gap-2 text-[11px] font-semibold tracking-[0.15em] uppercase text-saffron bg-saffron/[0.06] border border-saffron/10 rounded-full px-4 py-1.5">
+          <span className="glass inline-flex items-center gap-2 text-[11px] font-semibold tracking-[0.15em] uppercase text-saffron rounded-full px-4 py-1.5">
             <span className="w-1.5 h-1.5 rounded-full bg-saffron animate-pulse" />
             Social Proof
           </span>
           <h2 className="text-3xl md:text-5xl font-extrabold tracking-tighter text-slate-900 dark:text-white mt-5 text-center">
-            Loved across Mumbai.
+            Loved across <span className="text-aurora">Mumbai.</span>
           </h2>
           <p className="text-center mt-4 text-slate-500 text-[15px]">
             See what teams across the city have to say about us.

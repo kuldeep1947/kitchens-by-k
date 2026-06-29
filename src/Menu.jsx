@@ -3,6 +3,10 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Link } from "react-router-dom";
 import { ArrowLeft, ChevronDown } from "lucide-react";
 import Reveal from "./components/shared/Reveal";
+import AuroraBackground from "./components/ui/aurora-background";
+import TiltCard from "./components/ui/tilt-card";
+import NutritionRing from "./components/ui/nutrition-ring";
+import SmartImage from "./components/ui/smart-image";
 
 const TAGS = {
   veg: { label: "Veg", color: "text-emerald-600 bg-emerald-50 dark:bg-emerald-900/20 dark:text-emerald-400" },
@@ -76,69 +80,58 @@ const categories = [
   },
 ];
 
-function NutritionBar({ label, value, max, color }) {
-  return (
-    <div className="flex items-center gap-2">
-      <span className="text-[11px] text-slate-400 w-14 shrink-0">{label}</span>
-      <div className="flex-1 h-1.5 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden">
-        <motion.div
-          initial={{ width: 0 }}
-          animate={{ width: `${Math.min((value / max) * 100, 100)}%` }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
-          className={`h-full rounded-full ${color}`}
-        />
-      </div>
-      <span className="text-[11px] font-medium text-slate-500 dark:text-slate-400 w-8 text-right">{value}g</span>
-    </div>
-  );
-}
-
 function MealCard({ item, index }) {
   const [open, setOpen] = useState(false);
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: index * 0.08, duration: 0.5 }}
-      className="bg-white dark:bg-slate-800/70 border border-slate-100 dark:border-slate-700/50 rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300"
+      initial={{ opacity: 0, y: 24 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.3 }}
+      transition={{ delay: index * 0.06, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
     >
-      <button className="w-full text-left p-5" onClick={() => setOpen(!open)}>
-        <div className="flex items-start justify-between gap-3">
-          <div className="flex-1 min-w-0">
-            <div className="flex flex-wrap gap-1.5 mb-2">
-              {item.tags.map((t) => (
-                <span key={t} className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${TAGS[t].color}`}>{TAGS[t].label}</span>
-              ))}
+      <TiltCard max={5} className="h-full">
+        <div className="glass-strong group h-full overflow-hidden rounded-2xl transition-shadow duration-300 hover:glow-ring">
+          <button className="w-full text-left p-5" onClick={() => setOpen(!open)} aria-expanded={open}>
+            <div className="flex items-start justify-between gap-3">
+              <div className="min-w-0 flex-1">
+                <div className="mb-2 flex flex-wrap gap-1.5">
+                  {item.tags.map((t) => (
+                    <span key={t} className={`rounded-full px-2 py-0.5 text-[10px] font-semibold ${TAGS[t].color}`}>{TAGS[t].label}</span>
+                  ))}
+                </div>
+                <h4 className="text-[15px] font-bold text-slate-900 dark:text-white">{item.name}</h4>
+                <p className="mt-1 text-[13px] leading-relaxed text-slate-500 dark:text-slate-400">{item.desc}</p>
+              </div>
+              <div className="flex shrink-0 flex-col items-end gap-2">
+                <span className="rounded-full bg-saffron/10 px-2.5 py-1 text-[12px] font-bold text-saffron">{item.cal} kcal</span>
+                <motion.div animate={{ rotate: open ? 180 : 0 }} transition={{ duration: 0.2 }}>
+                  <ChevronDown size={16} className="text-slate-400" />
+                </motion.div>
+              </div>
             </div>
-            <h4 className="font-bold text-slate-900 dark:text-white text-[15px]">{item.name}</h4>
-            <p className="text-[13px] text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">{item.desc}</p>
-          </div>
-          <div className="flex flex-col items-end gap-2 shrink-0">
-            <span className="text-[13px] font-bold text-saffron">{item.cal} kcal</span>
-            <motion.div animate={{ rotate: open ? 180 : 0 }} transition={{ duration: 0.2 }}>
-              <ChevronDown size={16} className="text-slate-400" />
-            </motion.div>
-          </div>
+          </button>
+          <AnimatePresence initial={false}>
+            {open && (
+              <motion.div
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: "auto", opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                transition={{ duration: 0.3 }}
+                className="overflow-hidden"
+              >
+                <div className="border-t border-slate-200/50 px-5 pb-6 pt-5 dark:border-slate-700/40">
+                  <p className="mb-4 text-[11px] font-semibold uppercase tracking-wider text-slate-400">Macros per serving</p>
+                  <div className="flex items-center justify-around gap-2 text-blue-500 dark:text-emerald-400">
+                    <span className="text-blue-500"><NutritionRing value={item.protein} max={50} sublabel={`${item.protein}g`} label="Protein" color="#3b82f6" /></span>
+                    <NutritionRing value={item.carbs} max={120} sublabel={`${item.carbs}g`} label="Carbs" color="#f59e0b" />
+                    <NutritionRing value={item.fat} max={40} sublabel={`${item.fat}g`} label="Fat" color="#f43f5e" />
+                  </div>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
-      </button>
-      <AnimatePresence>
-        {open && (
-          <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.3 }}
-            className="overflow-hidden"
-          >
-            <div className="px-5 pb-5 border-t border-slate-100 dark:border-slate-700/50 pt-4 space-y-2">
-              <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-400 mb-3">Nutrition per serving</p>
-              <NutritionBar label="Protein" value={item.protein} max={50} color="bg-blue-400" />
-              <NutritionBar label="Carbs" value={item.carbs} max={120} color="bg-amber-400" />
-              <NutritionBar label="Fat" value={item.fat} max={40} color="bg-rose-400" />
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      </TiltCard>
     </motion.div>
   );
 }
@@ -146,32 +139,31 @@ function MealCard({ item, index }) {
 function CategorySection({ cat, index }) {
   const [open, setOpen] = useState(index === 0);
   return (
-    <Reveal custom={index}>
-      <div className={`rounded-3xl border ${cat.border} ${cat.bg} overflow-hidden`}>
-        {/* Category header */}
-        <button className="w-full text-left" onClick={() => setOpen(!open)}>
-          <div className="flex flex-col md:flex-row md:items-center gap-0">
-            <div className="md:w-72 h-48 md:h-auto overflow-hidden shrink-0">
-              <img src={cat.img} alt={cat.name} loading="lazy" className="w-full h-full object-cover" />
+    <Reveal custom={index} variants={undefined}>
+      <div className={`overflow-hidden rounded-3xl border ${cat.border} glass`}>
+        <button className="w-full text-left" onClick={() => setOpen(!open)} aria-expanded={open}>
+          <div className="flex flex-col gap-0 md:flex-row md:items-stretch">
+            <div className="group relative h-48 shrink-0 overflow-hidden md:h-auto md:w-72 md:min-h-[200px]">
+              <SmartImage src={cat.img} alt={cat.name} className="absolute inset-0 h-full w-full" imgClassName="transition-transform duration-700 group-hover:scale-110" />
+              <div className={`absolute inset-0 bg-gradient-to-tr ${cat.color} opacity-20 mix-blend-overlay`} />
             </div>
-            <div className="flex-1 p-6 md:p-8 flex items-start justify-between gap-4">
+            <div className="flex flex-1 items-start justify-between gap-4 p-6 md:p-8">
               <div>
-                <span className={`inline-block text-transparent bg-clip-text bg-gradient-to-r ${cat.color} text-[11px] font-bold uppercase tracking-[0.2em] mb-2`}>
+                <span className={`mb-2 inline-block bg-gradient-to-r bg-clip-text text-[11px] font-bold uppercase tracking-[0.2em] text-transparent ${cat.color}`}>
                   Category
                 </span>
-                <h3 className="text-2xl md:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">{cat.name}</h3>
-                <p className="text-[14px] text-slate-500 dark:text-slate-400 mt-2 max-w-md leading-relaxed">{cat.desc}</p>
-                <p className="text-[12px] text-slate-400 mt-3">{cat.items.length} variations available</p>
+                <h3 className="text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white md:text-3xl">{cat.name}</h3>
+                <p className="mt-2 max-w-md text-[14px] leading-relaxed text-slate-500 dark:text-slate-400">{cat.desc}</p>
+                <p className="mt-3 text-[12px] text-slate-400">{cat.items.length} variations available</p>
               </div>
-              <motion.div animate={{ rotate: open ? 180 : 0 }} transition={{ duration: 0.3 }} className="shrink-0 mt-1">
+              <motion.div animate={{ rotate: open ? 180 : 0 }} transition={{ duration: 0.3 }} className="mt-1 shrink-0">
                 <ChevronDown size={22} className="text-slate-400" />
               </motion.div>
             </div>
           </div>
         </button>
 
-        {/* Sub items */}
-        <AnimatePresence>
+        <AnimatePresence initial={false}>
           {open && (
             <motion.div
               initial={{ height: 0, opacity: 0 }}
@@ -180,7 +172,7 @@ function CategorySection({ cat, index }) {
               transition={{ duration: 0.4 }}
               className="overflow-hidden"
             >
-              <div className="px-6 md:px-8 pb-8 pt-2 grid sm:grid-cols-2 gap-4 border-t border-slate-200/50 dark:border-slate-700/30">
+              <div className="grid gap-4 border-t border-slate-200/40 px-6 pb-8 pt-4 dark:border-slate-700/30 sm:grid-cols-2 md:px-8">
                 {cat.items.map((item, i) => (
                   <MealCard key={item.name} item={item} index={i} />
                 ))}
@@ -196,7 +188,6 @@ function CategorySection({ cat, index }) {
 export default function MenuPage() {
   const [activeFilter, setActiveFilter] = useState("All");
   const filters = ["All", "Veg", "Vegan", "High Protein", "Gluten Free", "Light", "Spicy"];
-
   const filterMap = { "Veg": "veg", "Vegan": "vegan", "High Protein": "high-protein", "Gluten Free": "gluten-free", "Light": "light", "Spicy": "spicy" };
 
   const filteredCategories = categories.map((cat) => ({
@@ -204,59 +195,64 @@ export default function MenuPage() {
     items: activeFilter === "All" ? cat.items : cat.items.filter((item) => item.tags.includes(filterMap[activeFilter])),
   })).filter((cat) => cat.items.length > 0);
 
-  return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 overflow-x-hidden antialiased transition-colors duration-300">
+  const totalVariations = categories.reduce((n, c) => n + c.items.length, 0);
 
-      <section className="relative pt-32 pb-16 md:pt-40 md:pb-20 px-6 overflow-hidden">
-        <div className="absolute top-0 left-[10%] w-[600px] h-[500px] bg-saffron/[0.06] rounded-full blur-[160px] pointer-events-none" />
-        <div className="absolute bottom-0 right-[5%] w-[400px] h-[400px] bg-emerald-200/[0.08] rounded-full blur-[140px] pointer-events-none" />
-        <div className="max-w-4xl mx-auto text-center relative z-10">
+  return (
+    <div className="min-h-screen overflow-x-hidden bg-slate-50 antialiased transition-colors duration-300 dark:bg-slate-950">
+      <section className="relative overflow-hidden px-6 pb-16 pt-32 md:pb-20 md:pt-40">
+        <AuroraBackground intensity="subtle" />
+        <div className="relative z-10 mx-auto max-w-4xl text-center">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.2 }}>
-            <Link to="/" className="inline-flex items-center gap-2 text-[13px] text-slate-400 hover:text-slate-600 transition-colors mb-8">
+            <Link to="/" className="mb-8 inline-flex items-center gap-2 text-[13px] text-slate-400 transition-colors hover:text-saffron">
               <ArrowLeft size={14} /> Back to Home
             </Link>
           </motion.div>
           <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.3 }}
-            className="text-[12px] font-semibold tracking-[0.15em] uppercase text-saffron mb-6">
+            className="glass mx-auto mb-6 w-fit rounded-full px-4 py-1.5 text-[12px] font-semibold uppercase tracking-[0.15em] text-saffron glow-ring">
             Our Menu
           </motion.p>
           <motion.h1 initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.4 }}
-            className="text-4xl sm:text-5xl md:text-[4.5rem] font-extrabold leading-[0.95] tracking-tighter text-slate-900 dark:text-white">
+            className="font-extrabold leading-[0.95] tracking-tighter text-slate-900 dark:text-white" style={{ fontSize: "var(--text-display)" }}>
             Every meal, a
             <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-saffron via-amber-500 to-emerald-500">masterpiece.</span>
+            <span className="text-aurora text-glow">masterpiece.</span>
           </motion.h1>
           <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.6, delay: 0.7 }}
-            className="mt-6 text-base md:text-lg text-slate-500 dark:text-slate-400 max-w-2xl mx-auto leading-relaxed">
-            4 categories, 16 variations — all freshly prepared every morning.
+            className="mx-auto mt-6 max-w-2xl text-base leading-relaxed text-slate-500 dark:text-slate-400 md:text-lg">
+            {categories.length} categories, {totalVariations} variations — all freshly prepared every morning.
           </motion.p>
         </div>
       </section>
 
-      {/* Filter bar */}
+      {/* Filter bar with sliding active indicator */}
       <section className="px-6 pb-8">
-        <div className="max-w-5xl mx-auto">
+        <div className="mx-auto max-w-5xl">
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.8 }}
             className="flex flex-wrap gap-2">
-            {filters.map((f) => (
-              <button key={f} onClick={() => setActiveFilter(f)}
-                className={`px-5 py-2 rounded-full text-[13px] font-semibold border transition-all ${
-                  activeFilter === f
-                    ? "bg-saffron text-white border-saffron shadow-lg shadow-saffron/20"
-                    : "border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:border-saffron hover:text-saffron bg-white dark:bg-slate-800/50"
-                }`}>
-                {f}
-              </button>
-            ))}
+            {filters.map((f) => {
+              const active = activeFilter === f;
+              return (
+                <button key={f} onClick={() => setActiveFilter(f)}
+                  className={`relative rounded-full border px-5 py-2 text-[13px] font-semibold transition-colors ${
+                    active ? "border-transparent text-white" : "border-slate-200 bg-white/60 text-slate-500 hover:text-saffron dark:border-slate-700 dark:bg-slate-800/50 dark:text-slate-400"
+                  }`}>
+                  {active && (
+                    <motion.span layoutId="menuFilterPill" transition={{ type: "spring", stiffness: 400, damping: 32 }}
+                      className="absolute inset-0 rounded-full bg-saffron shadow-lg shadow-saffron/30" />
+                  )}
+                  <span className="relative z-10">{f}</span>
+                </button>
+              );
+            })}
           </motion.div>
         </div>
       </section>
 
       {/* Categories */}
       <section className="px-6 pb-32">
-        <div className="max-w-5xl mx-auto space-y-6">
+        <div className="mx-auto max-w-5xl space-y-6">
           {filteredCategories.length === 0 ? (
-            <p className="text-center text-slate-400 py-20">No meals match this filter.</p>
+            <p className="py-20 text-center text-slate-400">No meals match this filter.</p>
           ) : (
             filteredCategories.map((cat, i) => <CategorySection key={cat.id} cat={cat} index={i} />)
           )}

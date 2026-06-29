@@ -1,5 +1,6 @@
-import { useState } from "react";
-import { motion } from "framer-motion";
+import { useState, useEffect, useRef } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Sparkles } from "lucide-react";
 import { PromptInput } from "../ui/ai-chat-input";
 import Reveal from "../shared/Reveal";
 
@@ -10,36 +11,70 @@ const quickResponses = {
   "Share feedback": "We'd love to hear from you! You can reach us at hello@kitchensbyk.com or WhatsApp us at +91 98765 43210. Your feedback helps us serve you better every day. 💬",
 };
 
+const FALLBACK = "Thanks for your question! Our team will get back to you shortly at hello@kitchensbyk.com 😊";
+
 export default function AskSection() {
   const [inputValue, setInputValue] = useState("");
-  const [response, setResponse] = useState("");
+  const [asked, setAsked] = useState("");
+  const [full, setFull] = useState("");
+  const [shown, setShown] = useState("");
+  const [thinking, setThinking] = useState(false);
+  const timers = useRef([]);
 
-  const handleSubmit = (value) => {
-    const res = quickResponses[value];
-    setResponse(res || "Thanks for your question! Our team will get back to you shortly at hello@kitchensbyk.com 😊");
-    setInputValue("");
+  const clearTimers = () => { timers.current.forEach(clearTimeout); timers.current = []; };
+
+  const ask = (value) => {
+    clearTimers();
+    setAsked(value);
+    setShown("");
+    setFull("");
+    setThinking(true);
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const answer = quickResponses[value] || FALLBACK;
+    timers.current.push(setTimeout(() => {
+      setThinking(false);
+      setFull(reduce ? answer : "");
+      if (reduce) setShown(answer);
+      else setFull(answer);
+    }, 700));
   };
 
-  const handleQuickAction = (q) => {
-    setInputValue(q);
-    setResponse("");
-  };
+  // Stream the answer in character-by-character
+  useEffect(() => {
+    if (!full) return;
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduce) { setShown(full); return; }
+    let i = 0;
+    const id = setInterval(() => {
+      i += 2;
+      setShown(full.slice(0, i));
+      if (i >= full.length) clearInterval(id);
+    }, 16);
+    return () => clearInterval(id);
+  }, [full]);
+
+  useEffect(() => () => clearTimers(), []);
+
+  const handleSubmit = (value) => { setInputValue(""); ask(value); };
+  const handleQuickAction = (q) => ask(q);
 
   return (
     <section className="py-20 md:py-28 px-6 bg-slate-50 dark:bg-slate-950 relative overflow-hidden">
-      <div className="absolute top-[20%] left-[50%] -translate-x-1/2 w-[600px] h-[400px] bg-orange-200/[0.08] dark:bg-emerald-900/[0.1] rounded-full blur-[140px] pointer-events-none" />
+      <div className="aurora-mesh absolute left-1/2 top-[10%] h-[420px] w-[680px] -translate-x-1/2 opacity-30" aria-hidden="true" />
       <div className="max-w-3xl mx-auto text-center relative z-10">
         <Reveal>
-          <p className="text-[12px] font-semibold tracking-[0.2em] uppercase text-saffron mb-4">AI Concierge</p>
+          <span className="glass inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-[12px] font-semibold uppercase tracking-[0.15em] text-saffron mb-4">
+            <Sparkles size={13} /> AI Concierge
+          </span>
         </Reveal>
         <Reveal custom={1}>
           <h2 className="text-3xl md:text-5xl font-extrabold tracking-tighter text-slate-900 dark:text-white mb-4">
-            Have a question?
+            Have a <span className="text-aurora">question?</span>
           </h2>
         </Reveal>
         <Reveal custom={2}>
           <p className="text-slate-500 dark:text-slate-400 mb-10 max-w-lg mx-auto">
-            Ask about our menus, pricing, delivery areas, or anything else. Our AI assistant is here to help.
+            Ask about our menus, pricing, delivery areas, or anything else. Our assistant is here to help.
           </p>
         </Reveal>
         <Reveal custom={3}>
@@ -49,25 +84,50 @@ export default function AskSection() {
             externalValue={inputValue}
           />
         </Reveal>
-        {response && (
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4 }}
-            className="mt-4 max-w-2xl mx-auto bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl px-5 py-4 text-sm text-slate-600 dark:text-slate-300 text-left shadow-sm"
-          >
-            <p className="text-[11px] font-semibold uppercase tracking-wider text-saffron mb-2">Kitchens by K</p>
-            {response}
-          </motion.div>
-        )}
+
+        <AnimatePresence mode="wait">
+          {(thinking || shown) && (
+            <motion.div
+              key={asked}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.35 }}
+              className="glass-strong mt-4 max-w-2xl mx-auto rounded-2xl px-5 py-4 text-left glow-ring"
+            >
+              {asked && <p className="mb-3 text-[13px] font-medium text-slate-400">You asked: “{asked}”</p>}
+              <p className="text-[11px] font-semibold uppercase tracking-wider text-saffron mb-2 flex items-center gap-1.5">
+                <Sparkles size={12} /> Kitchens by K
+              </p>
+              {thinking ? (
+                <div className="flex items-center gap-1.5 py-1" aria-label="Thinking">
+                  {[0, 1, 2].map((i) => (
+                    <motion.span
+                      key={i}
+                      className="h-2 w-2 rounded-full bg-saffron"
+                      animate={{ opacity: [0.3, 1, 0.3], y: [0, -3, 0] }}
+                      transition={{ duration: 0.9, repeat: Infinity, delay: i * 0.15 }}
+                    />
+                  ))}
+                </div>
+              ) : (
+                <p className="text-sm text-slate-600 dark:text-slate-300">
+                  {shown}
+                  {shown.length < full.length && <span className="ml-0.5 inline-block h-4 w-[2px] -mb-0.5 animate-pulse bg-saffron" />}
+                </p>
+              )}
+            </motion.div>
+          )}
+        </AnimatePresence>
+
         <Reveal custom={4}>
           <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
             <span className="text-xs text-slate-400 dark:text-slate-500">Quick actions:</span>
-            {["View this week's menu", "Pricing for 50+ employees", "Delivery areas", "Share feedback"].map((q) => (
+            {Object.keys(quickResponses).map((q) => (
               <button
                 key={q}
                 onClick={() => handleQuickAction(q)}
-                className="text-xs px-3 py-1.5 rounded-full border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-orange-50 hover:border-orange-200 dark:hover:bg-emerald-900/20 dark:hover:border-emerald-700 transition-colors"
+                className="glass text-xs px-3 py-1.5 rounded-full text-slate-600 dark:text-slate-300 hover:text-saffron hover:glow-ring transition-all"
               >
                 {q}
               </button>

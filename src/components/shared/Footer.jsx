@@ -2,14 +2,16 @@ import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { ArrowRight, Phone, Mail, MapPin } from "lucide-react";
 import Logo from "./Logo";
+import CountUp from "../ui/count-up";
 
 export default function Footer() {
   return (
-    <footer className="bg-slate-900 text-white pt-20 pb-10 px-6 rounded-t-[3rem]">
-      <div className="max-w-6xl mx-auto">
+    <footer className="relative bg-slate-900 text-white pt-20 pb-10 px-6 rounded-t-[3rem] overflow-hidden">
+      <div className="aurora-mesh absolute inset-x-0 top-0 h-64 opacity-30" aria-hidden="true" />
+      <div className="max-w-6xl mx-auto relative z-10">
         <div className="text-center mb-20">
-          <h2 className="text-3xl md:text-5xl font-extrabold tracking-tighter mb-4">Start Eating Better Today.</h2>
-          <p className="text-slate-400 mb-8 max-w-md mx-auto">Join 50+ companies across Mumbai who trust us with their daily meals.</p>
+          <h2 className="text-3xl md:text-5xl font-extrabold tracking-tighter mb-4">Start Eating <span className="text-aurora">Better</span> Today.</h2>
+          <p className="text-slate-400 mb-8 max-w-md mx-auto">Join <CountUp value={50} suffix="+" className="font-bold text-white" /> companies across Mumbai who trust us with their daily meals.</p>
           <motion.a href="mailto:hello@kitchensbyk.com" whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}
             className="inline-flex items-center gap-3 bg-saffron hover:bg-saffron-dark text-white font-bold px-10 py-5 rounded-2xl text-base shadow-xl shadow-saffron/20 transition-colors">
             Get Started <ArrowRight size={18} />
@@ -124,7 +126,7 @@ export default function Footer() {
           </div>
         </div>
         <div className="border-t border-slate-800 mt-10 pt-6 flex flex-col md:flex-row items-center justify-between gap-4">
-          <p className="text-[12px] text-slate-600 text-center md:text-left">By continuing past this page, you agree to our <a href="#" className="hover:text-slate-400 underline">Terms of Service</a>, <a href="#" className="hover:text-slate:400 underline">Privacy Policy</a> and <a href="#" className="hover:text-slate-400 underline">Cookie Policy</a>.</p>
+          <p className="text-[12px] text-slate-600 text-center md:text-left">By continuing past this page, you agree to our <a href="#" className="hover:text-slate-400 underline">Terms of Service</a>, <a href="#" className="hover:text-slate-400 underline">Privacy Policy</a> and <a href="#" className="hover:text-slate-400 underline">Cookie Policy</a>.</p>
           <p className="text-[12px] text-slate-600 shrink-0 text-center md:text-right">{new Date().getFullYear()} &copy; Kitchens by K&trade;. All rights reserved.</p>
         </div>
       </div>

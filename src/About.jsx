@@ -2,14 +2,14 @@ import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { ArrowLeft, Shield, Clock, Sparkles } from "lucide-react";
 import Reveal, { fadeUp, scaleIn } from "./components/shared/Reveal";
+import AuroraBackground from "./components/ui/aurora-background";
+import SmartImage from "./components/ui/smart-image";
 
 /* HERO */
 function AboutHero() {
   return (
     <section className="relative pt-32 pb-20 md:pt-40 md:pb-28 px-6 overflow-hidden">
-      {/* Ambient gradients */}
-      <div className="absolute top-[0%] left-[10%] w-[600px] h-[600px] bg-emerald-200/[0.12] rounded-full blur-[160px] pointer-events-none" />
-      <div className="absolute bottom-[0%] right-[5%] w-[500px] h-[500px] bg-saffron/[0.06] rounded-full blur-[140px] pointer-events-none" />
+      <AuroraBackground intensity="subtle" />
 
       <div className="max-w-4xl mx-auto text-center relative z-10">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.2 }}>
@@ -25,7 +25,7 @@ function AboutHero() {
           className="text-4xl sm:text-5xl md:text-[4.5rem] font-extrabold leading-[0.95] tracking-tighter text-slate-900 dark:text-white">
           Built by professionals,
           <br />
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-saffron via-amber-500 to-emerald-500">for professionals.</span>
+          <span className="text-aurora text-glow">for professionals.</span>
         </motion.h1>
         <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.6, delay: 0.7 }}
           className="mt-7 text-base md:text-lg text-slate-500 dark:text-slate-400 max-w-2xl mx-auto leading-relaxed">
@@ -74,7 +74,7 @@ function FounderProfile() {
         </Reveal>
         <Reveal custom={1}>
           <h2 className="text-3xl md:text-5xl font-extrabold tracking-tighter text-slate-900 dark:text-white mb-16">
-            The minds behind<br /><span className="text-slate-400 dark:text-slate-500">the menu.</span>
+            The minds behind<br /><span className="text-aurora">the menu.</span>
           </h2>
         </Reveal>
 
@@ -83,13 +83,13 @@ function FounderProfile() {
             <div key={founder.name} className="grid md:grid-cols-5 gap-6 items-stretch">
               {/* Left — Profile Image */}
               <Reveal variants={scaleIn} custom={index * 2} className="md:col-span-2">
-                <div className="bg-white/70 dark:bg-slate-800/70 backdrop-blur-md border border-white/40 dark:border-slate-700/40 rounded-3xl overflow-hidden shadow-sm hover:shadow-xl hover:shadow-slate-200/40 dark:hover:shadow-black/30 transition-all duration-500 h-full flex flex-col items-center justify-center p-8 md:p-10">
+                <div className="glass rounded-3xl overflow-hidden shadow-sm hover:shadow-xl hover:shadow-slate-200/40 dark:hover:shadow-black/30 transition-all duration-500 h-full flex flex-col items-center justify-center p-8 md:p-10">
                   <div className="w-48 h-48 md:w-56 md:h-56 rounded-full overflow-hidden ring-4 ring-saffron/20 shadow-lg mb-6">
-                    <img
+                    <SmartImage
                       src={founder.image}
                       alt={`${founder.name} — ${founder.title} of Kitchens by K`}
-                      loading="lazy"
-                      className="w-full h-full object-cover object-top"
+                      className="w-full h-full"
+                      imgClassName="object-top"
                     />
                   </div>
                   <p className="font-bold text-slate-900 dark:text-white text-lg">{founder.name}</p>
@@ -99,7 +99,7 @@ function FounderProfile() {
 
               {/* Right — Bio + Story */}
               <Reveal variants={fadeUp} custom={index * 2 + 1} className="md:col-span-3">
-                <div className="bg-white/70 dark:bg-slate-800/70 backdrop-blur-md border border-white/40 dark:border-slate-700/40 rounded-3xl p-8 md:p-10 shadow-sm h-full flex flex-col justify-center">
+                <div className="glass rounded-3xl p-8 md:p-10 shadow-sm h-full flex flex-col justify-center">
                   <div className="flex items-center gap-3 mb-6">
                     <div className="w-10 h-10 rounded-xl bg-saffron/10 flex items-center justify-center">
                       {founder.storyIcon}
@@ -148,7 +148,7 @@ function WhyUs() {
     {
       icon: Shield,
       title: "Uncompromising Quality",
-      desc: "Every ingredient is audited for freshness. Every meal is quality-checked before dispatch — the same rigour Kanak applied to financial statements, now applied to your lunch.",
+      desc: "Every ingredient is audited for freshness. Every meal is quality-checked before dispatch — the same rigour a chartered accountant applies to financial statements, now applied to your lunch.",
       color: "text-emerald-600",
       bg: "bg-emerald-50",
     },
@@ -184,7 +184,7 @@ function WhyUs() {
         <div className="grid md:grid-cols-3 gap-5">
           {badges.map((b, i) => (
             <Reveal key={b.title} variants={scaleIn} custom={i}>
-              <div className="group h-full bg-white/70 dark:bg-slate-800/70 backdrop-blur-md border border-white/40 dark:border-slate-700/40 rounded-3xl p-8 shadow-sm hover:shadow-xl hover:shadow-slate-200/40 dark:hover:shadow-black/30 transition-all duration-500">
+              <div className="group h-full glass rounded-3xl p-8 shadow-sm hover:shadow-xl hover:shadow-slate-200/40 dark:hover:shadow-black/30 transition-all duration-500">
                 <span className={`inline-flex w-11 h-11 items-center justify-center rounded-xl ${b.bg} mb-6`}>
                   <b.icon size={20} className={b.color} />
                 </span>

@@ -1,9 +1,10 @@
 import { StrictMode, lazy, Suspense } from 'react'
 import { createRoot } from 'react-dom/client'
-import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, useLocation, Link } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 import { AuthProvider } from './context/AuthContext.jsx'
 import Layout from './components/shared/Layout.jsx'
+import IntroSplash from './components/ui/intro-splash'
 import './index.css'
 import App from './App.jsx'
 
@@ -16,10 +17,13 @@ const MenuPage = lazy(() => import('./Menu.jsx'));
 
 function NotFound() {
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-slate-50 dark:bg-slate-950 px-6">
-      <h1 className="text-6xl font-extrabold text-slate-900 dark:text-white mb-4">404</h1>
-      <p className="text-slate-500 dark:text-slate-400 mb-8">Page not found.</p>
-      <a href="/" className="text-sm font-semibold text-saffron hover:text-amber-600 transition-colors">← Back to Home</a>
+    <div className="relative min-h-screen flex flex-col items-center justify-center bg-slate-50 dark:bg-slate-950 px-6 overflow-hidden">
+      <div className="aurora-mesh absolute -inset-[20%] opacity-50" aria-hidden="true" />
+      <div className="relative z-10 flex flex-col items-center text-center">
+        <h1 className="text-aurora text-glow font-extrabold mb-4" style={{ fontSize: "var(--text-display)" }}>404</h1>
+        <p className="text-slate-500 dark:text-slate-400 mb-8">This dish isn’t on the menu.</p>
+        <Link to="/" className="glass rounded-2xl px-6 py-3 text-sm font-semibold text-saffron glow-ring transition-transform hover:-translate-y-0.5">← Back to Home</Link>
+      </div>
     </div>
   );
 }
@@ -27,7 +31,10 @@ function NotFound() {
 function Loading() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-950">
-      <div className="w-8 h-8 border-3 border-saffron/30 border-t-saffron rounded-full animate-spin" />
+      <div className="relative h-12 w-12">
+        <div className="absolute inset-0 rounded-full border-2 border-saffron/20" />
+        <div className="absolute inset-0 rounded-full border-2 border-transparent border-t-saffron animate-spin glow-saffron" />
+      </div>
     </div>
   );
 }
@@ -78,6 +85,7 @@ createRoot(document.getElementById('root')).render(
   <StrictMode>
     <BrowserRouter>
       <AuthProvider>
+        <IntroSplash />
         <AnimatedRoutes />
       </AuthProvider>
     </BrowserRouter>
