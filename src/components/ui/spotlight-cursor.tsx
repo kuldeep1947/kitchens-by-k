@@ -14,7 +14,8 @@ export default function SpotlightCursor() {
   useEffect(() => {
     const finePointer = window.matchMedia("(pointer: fine)").matches;
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (!finePointer || reduce) return;
+    const lite = document.documentElement.classList.contains("lite");
+    if (!finePointer || reduce || lite) return;
 
     const el = dotRef.current;
     if (!el) return;

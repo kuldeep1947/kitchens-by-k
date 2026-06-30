@@ -17,8 +17,9 @@ export default function HeroParticles({ className = "" }: { className?: string }
 
   useEffect(() => {
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const lite = document.documentElement.classList.contains("lite");
     const canvas = canvasRef.current;
-    if (!canvas || reduce) return;
+    if (!canvas || reduce || lite) return;
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
