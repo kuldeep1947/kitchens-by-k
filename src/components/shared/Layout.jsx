@@ -27,7 +27,7 @@ function BackToTop() {
           whileTap={{ scale: 0.92 }}
           transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-          className="glass-strong fixed bottom-6 right-6 z-50 flex h-11 w-11 items-center justify-center rounded-full text-saffron dark:text-emerald-400 glow-saffron"
+          className="glass-strong fixed bottom-6 right-6 z-50 flex h-11 w-11 items-center justify-center rounded-full text-saffron dark:text-emerald-400"
           aria-label="Back to top"
         >
           <ArrowUp size={18} />
