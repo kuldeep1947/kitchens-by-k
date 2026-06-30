@@ -7,6 +7,7 @@ import AuroraBackground from "./components/ui/aurora-background";
 import TiltCard from "./components/ui/tilt-card";
 import NutritionRing from "./components/ui/nutrition-ring";
 import SmartImage from "./components/ui/smart-image";
+import BuildYourBowl from "./components/home/BuildYourBowl";
 
 const TAGS = {
   veg: { label: "Veg", color: "text-emerald-600 bg-emerald-50 dark:bg-emerald-900/20 dark:text-emerald-400" },
@@ -249,7 +250,7 @@ export default function MenuPage() {
       </section>
 
       {/* Categories */}
-      <section className="px-6 pb-32">
+      <section className="px-6 pb-12">
         <div className="mx-auto max-w-5xl space-y-6">
           {filteredCategories.length === 0 ? (
             <p className="py-20 text-center text-slate-400">No meals match this filter.</p>
@@ -258,6 +259,9 @@ export default function MenuPage() {
           )}
         </div>
       </section>
+
+      {/* Build Your Own */}
+      <BuildYourBowl />
     </div>
   );
 }
