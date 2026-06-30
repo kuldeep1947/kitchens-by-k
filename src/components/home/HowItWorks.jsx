@@ -1,35 +1,35 @@
-import { ChefHat, Truck, Calendar, UtensilsCrossed, Repeat } from "lucide-react";
+import { Truck, Calendar, UtensilsCrossed, Repeat, Star } from "lucide-react";
 import JourneyPath from "../ui/journey-path";
 
 const journeySteps = [
   {
     id: 1,
-    title: "Subscribe",
-    description: "Pick a plan that fits your team — weekly or monthly. Pause or cancel anytime.",
+    title: "Pick Your Plan",
+    description: "Choose weekly, monthly or enterprise — sized to your team and set up in just a few minutes.",
     icon: Calendar,
   },
   {
     id: 2,
-    title: "We Cook",
-    description: "Our chefs prepare balanced meals every morning with locally sourced ingredients.",
-    icon: ChefHat,
+    title: "Customize Your Menu",
+    description: "Set dietary preferences — veg, vegan, gluten-free, low-spice — and swap in the dishes your team loves.",
+    icon: UtensilsCrossed,
   },
   {
     id: 3,
-    title: "Delivered",
-    description: "Hot meals reach your desk before lunch. Always on time, across Mumbai.",
+    title: "Delivered to Your Desk",
+    description: "Hot, sealed meals arrive before lunch — on time, every day, right across Mumbai.",
     icon: Truck,
   },
   {
     id: 4,
-    title: "Enjoy",
-    description: "Restaurant-quality food without leaving your office. Every single day.",
-    icon: UtensilsCrossed,
+    title: "Rate & Personalize",
+    description: "Rate each meal and we fine-tune future menus to match your team's taste over time.",
+    icon: Star,
   },
   {
     id: 5,
-    title: "Repeat",
-    description: "New menu every week. Rate meals and we'll personalize your preferences.",
+    title: "Flex Anytime",
+    description: "Pause, skip a day, or cancel whenever you need — no contracts, no lock-in.",
     icon: Repeat,
   },
 ];

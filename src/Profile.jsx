@@ -7,7 +7,7 @@ import Reveal, { scaleIn } from "./components/shared/Reveal";
 import { useAuth } from "./context/AuthContext";
 
 function PersonalInfo() {
-  const { auth, updateAvatar } = useAuth();
+  const { auth, login, updateAvatar } = useAuth();
   const stored = localStorage.getItem("kbk_user");
   const user = stored ? JSON.parse(stored) : {};
   const authData = localStorage.getItem("kbk_auth") ? JSON.parse(localStorage.getItem("kbk_auth")) : {};
@@ -19,33 +19,60 @@ function PersonalInfo() {
   const [avatar, setAvatar] = useState(user.avatar || null);
   const [saved, setSaved] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
+  const [editError, setEditError] = useState("");
+  const [avatarError, setAvatarError] = useState("");
   const fileRef = useRef(null);
+  const avatarBlockRef = useRef(null);
 
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const emojiOptions = ["🍱", "🥗", "🍛", "🍜", "🥘", "🍲", "🥙", "🍣", "🍔", "🥑", "🍕", "🌮", "👨‍🍳", "👩‍🍳", "🧑‍🍳", "⭐", "🔥", "💫"];
 
+  // Close the emoji picker when clicking outside the avatar block.
+  useEffect(() => {
+    if (!showEmojiPicker) return;
+    const handler = (e) => {
+      if (avatarBlockRef.current && !avatarBlockRef.current.contains(e.target)) setShowEmojiPicker(false);
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, [showEmojiPicker]);
+
+  const persistAvatar = (value) => {
+    try {
+      localStorage.setItem("kbk_user", JSON.stringify({ ...user, avatar: value }));
+      setAvatar(value);
+      updateAvatar(value);
+      setAvatarError("");
+    } catch {
+      setAvatarError("Couldn't save that image — please try a smaller one.");
+    }
+  };
+
   const handleAvatar = (e) => {
     const file = e.target.files[0];
     if (!file) return;
+    if (file.size > 2 * 1024 * 1024) {
+      setAvatarError("Image too large — please choose one under 2 MB.");
+      return;
+    }
     const reader = new FileReader();
-    reader.onload = (ev) => {
-      const base64 = ev.target.result;
-      setAvatar(base64);
-      const updated = { ...user, avatar: base64 };
-      localStorage.setItem("kbk_user", JSON.stringify(updated));
-      updateAvatar(base64);
-    };
+    reader.onload = (ev) => persistAvatar(ev.target.result);
     reader.readAsDataURL(file);
   };
 
   const initials = `${firstName[0] || ""}${lastName[0] || ""}`.toUpperCase();
 
   const handleSave = () => {
-    const updated = { ...user, firstName, lastName, email, mobile, avatar };
-    localStorage.setItem("kbk_user", JSON.stringify(updated));
-    localStorage.setItem("kbk_auth", JSON.stringify({ ...authData, name: firstName + " " + lastName, email }));
+    if (!firstName.trim() || !lastName.trim()) { setEditError("Please enter your first and last name."); return false; }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { setEditError("Please enter a valid email address."); return false; }
+    if (!/^[6-9]\d{9}$/.test(mobile)) { setEditError("Please enter a valid 10-digit mobile number."); return false; }
+    localStorage.setItem("kbk_user", JSON.stringify({ ...user, firstName, lastName, email, mobile, avatar }));
+    // Route through context so the navbar (name + avatar) updates live, no reload.
+    login({ ...authData, name: firstName + " " + lastName, email });
+    setEditError("");
     setSaved(true);
     setTimeout(() => setSaved(false), 2000);
+    return true;
   };
 
   return (
@@ -74,29 +101,25 @@ function PersonalInfo() {
             </div>
             <button
               onClick={() => fileRef.current?.click()}
+              aria-label="Change profile photo"
               className="absolute bottom-0 right-0 w-6 h-6 bg-saffron rounded-full flex items-center justify-center shadow-md hover:brightness-110 transition-all"
             >
               <Camera size={12} className="text-white" />
             </button>
             <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={handleAvatar} />
           </div>
-          <div>
+          <div ref={avatarBlockRef}>
             <p className="font-semibold text-slate-900 dark:text-white">{firstName} {lastName}</p>
             <p className="text-xs text-slate-400 mt-0.5">{email}</p>
             <div className="flex items-center gap-3 mt-1 flex-wrap">
               <button onClick={() => fileRef.current?.click()} className="text-xs text-saffron hover:text-amber-600 font-medium transition-colors">Change photo</button>
               <span className="text-slate-300 dark:text-slate-600">·</span>
-              <button onClick={() => setShowEmojiPicker(!showEmojiPicker)} className="text-xs text-saffron hover:text-amber-600 font-medium transition-colors">Choose avatar</button>
+              <button onClick={() => setShowEmojiPicker(!showEmojiPicker)} aria-expanded={showEmojiPicker} className="text-xs text-saffron hover:text-amber-600 font-medium transition-colors">Choose avatar</button>
               {avatar && (
                 <>
                   <span className="text-slate-300 dark:text-slate-600">·</span>
                   <button
-                    onClick={() => {
-                      setAvatar(null);
-                      const updated = { ...user, avatar: null };
-                      localStorage.setItem("kbk_user", JSON.stringify(updated));
-                      updateAvatar(null);
-                    }}
+                    onClick={() => persistAvatar(null)}
                     className="text-xs text-red-400 hover:text-red-500 font-medium transition-colors"
                   >
                     Remove
@@ -104,6 +127,7 @@ function PersonalInfo() {
                 </>
               )}
             </div>
+            {avatarError && <p role="alert" className="text-xs text-red-500 mt-2">{avatarError}</p>}
             {/* Emoji picker */}
             <AnimatePresence>
               {showEmojiPicker && (
@@ -117,13 +141,8 @@ function PersonalInfo() {
                   {emojiOptions.map((emoji) => (
                     <button
                       key={emoji}
-                      onClick={() => {
-                        setAvatar(emoji);
-                        const updated = { ...user, avatar: emoji };
-                        localStorage.setItem("kbk_user", JSON.stringify(updated));
-                        updateAvatar(emoji);
-                        setShowEmojiPicker(false);
-                      }}
+                      aria-label={`Use ${emoji} as avatar`}
+                      onClick={() => { persistAvatar(emoji); setShowEmojiPicker(false); }}
                       className={`w-9 h-9 rounded-xl text-xl flex items-center justify-center hover:bg-saffron/10 transition-colors ${
                         avatar === emoji ? "bg-saffron/20 ring-2 ring-saffron/40" : ""
                       }`}
@@ -140,8 +159,9 @@ function PersonalInfo() {
           <>
             <div className="grid sm:grid-cols-2 gap-4">
               <div>
-                <label className="text-xs font-medium text-slate-500 dark:text-slate-400 block mb-1.5">First Name</label>
+                <label htmlFor="pi-first" className="text-xs font-medium text-slate-500 dark:text-slate-400 block mb-1.5">First Name</label>
                 <input
+                  id="pi-first"
                   type="text"
                   value={firstName}
                   onChange={(e) => setFirstName(e.target.value)}
@@ -149,8 +169,9 @@ function PersonalInfo() {
                 />
               </div>
               <div>
-                <label className="text-xs font-medium text-slate-500 dark:text-slate-400 block mb-1.5">Last Name</label>
+                <label htmlFor="pi-last" className="text-xs font-medium text-slate-500 dark:text-slate-400 block mb-1.5">Last Name</label>
                 <input
+                  id="pi-last"
                   type="text"
                   value={lastName}
                   onChange={(e) => setLastName(e.target.value)}
@@ -158,8 +179,9 @@ function PersonalInfo() {
                 />
               </div>
               <div>
-                <label className="text-xs font-medium text-slate-500 dark:text-slate-400 block mb-1.5"><Mail size={11} className="inline mr-1" />Email</label>
+                <label htmlFor="pi-email" className="text-xs font-medium text-slate-500 dark:text-slate-400 block mb-1.5"><Mail size={11} className="inline mr-1" />Email</label>
                 <input
+                  id="pi-email"
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
@@ -167,8 +189,9 @@ function PersonalInfo() {
                 />
               </div>
               <div>
-                <label className="text-xs font-medium text-slate-500 dark:text-slate-400 block mb-1.5"><Phone size={11} className="inline mr-1" />Mobile</label>
+                <label htmlFor="pi-mobile" className="text-xs font-medium text-slate-500 dark:text-slate-400 block mb-1.5"><Phone size={11} className="inline mr-1" />Mobile</label>
                 <input
+                  id="pi-mobile"
                   type="tel"
                   value={mobile}
                   onChange={(e) => setMobile(e.target.value)}
@@ -176,15 +199,16 @@ function PersonalInfo() {
                 />
               </div>
             </div>
+            {editError && <p role="alert" className="mt-3 text-sm text-red-500">{editError}</p>}
             <div className="mt-6 flex items-center gap-3">
               <button
-                onClick={() => { handleSave(); setIsEditing(false); }}
+                onClick={() => { if (handleSave()) setIsEditing(false); }}
                 className="flex items-center gap-2 bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-semibold px-6 py-2.5 rounded-xl text-sm hover:brightness-105 transition-all"
               >
                 {saved ? <><Check size={14} /> Saved!</> : "Save Changes"}
               </button>
               <button
-                onClick={() => { setFirstName(user.firstName || ""); setLastName(user.lastName || ""); setEmail(user.email || ""); setMobile(user.mobile || ""); setIsEditing(false); }}
+                onClick={() => { setFirstName(user.firstName || ""); setLastName(user.lastName || ""); setEmail(user.email || ""); setMobile(user.mobile || ""); setEditError(""); setIsEditing(false); }}
                 className="px-5 py-2.5 rounded-xl text-sm font-medium border border-slate-200 dark:border-slate-700 text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
               >
                 Cancel
@@ -231,6 +255,7 @@ function ActivePlan() {
     return stored ? JSON.parse(stored) : null;
   });
   const [showDetails, setShowDetails] = useState(false);
+  const [confirming, setConfirming] = useState(false);
 
   const planStyles = {
     Weekly: { color: "text-blue-600", bg: "bg-blue-50 dark:bg-blue-900/20" },
@@ -329,12 +354,30 @@ function ActivePlan() {
               )}
             </AnimatePresence>
 
-            <button
-              onClick={() => { localStorage.removeItem("kbk_active_plan"); setActivePlan(null); }}
-              className="mt-4 text-xs text-red-400 hover:text-red-500 font-medium transition-colors"
-            >
-              Cancel Plan
-            </button>
+            {confirming ? (
+              <div className="mt-4 flex items-center gap-3">
+                <span className="text-xs text-slate-500 dark:text-slate-400">Cancel this plan?</span>
+                <button
+                  onClick={() => { localStorage.removeItem("kbk_active_plan"); setActivePlan(null); setConfirming(false); }}
+                  className="text-xs font-semibold text-red-500 hover:text-red-600 transition-colors"
+                >
+                  Yes, cancel
+                </button>
+                <button
+                  onClick={() => setConfirming(false)}
+                  className="text-xs font-medium text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 transition-colors"
+                >
+                  Keep plan
+                </button>
+              </div>
+            ) : (
+              <button
+                onClick={() => setConfirming(true)}
+                className="mt-4 text-xs text-red-400 hover:text-red-500 font-medium transition-colors"
+              >
+                Cancel Plan
+              </button>
+            )}
           </div>
         ) : (
           <div className="flex flex-col items-center text-center py-10 px-4">
@@ -416,7 +459,7 @@ function Addresses() {
   };
 
   return (
-    <Reveal variants={scaleIn} custom={3}>
+    <Reveal variants={scaleIn} custom={2}>
       <div className="glass rounded-3xl p-8 shadow-sm overflow-visible relative z-10">
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-3">
@@ -459,6 +502,7 @@ function Addresses() {
                 ))}
                 <input
                   type="text"
+                  aria-label="Custom address label"
                   value={form.label === "Home" || form.label === "Office" ? "" : form.label}
                   onChange={(e) => setForm((f) => ({ ...f, label: e.target.value }))}
                   onFocus={() => { if (form.label === "Home" || form.label === "Office") setForm((f) => ({ ...f, label: "" })); }}
@@ -472,8 +516,9 @@ function Addresses() {
               </div>
             </div>
             <div>
-              <label className="text-xs font-medium text-slate-500 dark:text-slate-400 block mb-1.5">Full Address</label>
+              <label htmlFor="addr-full" className="text-xs font-medium text-slate-500 dark:text-slate-400 block mb-1.5">Full Address</label>
               <input
+                id="addr-full"
                 type="text"
                 value={form.address}
                 onChange={(e) => setForm((f) => ({ ...f, address: e.target.value }))}
@@ -483,8 +528,9 @@ function Addresses() {
             </div>
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="text-xs font-medium text-slate-500 dark:text-slate-400 block mb-1.5">City</label>
+                <label htmlFor="addr-city" className="text-xs font-medium text-slate-500 dark:text-slate-400 block mb-1.5">City</label>
                 <input
+                  id="addr-city"
                   type="text"
                   value={form.city}
                   onChange={(e) => setForm((f) => ({ ...f, city: e.target.value }))}
@@ -493,9 +539,11 @@ function Addresses() {
                 />
               </div>
               <div>
-                <label className="text-xs font-medium text-slate-500 dark:text-slate-400 block mb-1.5">Pincode</label>
+                <label htmlFor="addr-pincode" className="text-xs font-medium text-slate-500 dark:text-slate-400 block mb-1.5">Pincode</label>
                 <input
+                  id="addr-pincode"
                   type="text"
+                  inputMode="numeric"
                   value={form.pincode}
                   onChange={(e) => setForm((f) => ({ ...f, pincode: e.target.value }))}
                   placeholder="400001"
@@ -542,6 +590,8 @@ function Addresses() {
                 <div className="relative ml-4 shrink-0" ref={openMenu === addr.id ? menuRef : null}>
                   <button
                     onClick={() => setOpenMenu(openMenu === addr.id ? null : addr.id)}
+                    aria-label={`Options for ${addr.label} address`}
+                    aria-expanded={openMenu === addr.id}
                     className="w-8 h-8 flex items-center justify-center rounded-xl hover:bg-slate-100 dark:hover:bg-slate-700/50 transition-colors"
                   >
                     <MoreVertical size={16} className="text-slate-400" />
@@ -654,16 +704,19 @@ function ChangePassword() {
                   { label: "Confirm New Password", value: confirm, set: setConfirm, key: "confirm" },
                 ].map(({ label, value, set, key }) => (
                   <div key={label}>
-                    <label className="text-xs font-medium text-slate-500 dark:text-slate-400 block mb-1.5"><Lock size={11} className="inline mr-1" />{label}</label>
+                    <label htmlFor={`pw-${key}`} className="text-xs font-medium text-slate-500 dark:text-slate-400 block mb-1.5"><Lock size={11} className="inline mr-1" />{label}</label>
                     <div className="relative">
                       <input
+                        id={`pw-${key}`}
                         type={showFields[key] ? "text" : "password"}
+                        autoComplete={key === "current" ? "current-password" : "new-password"}
                         value={value}
                         onChange={(e) => set(e.target.value)}
                         className="w-full px-4 py-2.5 pr-10 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-saffron/20"
                       />
                       <button
                         type="button"
+                        aria-label={showFields[key] ? `Hide ${label.toLowerCase()}` : `Show ${label.toLowerCase()}`}
                         onClick={() => setShowFields((prev) => ({ ...prev, [key]: !prev[key] }))}
                         className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors"
                       >

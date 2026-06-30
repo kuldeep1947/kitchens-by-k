@@ -132,7 +132,7 @@ export default function JourneyPath({ steps }: JourneyPathProps) {
           transition={{ delay: 0.2 }}
           className="mt-3 text-slate-500 dark:text-slate-400 max-w-md mx-auto"
         >
-          Five simple steps to daily restaurant-quality meals at your office
+          Five simple steps — set up in minutes, personalized to your team, and flexible whenever you need
         </motion.p>
       </div>
 

@@ -8,7 +8,7 @@ import { Magnetic } from "./magnetic";
 
 function AromaWisps({ position }: { position: number }) {
     // Curved paths that read as rising steam / aroma from food
-    const paths = Array.from({ length: 11 }, (_, i) => ({
+    const paths = Array.from({ length: 22 }, (_, i) => ({
         id: i,
         d: `M-${380 - i * 5 * position} -${189 + i * 6}C-${
             380 - i * 5 * position
@@ -17,7 +17,7 @@ function AromaWisps({ position }: { position: number }) {
         } ${343 - i * 6}C${616 - i * 5 * position} ${470 - i * 6} ${
             684 - i * 5 * position
         } ${875 - i * 6} ${684 - i * 5 * position} ${875 - i * 6}`,
-        width: 0.9 + i * 0.16,
+        width: 0.5 + i * 0.04,
         dur: 25 + i * 0.8,
     }));
 
