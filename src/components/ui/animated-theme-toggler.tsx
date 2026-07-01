@@ -72,6 +72,14 @@ export function AnimatedThemeToggler({
     });
   }, []);
 
+  // Let the command palette (⌘K) trigger the same toggle — keeps icon + state in sync.
+  useEffect(() => {
+    const handler = () => toggle();
+    window.addEventListener("kbk-toggle-theme", handler);
+    return () => window.removeEventListener("kbk-toggle-theme", handler);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const apply = () => {
     const dark = document.documentElement.classList.toggle("dark");
     setIsDark(dark);

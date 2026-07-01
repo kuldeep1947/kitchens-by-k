@@ -1,7 +1,7 @@
 import { useRef, useState, useEffect } from "react";
 import { motion, AnimatePresence, useScroll, useMotionValueEvent } from "framer-motion";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { ChevronDown, User, Menu, X } from "lucide-react";
+import { ChevronDown, User, Menu, X, Search } from "lucide-react";
 import { AnimatedThemeToggler } from "../ui/animated-theme-toggler";
 import Logo from "./Logo";
 import { useAuth } from "../../context/AuthContext";
@@ -100,6 +100,14 @@ export default function Navbar() {
 
         {/* Right side */}
         <div className="flex items-center gap-3">
+          <button
+            onClick={() => window.dispatchEvent(new Event("open-command-palette"))}
+            aria-label="Open command menu (Ctrl or Cmd + K)"
+            className="hidden md:flex items-center gap-1.5 rounded-xl border border-slate-200 dark:border-slate-700 px-2.5 py-1.5 text-[12px] font-medium text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 hover:border-slate-300 dark:hover:border-slate-600 transition-colors"
+          >
+            <Search size={13} />
+            <span className="tracking-wide">⌘K</span>
+          </button>
           <AnimatedThemeToggler />
 
           {/* CTA — desktop */}

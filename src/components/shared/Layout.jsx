@@ -6,6 +6,7 @@ import Navbar from "./Navbar";
 import Footer from "./Footer";
 import SpotlightCursor from "../ui/spotlight-cursor";
 import PWAManager from "../ui/pwa-manager";
+import CommandPalette from "../ui/command-palette";
 
 function BackToTop() {
   const [visible, setVisible] = useState(false);
@@ -48,6 +49,7 @@ export default function Layout() {
       <Footer />
       <BackToTop />
       <PWAManager />
+      <CommandPalette />
     </div>
   );
 }
