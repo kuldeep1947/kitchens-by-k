@@ -216,7 +216,7 @@ export default function MenuPage() {
             className="font-extrabold leading-[0.95] tracking-tighter text-slate-900 dark:text-white" style={{ fontSize: "var(--text-display)" }}>
             Every meal, a
             <br />
-            <span className="text-aurora text-glow">masterpiece.</span>
+            <span className="text-aurora">masterpiece.</span>
           </motion.h1>
           <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.6, delay: 0.7 }}
             className="mx-auto mt-6 max-w-2xl text-base leading-relaxed text-slate-500 dark:text-slate-400 md:text-lg">

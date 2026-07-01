@@ -25,7 +25,7 @@ function NotFound() {
     <div className="relative min-h-screen flex flex-col items-center justify-center bg-slate-50 dark:bg-slate-950 px-6 overflow-hidden">
       <div className="aurora-mesh absolute -inset-[20%] opacity-50" aria-hidden="true" />
       <div className="relative z-10 flex flex-col items-center text-center">
-        <h1 className="text-aurora text-glow font-extrabold mb-4" style={{ fontSize: "var(--text-display)" }}>404</h1>
+        <h1 className="text-aurora font-extrabold mb-4" style={{ fontSize: "var(--text-display)" }}>404</h1>
         <p className="text-slate-500 dark:text-slate-400 mb-8">This dish isn’t on the menu.</p>
         <Link to="/" className="glass rounded-2xl px-6 py-3 text-sm font-semibold text-saffron glow-ring transition-transform hover:-translate-y-0.5">← Back to Home</Link>
       </div>

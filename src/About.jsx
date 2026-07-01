@@ -25,7 +25,7 @@ function AboutHero() {
           className="text-4xl sm:text-5xl md:text-[4.5rem] font-extrabold leading-[0.95] tracking-tighter text-slate-900 dark:text-white">
           Built by professionals,
           <br />
-          <span className="text-aurora text-glow">for professionals.</span>
+          <span className="text-aurora">for professionals.</span>
         </motion.h1>
         <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.6, delay: 0.7 }}
           className="mt-7 text-base md:text-lg text-slate-500 dark:text-slate-400 max-w-2xl mx-auto leading-relaxed">

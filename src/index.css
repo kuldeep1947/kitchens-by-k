@@ -155,13 +155,15 @@ button, a {
 /* Animated gradient text. padding-bottom prevents background-clip:text from
    cropping glyph descenders (g, y, p) under tight line-heights. */
 .text-aurora {
-  background-image: linear-gradient(110deg, var(--color-aurora-from), var(--color-aurora-via), var(--color-aurora-to), var(--color-aurora-from));
+  /* Smooth, flowing multi-color sweep (not a busy rainbow) — a few harmonious,
+     spectrum-ordered hues that read on BOTH light and dark. Same in both themes. */
+  background-image: linear-gradient(110deg, #F27D21, #EC4899, #8B5CF6, #10B981, #F27D21);
   background-size: 250% 100%;
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
   padding-bottom: 0.14em;
-  animation: aurora-pan 8s linear infinite;
+  animation: aurora-pan 7s ease-in-out infinite;
 }
 
 /* Animated aurora mesh backdrop (CSS-only, GPU-friendly) */
@@ -198,7 +200,10 @@ button, a {
 /* ============================================================================
    KEYFRAMES
    ============================================================================ */
-@keyframes aurora-pan { to { background-position: 250% 0; } }
+@keyframes aurora-pan {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
 @keyframes aurora-drift {
   0%   { transform: translate3d(-2%, 1%, 0); }
   100% { transform: translate3d(3%, -4%, 0); }
@@ -287,8 +292,9 @@ button, a {
   -webkit-backdrop-filter: none !important;
   backdrop-filter: none !important;
 }
+/* Note: .text-aurora is intentionally NOT frozen here — the gradient-text pan is
+   cheap and it's a signature accent, so it keeps animating even in lite mode. */
 .lite .aurora-mesh,
-.lite .text-aurora,
 .lite .animate-gradient-text,
 .lite .animate-float,
 .lite .steam-particle { animation: none !important; }

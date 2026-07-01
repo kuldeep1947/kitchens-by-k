@@ -102,7 +102,7 @@ export function BackgroundPaths({
                                         initial={{ y: 100, opacity: 0 }}
                                         animate={{ y: 0, opacity: 1 }}
                                         transition={{ delay: wordIndex * 0.1, type: "spring", stiffness: 150, damping: 25 }}
-                                        className="inline-block text-aurora text-glow pr-2"
+                                        className="inline-block text-aurora pr-2"
                                     >
                                         {word}
                                     </motion.span>

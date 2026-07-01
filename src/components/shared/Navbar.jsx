@@ -102,11 +102,11 @@ export default function Navbar() {
         <div className="flex items-center gap-3">
           <button
             onClick={() => window.dispatchEvent(new Event("open-command-palette"))}
-            aria-label="Open command menu (Ctrl or Cmd + K)"
-            className="hidden md:flex items-center gap-1.5 rounded-xl border border-slate-200 dark:border-slate-700 px-2.5 py-1.5 text-[12px] font-medium text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 hover:border-slate-300 dark:hover:border-slate-600 transition-colors"
+            aria-label="Search (Ctrl or Cmd + K)"
+            title="Search — ⌘K"
+            className="flex items-center justify-center p-1.5 rounded-xl text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
           >
-            <Search size={13} />
-            <span className="tracking-wide">⌘K</span>
+            <Search size={18} />
           </button>
           <AnimatedThemeToggler />
 

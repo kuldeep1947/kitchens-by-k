@@ -770,7 +770,7 @@ export default function Profile() {
             className="text-4xl sm:text-5xl md:text-[4.5rem] font-extrabold leading-[0.95] tracking-tighter text-slate-900 dark:text-white">
             Your profile,
             <br />
-            <span className="text-aurora text-glow">your way.</span>
+            <span className="text-aurora">your way.</span>
           </motion.h1>
         </div>
       </section>

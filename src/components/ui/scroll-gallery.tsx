@@ -40,7 +40,7 @@ function IntroPanel({ eyebrow, title, subtitle }: { eyebrow: string; title: stri
       </span>
       <h2 className="text-4xl font-extrabold leading-[0.95] tracking-tighter text-slate-900 dark:text-white md:text-6xl">
         {title.split("|").map((t, i) => (
-          <span key={i} className={i === 1 ? "text-aurora text-glow block" : "block"}>{t.trim()}</span>
+          <span key={i} className={i === 1 ? "text-aurora block" : "block"}>{t.trim()}</span>
         ))}
       </h2>
       <p className="mt-5 max-w-sm text-base leading-relaxed text-slate-500 dark:text-slate-400">{subtitle}</p>
