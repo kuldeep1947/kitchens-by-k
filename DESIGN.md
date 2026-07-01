@@ -138,9 +138,8 @@ This design system transforms Kitchens by K from a clean SaaS product into a **c
 
 1. **Glow borders**: `box-shadow: 0 0 30px rgba(accent, 0.1)` on hover
 2. **Grain overlay**: SVG noise texture at 3-5% opacity over backgrounds
-3. **Radial spotlight**: Follows cursor on hero section
-4. **Frosted dividers**: `backdrop-blur` on section separators
-5. **Ambient orbs**: Large, blurred gradient circles floating in background
+3. **Frosted dividers**: `backdrop-blur` on section separators
+4. **Ambient orbs**: Large, blurred gradient circles floating in background
 
 ---
 
@@ -204,7 +203,7 @@ clipped) · `.aurora-mesh` · `.bg-grain` · `.skeleton` · `.elev-1/2/3` · `.a
 ## Reusable primitives — `src/components/ui/`
 
 `AuroraBackground`, `HeroParticles` (sprite-based, auto-pausing canvas),
-`SpotlightCursor`, `Magnetic`, `TiltCard`, `NutritionRing`, `SmartImage` (blur-up +
+`Magnetic`, `TiltCard`, `NutritionRing`, `SmartImage` (blur-up +
 🍱 fallback — use instead of `<img>`), `Parallax`, `CountUp`, `ScrollGallery`
 (pinned horizontal scroll), `IntroSplash`, `PWAManager`, `confetti.ts` (`fireConfetti()`).
 Shared entrance variants (`fadeUp`/`scaleIn`/`blurUp`/`slideIn`/`stagger`) +

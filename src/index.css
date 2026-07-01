@@ -281,25 +281,6 @@ button, a {
 .dark::view-transition-new(root) { z-index: 1; }
 
 /* ============================================================================
-   LITE MODE  —  auto-enabled on devices that can't sustain ~60fps (see perf.js).
-   Drops the most GPU/CPU-expensive effects: backdrop blur, animated meshes,
-   gradient-text animation. Glass becomes opaque so panels still read clearly.
-   ============================================================================ */
-.lite { --glass-bg: rgba(255, 255, 255, 0.92); }
-.dark.lite, .lite.dark { --glass-bg: rgba(15, 23, 42, 0.92); }
-.lite .glass,
-.lite .glass-strong {
-  -webkit-backdrop-filter: none !important;
-  backdrop-filter: none !important;
-}
-/* Note: .text-aurora is intentionally NOT frozen here — the gradient-text pan is
-   cheap and it's a signature accent, so it keeps animating even in lite mode. */
-.lite .aurora-mesh,
-.lite .animate-gradient-text,
-.lite .animate-float,
-.lite .steam-particle { animation: none !important; }
-
-/* ============================================================================
    ACCESSIBILITY  —  honor reduced-motion everywhere
    ============================================================================ */
 @media (prefers-reduced-motion: reduce) {

@@ -18,7 +18,6 @@ Chef-crafted, nutrition-balanced lunches delivered daily to your office — buil
 
 - **⌘K command palette** — press `Cmd/Ctrl+K` (or the navbar button) to search & jump anywhere, with full keyboard nav.
 - **"Culinary Aurora" design system** — token-driven glass, glow & animated aurora mesh; brand color reskins from saffron (light) to emerald (dark). See [`DESIGN.md`](DESIGN.md).
-- **Adaptive performance** — measures real FPS and auto-switches to a "lite" mode (drops heavy blur/animation) on weaker devices, keeping capable machines full-fat. Fully automatic.
 - **Cinematic horizontal-scroll gallery** — a pinned, scroll-driven "The Difference" story (sourcing → cooking → nutrition → delivery).
 - **Interactive "Build Your Own Bowl"** — pick base/protein/veggies/sauce and watch calories + macro rings update live.
 - **Installable PWA** — logo-based maskable icons, custom install prompt, offline indicator, service worker.
@@ -113,21 +112,20 @@ npm run dev       # http://localhost:5173
 
 ```
 src/
-├─ main.jsx                 Router, lazy routes, page transitions, perf guard
+├─ main.jsx                 Router, lazy routes, page transitions
 ├─ App.jsx                  Home '/' — composes home sections + ambient depth
-├─ index.css                Tailwind v4 @theme tokens, glass/aurora utilities, lite-mode
+├─ index.css                Tailwind v4 @theme tokens, glass/aurora utilities
 ├─ Menu.jsx / Pricing.jsx / Faqs.jsx / About.jsx / Profile.jsx / Demos.jsx
 ├─ SignIn.jsx / SignUp.jsx
 ├─ context/AuthContext.jsx  localStorage-backed auth
 ├─ lib/
-│  ├─ utils.ts              cn() class merger
-│  └─ perf.js               adaptive FPS guard → "lite" mode
+│  └─ utils.ts              cn() class merger
 ├─ components/
 │  ├─ home/                 Hero, FoodShowcase, HowItWorks, MenuSection,
 │  │                        Testimonials, SplineShowcase, AskSection, FAQ, BuildYourBowl
 │  ├─ shared/               Layout, Navbar, Footer, Logo, Reveal
 │  └─ ui/                   Design-system primitives & effects:
-│     ├─ command-palette · aurora-background · hero-particles · spotlight-cursor
+│     ├─ command-palette · aurora-background · hero-particles
 │     ├─ magnetic · tilt-card · parallax · count-up · smart-image · nutrition-ring
 │     ├─ intro-splash · pwa-manager · confetti · animated-theme-toggler
 │     ├─ background-paths · journey-path · scroll-gallery · testimonials-columns-1
@@ -153,7 +151,6 @@ Documented in [`DESIGN.md`](DESIGN.md). Highlights:
 ## ⚡ Performance
 
 - **Route-level code splitting** via `React.lazy`
-- **Adaptive "lite" mode** ([`lib/perf.js`](src/lib/perf.js)) — samples real FPS and disables the heaviest effects (backdrop blur, aurora animation, particle canvas) on devices that can't sustain ~60fps; remembered across visits
 - GPU-friendly effects — translate-only animations on blurred layers, sprite-based particles, off-screen/tab-hidden pausing
 - Blur-up lazy images (`SmartImage`)
 

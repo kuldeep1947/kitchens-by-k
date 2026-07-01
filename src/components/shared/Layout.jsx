@@ -4,7 +4,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ArrowUp } from "lucide-react";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
-import SpotlightCursor from "../ui/spotlight-cursor";
 import PWAManager from "../ui/pwa-manager";
 import CommandPalette from "../ui/command-palette";
 
@@ -41,7 +40,6 @@ function BackToTop() {
 export default function Layout() {
   return (
     <div className="overflow-x-clip">
-      <SpotlightCursor />
       <Navbar />
       <main className="min-h-screen">
         <Outlet />

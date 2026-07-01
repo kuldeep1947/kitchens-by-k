@@ -5,11 +5,8 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { AuthProvider } from './context/AuthContext.jsx'
 import Layout from './components/shared/Layout.jsx'
 import IntroSplash from './components/ui/intro-splash'
-import { initPerfGuard } from './lib/perf'
 import './index.css'
 import App from './App.jsx'
-
-initPerfGuard()
 
 const About = lazy(() => import('./About.jsx'));
 const Demos = lazy(() => import('./Demos.jsx'));

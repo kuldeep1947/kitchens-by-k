@@ -14,9 +14,6 @@ function AmbientDepth() {
   const { scrollYProgress } = useScroll();
   const y1 = useTransform(scrollYProgress, [0, 1], ["0%", "60%"]);
   const y2 = useTransform(scrollYProgress, [0, 1], ["0%", "-45%"]);
-  // Skip the fixed, always-compositing blur orbs entirely on low-power devices.
-  const lite = typeof document !== "undefined" && document.documentElement.classList.contains("lite");
-  if (lite) return null;
   return (
     <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden" aria-hidden="true">
       <motion.div
