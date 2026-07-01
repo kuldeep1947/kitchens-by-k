@@ -61,7 +61,7 @@ export function BackgroundPaths({
     const lite = typeof document !== "undefined" && document.documentElement.classList.contains("lite");
 
     return (
-        <div className="relative min-h-screen w-full flex items-center justify-center overflow-hidden pt-24 pb-16 bg-gradient-to-b from-slate-50 via-white to-cream dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
+        <div className="relative min-h-[100svh] w-full flex items-center justify-center overflow-hidden pt-24 pb-16 bg-gradient-to-b from-slate-50 via-white to-cream dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
             {/* Layered backdrop: animated aurora mesh + drifting ember particles + aroma wisps */}
             <AuroraBackground intensity="normal" />
             {!lite && <HeroParticles className="absolute inset-0 h-full w-full pointer-events-none" />}

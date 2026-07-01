@@ -208,7 +208,7 @@ export default function Navbar() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.2 }}
-            className="glass-strong md:hidden mt-2 rounded-2xl overflow-y-auto max-h-[75vh] bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border border-slate-200 dark:border-slate-700 shadow-xl"
+            className="md:hidden mt-2 rounded-2xl overflow-y-auto max-h-[75vh] bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border border-slate-200 dark:border-slate-700 shadow-xl"
           >
             <div className="flex flex-col p-3 gap-1 text-[14px] font-medium">
               {NAV_ITEMS.map((item) => (

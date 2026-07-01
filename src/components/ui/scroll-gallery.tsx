@@ -78,6 +78,8 @@ export default function ScrollGallery({
   subtitle?: string;
 }) {
   const reduce = useReducedMotion();
+  const COMPACT_QUERY = "(max-width: 767px), (pointer: coarse)";
+  const [isCompact, setIsCompact] = useState(() => typeof window !== "undefined" && window.matchMedia(COMPACT_QUERY).matches);
   const sectionRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
   const [distance, setDistance] = useState(0);
@@ -100,8 +102,21 @@ export default function ScrollGallery({
     return () => { window.removeEventListener("resize", calc); clearTimeout(t); };
   }, [dishes]);
 
-  // Reduced-motion / no-pin fallback: a clean horizontal snap scroller.
-  if (reduce) {
+  // Use the swipe layout on narrow screens OR touch devices — either one means
+  // the pinned horizontal effect won't read well. A full-width desktop (wide +
+  // mouse) keeps the pinned effect.
+  useEffect(() => {
+    const mq = window.matchMedia(COMPACT_QUERY);
+    const update = () => setIsCompact(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Compact (narrow/touch) and reduced-motion use a natural finger-swipe row
+  // instead of the pinned scroll-driven effect.
+  if (reduce || isCompact) {
     return (
       <section className="py-20 px-6">
         <div className="mx-auto max-w-7xl">
@@ -127,7 +142,7 @@ export default function ScrollGallery({
 
   return (
     <section ref={sectionRef} className="relative" style={{ height: `${sectionVh}vh` }}>
-      <div className="sticky top-0 flex h-screen items-center overflow-hidden">
+      <div className="sticky top-0 flex h-[100svh] items-center overflow-hidden">
         <motion.div style={{ scaleX: progress }} className="absolute left-0 right-0 top-0 z-20 h-1 origin-left bg-gradient-to-r from-saffron via-amber-400 to-emerald-400 dark:from-emerald-400 dark:via-teal-300 dark:to-emerald-500" />
         <motion.div ref={trackRef} style={{ x }} className="flex items-center gap-7 pl-[8vw] pr-[8vw] will-change-transform">
           <IntroPanel eyebrow={eyebrow} title={title} subtitle={subtitle} />
