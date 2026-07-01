@@ -104,7 +104,7 @@ export default function Navbar() {
             onClick={() => window.dispatchEvent(new Event("open-command-palette"))}
             aria-label="Search (Ctrl or Cmd + K)"
             title="Search — ⌘K"
-            className="flex items-center justify-center p-1.5 rounded-xl text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+            className="hidden md:flex h-8 w-8 items-center justify-center rounded-xl text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
           >
             <Search size={18} />
           </button>
@@ -112,16 +112,16 @@ export default function Navbar() {
 
           {/* CTA — desktop */}
           {auth ? (
-            <Link to="/profile#active-plan">
+            <Link to="/profile#active-plan" className="hidden md:block">
               <motion.span whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.96 }}
-                className="hidden md:block bg-slate-900 hover:bg-slate-800 text-white text-[13px] font-semibold px-5 py-2.5 rounded-xl transition-colors dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 cursor-pointer">
+                className="block bg-slate-900 hover:bg-slate-800 text-white text-[13px] font-semibold px-5 py-2.5 rounded-xl transition-colors dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 cursor-pointer">
                 My Plan
               </motion.span>
             </Link>
           ) : (
-            <Link to="/pricing">
+            <Link to="/pricing" className="hidden md:block">
               <motion.span whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.96 }}
-                className="hidden md:block bg-slate-900 hover:bg-slate-800 text-white text-[13px] font-semibold px-5 py-2.5 rounded-xl transition-colors dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 cursor-pointer">
+                className="block bg-slate-900 hover:bg-slate-800 text-white text-[13px] font-semibold px-5 py-2.5 rounded-xl transition-colors dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 cursor-pointer">
                 Get Started
               </motion.span>
             </Link>
@@ -138,7 +138,7 @@ export default function Navbar() {
           {/* Avatar dropdown */}
           <div className="relative" ref={menuRef}>
             <button onClick={toggleMenu} aria-label="Account menu" aria-expanded={showMenu} className="flex items-center gap-1 hover:opacity-80 transition-opacity">
-              <div className="w-8 h-8 rounded-full overflow-hidden bg-orange-100 dark:bg-emerald-900/40 flex items-center justify-center">
+              <div className="w-8 h-8 shrink-0 rounded-full overflow-hidden bg-orange-100 dark:bg-emerald-900/40 flex items-center justify-center">
                 {avatar && auth ? (
                   avatar.startsWith("data:") ? (
                     <img src={avatar} alt="avatar" className="w-full h-full object-cover" />
@@ -153,7 +153,7 @@ export default function Navbar() {
                   <User size={16} className="text-orange-700 dark:text-emerald-400" />
                 )}
               </div>
-              <ChevronDown size={14} className={`text-slate-400 transition-transform ${showMenu ? "rotate-180" : ""}`} />
+              <ChevronDown size={14} className={`hidden md:block text-slate-400 transition-transform ${showMenu ? "rotate-180" : ""}`} />
             </button>
 
             <AnimatePresence>
