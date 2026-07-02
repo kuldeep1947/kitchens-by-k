@@ -112,21 +112,22 @@ npm run dev       # http://localhost:5173
 
 ```
 src/
-├─ main.jsx                 Router, lazy routes, page transitions
+├─ main.jsx                 App bootstrap (StrictMode, Router, providers)
+├─ AppRoutes.jsx            Lazy routes + page-transition wrapper
 ├─ App.jsx                  Home '/' — composes home sections + ambient depth
 ├─ index.css                Tailwind v4 @theme tokens, glass/aurora utilities
 ├─ Menu.jsx / Pricing.jsx / Faqs.jsx / About.jsx / Profile.jsx / Demos.jsx
 ├─ SignIn.jsx / SignUp.jsx
-├─ context/AuthContext.jsx  localStorage-backed auth
+├─ context/                 AuthProvider (AuthContext.jsx) + useAuth (auth-context.js)
 ├─ lib/
 │  └─ utils.ts              cn() class merger
 ├─ components/
 │  ├─ home/                 Hero, FoodShowcase, HowItWorks, MenuSection,
 │  │                        Testimonials, SplineShowcase, AskSection, FAQ, BuildYourBowl
-│  ├─ shared/               Layout, Navbar, Footer, Logo, Reveal
+│  ├─ shared/               Layout, Navbar, Footer, Logo, Reveal (+ reveal-variants)
 │  └─ ui/                   Design-system primitives & effects:
 │     ├─ command-palette · aurora-background · hero-particles
-│     ├─ magnetic · tilt-card · parallax · count-up · smart-image · nutrition-ring
+│     ├─ magnetic · tilt-card · count-up · smart-image · nutrition-ring
 │     ├─ intro-splash · pwa-manager · confetti · animated-theme-toggler
 │     ├─ background-paths · journey-path · scroll-gallery · testimonials-columns-1
 │     ├─ pricing-1 · clean-minimal-sign-in · ai-chat-input · spotlight-card · spotlight

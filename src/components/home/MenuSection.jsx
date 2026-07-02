@@ -2,7 +2,8 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
-import Reveal, { scaleIn } from "../shared/Reveal";
+import Reveal from "../shared/Reveal";
+import { scaleIn } from "../shared/reveal-variants";
 import SmartImage from "../ui/smart-image";
 
 function MenuCard({ item, i, expanded, setExpanded, featured = false, flipLayout = false }) {

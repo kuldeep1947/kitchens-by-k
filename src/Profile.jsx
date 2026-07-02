@@ -3,11 +3,12 @@ import { useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link, useNavigate, Navigate, useLocation } from "react-router-dom";
 import { ArrowLeft, User, Mail, Phone, Lock, Check, Sparkles, Shield, MapPin, Plus, Trash2, Star, Camera, ArrowRight, Eye, EyeOff, Pencil, MoreVertical, X } from "lucide-react";
-import Reveal, { scaleIn } from "./components/shared/Reveal";
-import { useAuth } from "./context/AuthContext";
+import Reveal from "./components/shared/Reveal";
+import { scaleIn } from "./components/shared/reveal-variants";
+import { useAuth } from "./context/auth-context";
 
 function PersonalInfo() {
-  const { auth, login, updateAvatar } = useAuth();
+  const { login, updateAvatar } = useAuth();
   const stored = localStorage.getItem("kbk_user");
   const user = stored ? JSON.parse(stored) : {};
   const authData = localStorage.getItem("kbk_auth") ? JSON.parse(localStorage.getItem("kbk_auth")) : {};

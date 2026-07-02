@@ -4,7 +4,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { ChevronDown, User, Menu, X, Search } from "lucide-react";
 import { AnimatedThemeToggler } from "../ui/animated-theme-toggler";
 import Logo from "./Logo";
-import { useAuth } from "../../context/AuthContext";
+import { useAuth } from "../../context/auth-context";
 
 // Single source of truth for the top nav — identical on every page.
 const NAV_ITEMS = [

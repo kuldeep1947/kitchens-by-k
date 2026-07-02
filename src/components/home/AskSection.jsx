@@ -83,17 +83,17 @@ export default function AskSection() {
     const answer = matchAnswer(value);
     timers.current.push(setTimeout(() => {
       setThinking(false);
-      setFull(reduce ? answer : "");
-      if (reduce) setShown(answer);
-      else setFull(answer);
+      setFull(answer);
+      if (reduce) setShown(answer); // reduced-motion: show the whole answer instantly
     }, 700));
   };
 
-  // Stream the answer in character-by-character
+  // Stream the answer in character-by-character (skipped under reduced-motion,
+  // where the full answer is already shown by ask()).
   useEffect(() => {
     if (!full) return;
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reduce) { setShown(full); return; }
+    if (reduce) return;
     let i = 0;
     const id = setInterval(() => {
       i += 2;

@@ -1,7 +1,8 @@
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { ArrowLeft, Shield, Clock, Sparkles } from "lucide-react";
-import Reveal, { fadeUp, scaleIn } from "./components/shared/Reveal";
+import Reveal from "./components/shared/Reveal";
+import { fadeUp, scaleIn } from "./components/shared/reveal-variants";
 import AuroraBackground from "./components/ui/aurora-background";
 import SmartImage from "./components/ui/smart-image";
 
