@@ -27,10 +27,16 @@ function BackToTop() {
           whileTap={{ scale: 0.92 }}
           transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-          className="glass-strong fixed bottom-6 right-6 z-50 flex h-11 w-11 items-center justify-center rounded-full text-saffron dark:text-emerald-400"
+          className="fixed bottom-6 right-6 z-50 flex h-11 w-11 items-center justify-center rounded-full border border-white/20 backdrop-blur-md text-saffron dark:border-white/10 dark:text-emerald-400"
           aria-label="Back to top"
         >
-          <ArrowUp size={18} />
+          <motion.span
+            animate={{ y: [0, -3, 0] }}
+            transition={{ duration: 1.4, repeat: Infinity, ease: "easeInOut" }}
+            className="inline-flex"
+          >
+            <ArrowUp size={18} />
+          </motion.span>
         </motion.button>
       )}
     </AnimatePresence>

@@ -70,7 +70,7 @@ export default function ImageAccordion({ items, eyebrow, title, subtitle }: Imag
                 <SmartImage src={item.img} alt={item.title.replace(/\n/g, " ")} className="absolute inset-0 h-full w-full" imgClassName="h-full w-full object-cover" />
                 <Scrim index={i} />
                 <div className="absolute inset-x-0 bottom-0 p-6">
-                  <span className="glass mb-2 inline-flex items-center gap-2 rounded-full px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-white">
+                  <span className="mb-2 inline-flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-white [text-shadow:0_2px_10px_rgba(0,0,0,0.5)]">
                     {item.icon}<span>{item.label}</span>
                   </span>
                   <h3 className="whitespace-pre-line text-2xl font-extrabold leading-[1.05] tracking-tight text-white">{item.title}</h3>
@@ -120,21 +120,21 @@ export default function ImageAccordion({ items, eyebrow, title, subtitle }: Imag
 
                 {/* Collapsed state: centered vertical label + icon chip */}
                 <span
-                  className={`absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rotate-90 whitespace-nowrap text-[12px] font-semibold uppercase tracking-[0.25em] text-white/85 transition-opacity duration-300 ${isActive ? "opacity-0" : "opacity-100"}`}
+                  className={`absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rotate-90 whitespace-nowrap text-[12px] font-semibold uppercase tracking-[0.25em] text-white [text-shadow:0_2px_12px_rgba(0,0,0,0.55)] transition-opacity duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] ${isActive ? "opacity-0" : "opacity-100"}`}
                 >
                   {item.label}
                 </span>
                 <span
-                  className={`absolute bottom-5 left-1/2 grid h-11 w-11 -translate-x-1/2 place-items-center rounded-full glass text-white transition-opacity duration-300 ${isActive ? "opacity-0" : "opacity-100"}`}
+                  className={`absolute bottom-5 left-1/2 grid h-11 w-11 -translate-x-1/2 place-items-center rounded-full glass text-white transition-opacity duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] ${isActive ? "opacity-0" : "opacity-100"}`}
                 >
                   {item.icon}
                 </span>
 
                 {/* Expanded state: label pill + title + caption */}
                 <div
-                  className={`absolute inset-x-0 bottom-0 p-7 text-left transition-all duration-500 md:p-8 ${isActive ? "translate-y-0 opacity-100 delay-150" : "pointer-events-none translate-y-4 opacity-0"}`}
+                  className={`absolute inset-x-0 bottom-0 p-7 text-left transition-all duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] md:p-8 ${isActive ? "translate-y-0 opacity-100 delay-100" : "pointer-events-none translate-y-4 opacity-0"}`}
                 >
-                  <span className="glass mb-3 inline-flex items-center gap-2 rounded-full px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-white">
+                  <span className="mb-3 inline-flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-white [text-shadow:0_2px_10px_rgba(0,0,0,0.5)]">
                     {item.icon}<span>{item.label}</span>
                   </span>
                   <h3 className="whitespace-pre-line text-2xl font-extrabold leading-[1.05] tracking-tight text-white md:text-4xl">{item.title}</h3>
