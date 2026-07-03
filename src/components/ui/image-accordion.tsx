@@ -132,7 +132,7 @@ export default function ImageAccordion({ items, eyebrow, title, subtitle }: Imag
 
                 {/* Expanded state: label pill + title + caption */}
                 <div
-                  className={`absolute inset-x-0 bottom-0 p-7 text-left transition-all duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] md:p-8 ${isActive ? "translate-y-0 opacity-100 delay-100" : "pointer-events-none translate-y-4 opacity-0"}`}
+                  className={`absolute inset-x-0 bottom-0 p-7 text-left transition-[opacity,transform] ease-[cubic-bezier(0.22,1,0.36,1)] md:p-8 ${isActive ? "translate-y-0 opacity-100 delay-300 duration-400" : "pointer-events-none translate-y-3 opacity-0 duration-200"}`}
                 >
                   <span className="mb-3 inline-flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-white [text-shadow:0_2px_10px_rgba(0,0,0,0.5)]">
                     {item.icon}<span>{item.label}</span>
