@@ -1,5 +1,6 @@
 "use client";
 
+import { useRef } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { Link } from "react-router-dom";
 import AuroraBackground from "./aurora-background";
@@ -57,9 +58,17 @@ export function BackgroundPaths({
 }) {
     const reduce = useReducedMotion();
     const words = title.split(" ");
+    const rootRef = useRef<HTMLDivElement>(null);
+
+    const scrollToNextSection = () => {
+        const next = rootRef.current?.nextElementSibling as HTMLElement | null;
+        if (next) {
+            next.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
+        }
+    };
 
     return (
-        <div className="relative min-h-[100svh] w-full flex items-center justify-center overflow-hidden pt-24 pb-16 bg-gradient-to-b from-slate-50 via-white to-cream dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
+        <div ref={rootRef} className="relative min-h-[100svh] w-full flex items-center justify-center overflow-hidden pt-24 pb-16 bg-gradient-to-b from-slate-50 via-white to-cream dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
             {/* Layered backdrop: animated aurora mesh + drifting ember particles + aroma wisps */}
             <AuroraBackground intensity="normal" />
             <HeroParticles className="absolute inset-0 h-full w-full pointer-events-none" />
@@ -160,11 +169,14 @@ export function BackgroundPaths({
             </div>
 
             {/* Scroll cue — pinned to the bottom of the hero so it shows without scrolling */}
-            <motion.div
+            <motion.button
+                type="button"
+                onClick={scrollToNextSection}
+                aria-label="Scroll to next section"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 1, delay: 1.5 }}
-                className="absolute bottom-6 left-1/2 z-10 flex -translate-x-1/2 items-center gap-2"
+                className="absolute bottom-6 left-1/2 z-10 flex -translate-x-1/2 items-center gap-2 cursor-pointer rounded-full px-3 py-1.5 transition-colors hover:bg-slate-900/5 dark:hover:bg-white/5"
             >
                 <span className="text-[11px] font-medium text-slate-400 dark:text-slate-500 tracking-widest uppercase">Scroll</span>
                 <motion.span
@@ -174,7 +186,7 @@ export function BackgroundPaths({
                 >
                     ↓
                 </motion.span>
-            </motion.div>
+            </motion.button>
         </div>
     );
 }

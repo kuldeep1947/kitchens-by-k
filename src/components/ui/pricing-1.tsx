@@ -133,7 +133,7 @@ const Pricing1 = () => {
                     : "border border-slate-200 dark:border-white/20 text-slate-700 dark:text-white hover:border-orange-600 dark:hover:border-emerald-400 hover:text-orange-600 dark:hover:text-emerald-400"
                 }`}
               >
-                Get Started
+                Choose Plan
               </button>
             </div>
           </SpotlightCard>
@@ -386,7 +386,7 @@ function PlanModal({ plan, onClose, navigate }: { plan: any; onClose: () => void
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.94, y: 20 }}
         transition={{ type: "spring", stiffness: 260, damping: 26 }}
-        className="glass-strong relative flex max-h-[85vh] w-full max-w-lg flex-col overflow-hidden rounded-3xl glow-ring"
+        className="relative flex max-h-[85vh] w-full max-w-lg flex-col overflow-hidden rounded-3xl border border-slate-200 dark:border-slate-800 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl shadow-2xl glow-ring"
         onClick={(e) => e.stopPropagation()}
       >
         <AnimatePresence>
@@ -820,7 +820,7 @@ function PlanModal({ plan, onClose, navigate }: { plan: any; onClose: () => void
               disabled={!employeeCount || !companyName}
               className={`w-full py-3 rounded-2xl font-semibold text-[14px] transition-all cursor-pointer flex items-center justify-center gap-2 ${
                 employeeCount && companyName
-                  ? "bg-gradient-to-b from-slate-700 to-slate-900 dark:from-white dark:to-slate-200 text-white dark:text-slate-900 shadow hover:brightness-105"
+                  ? "bg-gradient-to-b from-orange-500 to-orange-600 dark:from-emerald-500 dark:to-emerald-600 text-white shadow-lg shadow-orange-600/20 dark:shadow-emerald-600/20 hover:brightness-105"
                   : "bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-500 cursor-not-allowed"
               }`}
             >
@@ -842,7 +842,7 @@ function PlanModal({ plan, onClose, navigate }: { plan: any; onClose: () => void
                 disabled={selectedMeals.length === 0}
                 className={`flex-1 py-3 rounded-2xl font-semibold text-[14px] transition-all cursor-pointer flex items-center justify-center gap-2 ${
                   selectedMeals.length > 0
-                    ? "bg-gradient-to-b from-slate-700 to-slate-900 dark:from-white dark:to-slate-200 text-white dark:text-slate-900 shadow hover:brightness-105"
+                    ? "bg-gradient-to-b from-orange-500 to-orange-600 dark:from-emerald-500 dark:to-emerald-600 text-white shadow-lg shadow-orange-600/20 dark:shadow-emerald-600/20 hover:brightness-105"
                     : "bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-500 cursor-not-allowed"
                 }`}
               >
@@ -860,7 +860,7 @@ function PlanModal({ plan, onClose, navigate }: { plan: any; onClose: () => void
               </button>
               <button
                 onClick={() => setStep("payment")}
-                className="flex-1 py-3 rounded-2xl font-semibold text-[14px] bg-gradient-to-b from-slate-700 to-slate-900 dark:from-white dark:to-slate-200 text-white dark:text-slate-900 shadow hover:brightness-105 transition-all cursor-pointer flex items-center justify-center gap-2"
+                className="flex-1 py-3 rounded-2xl font-semibold text-[14px] bg-gradient-to-b from-orange-500 to-orange-600 dark:from-emerald-500 dark:to-emerald-600 text-white shadow-lg shadow-orange-600/20 dark:shadow-emerald-600/20 hover:brightness-105 transition-all cursor-pointer flex items-center justify-center gap-2"
               >
                 Continue to Payment <ChevronRight size={16} />
               </button>

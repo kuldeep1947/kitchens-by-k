@@ -101,7 +101,7 @@ function MealCard({ item, index }) {
                   ))}
                 </div>
                 <h4 className="text-[15px] font-bold text-slate-900 dark:text-white">{item.name}</h4>
-                <p className="mt-1 text-[13px] leading-relaxed text-slate-500 dark:text-slate-400">{item.desc}</p>
+                <p className="mt-1 line-clamp-2 min-h-[2.6rem] text-[13px] leading-relaxed text-slate-500 dark:text-slate-400">{item.desc}</p>
               </div>
               <div className="flex shrink-0 flex-col items-end gap-2">
                 <span className="rounded-full bg-saffron/10 px-2.5 py-1 text-[12px] font-bold text-saffron">{item.cal} kcal</span>
@@ -173,7 +173,7 @@ function CategorySection({ cat, index }) {
               transition={{ duration: 0.4 }}
               className="overflow-hidden"
             >
-              <div className="grid gap-4 border-t border-slate-200/40 px-6 pb-8 pt-4 dark:border-slate-700/30 sm:grid-cols-2 md:px-8">
+              <div className="grid items-start gap-4 border-t border-slate-200/40 px-6 pb-8 pt-4 dark:border-slate-700/30 sm:grid-cols-2 md:px-8">
                 {cat.items.map((item, i) => (
                   <MealCard key={item.name} item={item} index={i} />
                 ))}

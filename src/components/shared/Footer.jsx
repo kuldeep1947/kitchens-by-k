@@ -12,10 +12,12 @@ export default function Footer() {
         <div className="text-center mb-8 md:mb-10">
           <h2 className="text-3xl md:text-5xl font-extrabold tracking-tighter mb-3">Start Eating <span className="text-aurora">Better</span> Today.</h2>
           <p className="text-slate-400 mb-5 md:mb-6 max-w-md mx-auto">Join <CountUp value={50} suffix="+" className="font-bold text-white" /> companies across Mumbai who trust us with their daily meals.</p>
-          <motion.a href="mailto:hello@kitchensbyk.com" whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}
-            className="inline-flex items-center gap-3 bg-saffron hover:bg-saffron-dark text-white font-bold px-8 md:px-9 py-3.5 md:py-4 rounded-2xl text-base shadow-xl shadow-saffron/20 transition-colors">
-            Get Started <ArrowRight size={18} />
-          </motion.a>
+          <Link to="/pricing">
+            <motion.span whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}
+              className="inline-flex items-center gap-3 bg-saffron hover:bg-saffron-dark text-white font-bold px-8 md:px-9 py-3.5 md:py-4 rounded-2xl text-base shadow-xl shadow-saffron/20 transition-colors">
+              Get Started <ArrowRight size={18} />
+            </motion.span>
+          </Link>
         </div>
 
         <div className="border-t border-slate-800 pt-6 flex flex-col md:flex-row items-start justify-between gap-5 md:gap-6">
